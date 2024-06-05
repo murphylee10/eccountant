@@ -3,6 +3,7 @@
 ## Project Metadata
 
 Project Title: Eccountant
+
 Team Name: Angular
 
 ## Project Team
