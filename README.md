@@ -8,26 +8,31 @@ Team Name: Angular
 
 ## Project Team
 
-| Full Name     | UTORID   | Student Number | Email                                                 | Best way to Connect | Slack User Name |
-| ------------- | -------- | -------------- | ----------------------------------------------------- | ------------------- | --------------- |
-| Chad Rossouw  | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca                         | 437 262 3168        | Chad Rossouw    |   |
-| Murphy Lee    | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca  | 416 831 0673        | Murphy Lee      |
+| Full Name    | UTORID   | Student Number | Email                         | Best way to Connect | Slack User Name |
+| ------------ | -------- | -------------- | ----------------------------- | ------------------- | --------------- | --- |
+| Chad Rossouw | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca | 437 262 3168        | Chad Rossouw    |     |
+| Murphy Lee   | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca   | 416 831 0673        | Murphy Lee      |
 
 ## Project Outline
 
 ### Brief Description
+
 Eccountant is an intuitive and user-friendly single-page web application designed to empower users to track their spending seamlessly. The application integrates with various financial institutions using Plaid's API to gather and categorize credit card and bank transaction data, providing users with a comprehensive overview of their financial activities in one centralized location. Eccountant aims to simplify financial management by offering insightful charts and visuals that highlight spending patterns across different categories.
 
 ### User Flow
+
 1. **User Registration and Authentication:**
+
    - Users sign up and securely authenticate their accounts.
    - Integration with Plaid's API to connect users' bank and credit card accounts.
 
 2. **Dashboard Overview:**
+
    - Users are greeted with a dashboard displaying a summary of their financial health.
    - Key metrics such as total balance, recent transactions, and spending trends are highlighted.
 
 3. **Transaction Import and Categorization:**
+
    - Automated import of transaction data from connected financial accounts.
    - Transactions are categorized (e.g., groceries, utilities, entertainment) using Plaid's API functionality.
 
@@ -37,10 +42,10 @@ Eccountant is an intuitive and user-friendly single-page web application designe
    - Graphs will include filters for time and category of transaction.
 
 ### Conclusion
+
 Eccountant aims to provide a comprehensive solution for personal financial management, offering users an easy-to-use interface, powerful analytics, and robust security. By leveraging modern web technologies and Plaid's API, Eccountant strives to be the go-to application for individuals looking to gain control over their financial lives.
 
 This project proposal outlines the vision for Eccountant, focusing on delivering a valuable tool for users to manage and understand their financial activities better.
-
 
 ## Fulfilling Required Elements
 
@@ -54,12 +59,17 @@ Eccountant will meet the requirements as follows:
 - The application will be accessible to the general public without requiring additional steps, ensuring ease of use.
 - Integration with the Plaid API (a third-party API) will be implemented to securely gather financial data.
 - OAuth 2.0 will be used for secure and scalable authentication and authorization.
-
+- **Database Integration:**
+  - **User Data Storage:** A relational database (PostgreSQL) will be used to store user data, including authentication information, connected bank accounts, and preferences.
+  - **Transaction Storage:** All imported transaction data will be stored in the database to allow for efficient querying and analysis.
+  - **Categorization Data:** Categories and related metadata will be stored in the database to support dynamic and flexible categorization of transactions.
+  - **Analytics Data:** Aggregated data for generating charts and graphs will be stored and indexed in the database to provide quick and responsive analytics to users.
 
 ## Fulfilling Additional Requirements
 
 1. **Using Plaid's Webhooks:**
-   - **Transactions Webhooks:** 
+
+   - **Transactions Webhooks:**
      - `INITIAL_UPDATE`: Fired when an initial transaction pull is completed, providing transaction data for the last 30 days. This ensures that users have an up-to-date overview of their recent financial activities as soon as they link their accounts.
      - `HISTORICAL_UPDATE`: Fired when the historical transaction pull is completed, providing transaction data older than 30 days. This allows users to analyze their long-term spending patterns and trends.
      - `DEFAULT_UPDATE`: Fired when new or updated transaction data is available. This keeps the users' transaction records current, ensuring real-time accuracy in their spending analysis.
@@ -75,15 +85,19 @@ Eccountant will meet the requirements as follows:
 Variations of Eccountant have already been implemented, but we believe the following additional features would really make our application stand out:
 
 - **Manual Spending Input:**
+
   - Allow users to manually input cash transactions or expenses from accounts not linked through Plaid, ensuring a complete picture of their financial health.
 
 - **Subscription Detection:**
+
   - Automatically identify and track recurring subscriptions, helping users manage and optimize their regular expenses.
 
 - **Adding Credit Cards:**
+
   - Enable users to add multiple credit card accounts, providing a holistic view of their spending across various cards and simplifying overall financial management.
 
 - **Custom Budgeting & Alerts:**
+
   - Offer users the ability to set custom budgets for different spending categories and receive alerts when they approach or exceed their budget limits, promoting better financial discipline.
 
 - **Export & Report Generation:**
