@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: eccountant
+      POSTGRES_PASSWORD: eccountant
+      POSTGRES_DB: eccountant
+    volumes:
+      - /postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
