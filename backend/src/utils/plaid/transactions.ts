@@ -1,63 +1,7 @@
 import { db } from "@/utils/database/db";
 import { plaidClient } from "./client";
-import {
-  RemovedTransaction,
-  Transaction,
-  TransactionsSyncResponse,
-} from "plaid";
-import { SyncedTransactionData } from "../types/SyncedTransactionData";
-
-/**
- * A simple object to pass to our database functions that represents the data
- *  our application cares about from the Plaid transaction endpoint
- */
-class SimpleTransaction {
-  constructor(
-    id: string,
-    userId: string,
-    accountId: string,
-    category: string,
-    date: string,
-    authorizedDate: string,
-    name: string,
-    amount: number,
-    currencyCode: string,
-    pendingTransactionId: string
-  ) {
-    this.id = id;
-    this.userId = userId;
-    this.accountId = accountId;
-    this.category = category;
-    this.date = date;
-    this.authorizedDate = authorizedDate;
-    this.name = name;
-    this.amount = amount;
-    this.currencyCode = currencyCode;
-    this.pendingTransactionId = pendingTransactionId;
-  }
-
-  /**
-   * Static factory method for creating the SimpleTransaction object
-   *
-   * @param {import("plaid").Transaction} txnObj The transaction object returned from the Plaid API
-   * @param {string} userId The userID
-   * @returns SimpleTransaction
-   */
-  static fromPlaidTransaction(txnObj, userId) {
-    return new SimpleTransaction(
-      txnObj.transaction_id,
-      userId,
-      txnObj.account_id,
-      txnObj.personal_finance_category.primary,
-      txnObj.date,
-      txnObj.authorized_date,
-      txnObj.merchant_name ?? txnObj.name,
-      txnObj.amount,
-      txnObj.iso_currency_code,
-      txnObj.pending_transaction_id
-    );
-  }
-}
+import { RemovedTransaction, Transaction } from "plaid";
+import { SyncedTransactionData } from "../types/transactions";
 
 export const syncTransactions = async function (itemId: string) {
   // Step 1: Retrieve our access token and cursor from the database
@@ -73,7 +17,10 @@ export const syncTransactions = async function (itemId: string) {
   } = itemInfo;
 
   const summary = { added: 0, removed: 0, modified: 0 };
-  const allData = await fetchNewSyncData(accessToken, transactionCursor);
+  const allData = await fetchNewSyncData(
+    accessToken,
+    transactionCursor || undefined // The plaidClient.transactionsSync() function wants string | undefined but our db returns string | null
+  );
 
   // STEP 2: Save new transactions to the database
   await Promise.all(
@@ -125,7 +72,7 @@ export const syncTransactions = async function (itemId: string) {
 
 export const fetchNewSyncData = async function (
   accessToken: string,
-  initialCursor: string,
+  initialCursor: string | undefined,
   retriesLeft = 3
 ): Promise<SyncedTransactionData> {
   const allData = {

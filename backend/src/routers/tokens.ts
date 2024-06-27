@@ -3,6 +3,7 @@ import { plaidClient } from "@/utils/plaid/client";
 import { CountryCode, Products } from "plaid";
 import { getLoggedInUserId } from "@/utils/user/auth";
 import { db } from "@/utils/database/db";
+import { COUNTRY_CODES } from "@/utils/plaid/config";
 
 export const tokensRouter = Router();
 
@@ -24,7 +25,7 @@ tokensRouter.post(
         products: [Products.Transactions],
         client_name: CLIENT_NAME,
         language: "en",
-        country_codes: [CountryCode.Ca],
+        country_codes: COUNTRY_CODES,
         webhook: WEBHOOK_URL,
       });
       res.json(tokenResponse.data);
