@@ -1,1 +1,2 @@
 https://medium.com/@xiaominghu19922/proper-error-handling-in-express-server-with-typescript-8cd4ffb67188
+https://github.com/plaid/tutorial-resources

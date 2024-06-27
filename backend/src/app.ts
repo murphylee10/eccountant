@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import "dotenv/config";
 import { errorHandler } from "./middleware/errors";
 import "express-async-errors";
-import prisma from "@/utils/prisma/client";
 import cors from "cors";
+import { db } from "@/utils/database/db";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -26,11 +26,11 @@ app.listen(PORT, () => {
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
-  await prisma.$disconnect();
+  await db.disconnect();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  await prisma.$disconnect();
+  await db.disconnect();
   process.exit(0);
 });

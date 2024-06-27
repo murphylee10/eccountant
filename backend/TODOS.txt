@@ -1,0 +1,2 @@
+- clean up error handling (lots of "ran into an error!")
+- remove debug router?

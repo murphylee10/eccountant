@@ -14,7 +14,45 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  username  String
-  email String  @unique
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username     String        @unique
+  items        Item[]
+  transactions Transaction[]
+}
+
+model Item {
+  id                 String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String @db.Uuid
+  access_token       String
+  transaction_cursor String?
+  bank_name          String?
+  is_active          Boolean @default(true)
+  user               User    @relation(fields: [user_id], references: [id])
+  accounts           Account[]
+  transactions       Transaction[]
+}
+
+model Account {
+  id           String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  item_id      String @db.Uuid
+  name         String?
+  item         Item    @relation(fields: [item_id], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id              String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String @db.Uuid
+  account_id      String @db.Uuid
+  category        String?
+  date            String
+  authorized_date String?
+  name            String?
+  amount          Float
+  currency_code   String?
+  is_removed      Boolean  @default(false)
+  user            User     @relation(fields: [user_id], references: [id])
+  account         Account  @relation(fields: [account_id], references: [id])
+  item            Item?    @relation(fields: [itemId], references: [id])
+  itemId          String?  @db.Uuid
 }
