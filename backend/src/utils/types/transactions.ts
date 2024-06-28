@@ -1,9 +1,10 @@
-import { RemovedTransaction, Transaction } from "plaid";
+import { RemovedTransaction, Transaction as PlaidTransaction } from "plaid";
+import { Transaction } from "@prisma/client";
 
 export interface SyncedTransactionData {
-  added: Transaction[];
+  added: PlaidTransaction[];
   removed: RemovedTransaction[];
-  modified: Transaction[];
+  modified: PlaidTransaction[];
   nextCursor?: string;
 }
 
@@ -12,28 +13,15 @@ export interface SyncedTransactionData {
  *  our application cares about from the Plaid transaction endpoint
  */
 class SimpleTransaction {
+  transaction: Transaction;
+  pending_transaction_id: string | null;
+  
   constructor(
-    id: string,
-    userId: string,
-    accountId: string,
-    category: string,
-    date: string,
-    authorizedDate: string,
-    name: string,
-    amount: number,
-    currencyCode: string,
-    pendingTransactionId: string
+    transaction: Transaction,
+    pending_transaction_id: string | null
   ) {
-    this.id = id;
-    this.userId = userId;
-    this.accountId = accountId;
-    this.category = category;
-    this.date = date;
-    this.authorizedDate = authorizedDate;
-    this.name = name;
-    this.amount = amount;
-    this.currencyCode = currencyCode;
-    this.pendingTransactionId = pendingTransactionId;
+    this.transaction = transaction;
+    this.pending_transaction_id = pending_transaction_id;
   }
 
   /**
@@ -43,18 +31,33 @@ class SimpleTransaction {
    * @param {string} userId The userID
    * @returns SimpleTransaction
    */
-  static fromPlaidTransaction(txnObj, userId) {
-    return new SimpleTransaction(
-      txnObj.transaction_id,
-      userId,
-      txnObj.account_id,
-      txnObj.personal_finance_category.primary,
-      txnObj.date,
-      txnObj.authorized_date,
-      txnObj.merchant_name ?? txnObj.name,
-      txnObj.amount,
-      txnObj.iso_currency_code,
-      txnObj.pending_transaction_id
-    );
+  static fromPlaidTransaction(txnObj: PlaidTransaction, userId: string) {
+    return new SimpleTransaction({
+      id: txnObj.transaction_id,
+      user_id: userId,
+      account_id: txnObj.account_id,
+      category: txnObj.personal_finance_category.primary,
+      date: txnObj.date,
+      authorized_date: txnObj.authorized_date,
+      name: txnObj.merchant_name ?? txnObj.name,
+      amount: txnObj.amount,
+      currency_code: txnObj.iso_currency_code,
+  }, txnObj.pending_transaction_id);
   }
 }
+id: string;
+    user_id: string;
+    account_id: string;
+    category: string | null;
+    date: string;
+    authorized_date: string | null;
+    name: string | null;
+    amount: number;
+    currency_code: string | null;
+    is_removed: boolean;
+    itemId: string | null;
+
+
+'{ id: string; user_id: string; account_id: string; category: string; date: string; authorized_date: string | null; name: string; amount: number; currency_code: string | null; }' is not assignable to parameter of type 
+'{ id: string; user_id: string; account_id: string; category: string | null; date: string; authorized_date: string | null; name: string | null; amount: number; currency_code: string | null; is_removed: boolean; itemId: string | null; }'.
+'{ id: string; user_id: string; account_id: string; category: string; date: string; authorized_date: string | null; name: string; amount: number; currency_code: string | null; }' is missing the following properties from type '{ id: string; user_id: string; account_id: string; category: string | null; date: string; authorized_date: string | null; name: string | null; amount: number; currency_code: string | null; is_removed: boolean; itemId: string | null; }': is_removed, itemId

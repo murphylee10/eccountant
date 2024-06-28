@@ -7,6 +7,12 @@ class Database {
     this.prisma = new PrismaClient();
   }
 
+  /* Transaction interactions */
+
+  async addNewTransaction() {
+
+  }
+
   /* Item interactions */
 
   async getItemInfo(itemId: string) {
