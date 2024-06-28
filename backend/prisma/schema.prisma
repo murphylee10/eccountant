@@ -29,7 +29,6 @@ model Item {
   is_active          Boolean @default(true)
   user               User    @relation(fields: [user_id], references: [id])
   accounts           Account[]
-  transactions       Transaction[]
 }
 
 model Account {
@@ -53,6 +52,4 @@ model Transaction {
   is_removed      Boolean  @default(false)
   user            User     @relation(fields: [user_id], references: [id])
   account         Account  @relation(fields: [account_id], references: [id])
-  item            Item?    @relation(fields: [itemId], references: [id])
-  itemId          String?  @db.Uuid
 }

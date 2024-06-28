@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { SimpleTransaction } from "../types/transactions";
 
 class Database {
   private prisma: PrismaClient;
@@ -9,8 +10,17 @@ class Database {
 
   /* Transaction interactions */
 
-  async addNewTransaction() {
+  async addNewTransaction(transactionObj: SimpleTransaction) {
+    const result = await this.prisma.transaction.create({
+      data: {
+        ...transactionObj.transaction,
+      },
+    });
 
+    if (transactionObj.pending_transaction_id) {
+      // TODO - possibly handle attributes we added
+    }
+    return result;
   }
 
   /* Item interactions */

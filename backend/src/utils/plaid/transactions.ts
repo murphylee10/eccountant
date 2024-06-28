@@ -1,7 +1,10 @@
 import { db } from "@/utils/database/db";
 import { plaidClient } from "./client";
 import { RemovedTransaction, Transaction } from "plaid";
-import { SyncedTransactionData } from "../types/transactions";
+import {
+  SyncedTransactionData,
+  SimpleTransaction,
+} from "../types/transactions";
 
 export const syncTransactions = async function (itemId: string) {
   // Step 1: Retrieve our access token and cursor from the database
@@ -29,9 +32,9 @@ export const syncTransactions = async function (itemId: string) {
       const result = await db.addNewTransaction(
         SimpleTransaction.fromPlaidTransaction(txnObj, userId)
       );
-      if (result) {
-        summary.added += result.changes;
-      }
+      // if (result) {
+      //   summary.added += result.changes;
+      // }
     })
   );
 
