@@ -23,6 +23,26 @@ class Database {
     return result;
   }
 
+  async modifyExistingTransaction(transactionObj: SimpleTransaction) {
+    const result = await this.prisma.transaction.update({
+      where: { id: transactionObj.transaction.id },
+      data: {
+        ...transactionObj.transaction,
+      },
+    });
+    return result;
+  }
+
+  async markTransactionAsRemoved(transactionId: string) {
+    const result = await this.prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        is_removed: true,
+      },
+    });
+    return result;
+  }
+
   /* Item interactions */
 
   async getItemInfo(itemId: string) {
@@ -60,6 +80,16 @@ class Database {
       },
     });
     return items;
+  }
+
+  async saveCursorForItem(cursor: string | undefined, itemId: string) {
+    const result = await this.prisma.item.update({
+      where: { id: itemId },
+      data: {
+        transaction_cursor: cursor || null,
+      },
+    });
+    return result;
   }
 
   async disconnect() {

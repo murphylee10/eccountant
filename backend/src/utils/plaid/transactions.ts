@@ -45,9 +45,9 @@ export const syncTransactions = async function (itemId: string) {
       const result = await db.modifyExistingTransaction(
         SimpleTransaction.fromPlaidTransaction(txnObj, userId)
       );
-      if (result) {
-        summary.modified += result.changes;
-      }
+      // if (result) {
+      //   summary.modified += result.changes;
+      // }
     })
   );
 
@@ -59,9 +59,9 @@ export const syncTransactions = async function (itemId: string) {
       //   txnObj.transaction_id
       // );
       const result = await db.markTransactionAsRemoved(txnObj.transaction_id);
-      if (result) {
-        summary.removed += result.changes;
-      }
+      // if (result) {
+      //   summary.removed += result.changes;
+      // }
     })
   );
 

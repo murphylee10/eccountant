@@ -4,6 +4,7 @@ import { CountryCode, Products } from "plaid";
 import { getLoggedInUserId } from "@/utils/user/auth";
 import { db } from "@/utils/database/db";
 import { COUNTRY_CODES } from "@/utils/plaid/config";
+import { syncTransactions } from "@/utils/plaid/transactions";
 
 export const tokensRouter = Router();
 
@@ -48,12 +49,13 @@ tokensRouter.post("/exchange_public_token", async (req, res, next) => {
       public_token: publicToken,
     });
     const tokenData = tokenResponse.data;
-    await db.addItem(tokenData.item_id, userId, tokenData.access_token);
-    await populateBankName(tokenData.item_id, tokenData.access_token);
-    await populateAccountNames(tokenData.access_token);
+    const { item_id: itemId, access_token: accessToken } = tokenData;
+    await db.addItem(itemId, userId, accessToken);
+    await populateBankName(itemId, accessToken);
+    await populateAccountNames(accessToken);
 
     // Call sync for the first time to activate the sync webhooks
-    await syncTransactions(tokenData.item_id);
+    await syncTransactions(itemId);
 
     res.json({ status: "success" });
   } catch (error) {
