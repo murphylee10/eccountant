@@ -1,7 +1,8 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errors";
 import "express-async-errors";
+import { syncTransactions } from "@/utils/plaid/transactions";
 
 const webhookApp: Express = express();
 
@@ -10,35 +11,38 @@ const WEBHOOK_PORT = process.env.WEBHOOK_PORT;
 webhookApp.use(bodyParser.urlencoded({ extended: false }));
 webhookApp.use(bodyParser.json());
 
-webhookApp.post("/server/receive_webhook", async (req, res, next) => {
-  try {
-    console.log("**INCOMING WEBHOOK**");
-    console.dir(req.body, { colors: true, depth: null });
-    const product = req.body.webhook_type;
-    const code = req.body.webhook_code;
+webhookApp.post(
+  "/server/receive_webhook",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log("**INCOMING WEBHOOK**");
+      console.dir(req.body, { colors: true, depth: null });
+      const product = req.body.webhook_type as string;
+      const code = req.body.webhook_code as string;
 
-    // TODO (maybe): Verify webhook
-    switch (product) {
-      case "ITEM":
-        handleItemWebhook(code, req.body);
-        break;
-      case "TRANSACTIONS":
-        handleTxnWebhook(code, req.body);
-        break;
-      default:
-        console.log(`Can't handle webhook product ${product}`);
-        break;
+      // TODO (maybe): Verify webhook
+      switch (product) {
+        case "TRANSACTIONS":
+          handleTxnWebhook(code, req.body.item_id);
+          break;
+        // case "ITEM":
+        //   handleItemWebhook(code, req.body);
+        //   break;
+        default:
+          console.log(`Can't handle webhook product ${product}`);
+          break;
+      }
+      res.json({ status: "received" });
+    } catch (error) {
+      next(error);
     }
-    res.json({ status: "received" });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-function handleTxnWebhook(code, requestBody) {
+function handleTxnWebhook(code: string, itemId: string) {
   switch (code) {
     case "SYNC_UPDATES_AVAILABLE":
-      syncTransactions(requestBody.item_id);
+      syncTransactions(itemId);
       break;
     // If we're using sync, we don't really need to concern ourselves with the
     // other transactions-related webhooks
@@ -48,7 +52,8 @@ function handleTxnWebhook(code, requestBody) {
   }
 }
 
-function handleItemWebhook(code, requestBody) {
+/* Look into later
+function handleItemWebhook(code: string, requestBody) {
   switch (code) {
     case "ERROR":
       // The most common reason for receiving this webhook is because your
@@ -80,6 +85,8 @@ function handleItemWebhook(code, requestBody) {
       break;
   }
 }
+
+*/
 
 webhookApp.use(errorHandler);
 

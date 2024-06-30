@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { SimpleTransaction } from "../types/transactions";
 
 class Database {
@@ -9,6 +9,37 @@ class Database {
   }
 
   /* Transaction interactions */
+
+  async getTransactionsByUser(userId: string, limit: number) {
+    const results = await this.prisma.transaction.findMany({
+      where: {
+        user_id: userId,
+        is_removed: false,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      take: limit,
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return results.map((transaction) => ({
+      ...transaction,
+      account_name: transaction.account.name,
+      bank_name: transaction.account.item.bank_name,
+    }));
+  }
 
   async addNewTransaction(transactionObj: SimpleTransaction) {
     const result = await this.prisma.transaction.create({
@@ -68,6 +99,16 @@ class Database {
     return result;
   }
 
+  async setItemBankName(itemId: string, bankName: string) {
+    const result = await this.prisma.item.update({
+      where: { id: itemId },
+      data: {
+        bank_name: bankName,
+      },
+    });
+    return result;
+  }
+
   async getItemsAndAccessTokensForUser(userId: string) {
     const items = await this.prisma.item.findMany({
       where: {
@@ -90,6 +131,30 @@ class Database {
       },
     });
     return result;
+  }
+
+  /* Account interactions */
+  async addAccount(accountId: string, itemId: string, acctName?: string) {
+    try {
+      const result = await this.prisma.account.create({
+        data: {
+          id: accountId,
+          item_id: itemId,
+          name: acctName,
+        },
+      });
+      return result;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // Handle unique constraint violation
+        if (error.code === "P2002") {
+          console.log(`Account with id ${accountId} already exists.`);
+          return null;
+        }
+      }
+      // Re-throw other unexpected errors
+      throw error;
+    }
   }
 
   async disconnect() {

@@ -1,6 +1,6 @@
 import { Request, Router, Response, NextFunction } from "express";
 import { plaidClient } from "@/utils/plaid/client";
-import { CountryCode, Products } from "plaid";
+import { Products } from "plaid";
 import { getLoggedInUserId } from "@/utils/user/auth";
 import { db } from "@/utils/database/db";
 import { COUNTRY_CODES } from "@/utils/plaid/config";
@@ -8,8 +8,7 @@ import { syncTransactions } from "@/utils/plaid/transactions";
 
 export const tokensRouter = Router();
 
-const WEBHOOK_URL =
-  process.env.WEBHOOK_URL || "https://www.example.com/server/receive_webhook";
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
 const CLIENT_NAME = process.env.CLIENT_NAME || "Eccountant";
 
 /**
@@ -40,26 +39,66 @@ tokensRouter.post(
 /**
  * Exchange link token for access token and sync database
  */
-tokensRouter.post("/exchange_public_token", async (req, res, next) => {
-  try {
-    const userId = getLoggedInUserId(req);
-    const publicToken = req.body.publicToken;
+tokensRouter.post(
+  "/exchange_public_token",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = getLoggedInUserId(req);
+      const publicToken = req.body.publicToken;
 
-    const tokenResponse = await plaidClient.itemPublicTokenExchange({
-      public_token: publicToken,
-    });
-    const tokenData = tokenResponse.data;
-    const { item_id: itemId, access_token: accessToken } = tokenData;
-    await db.addItem(itemId, userId, accessToken);
-    await populateBankName(itemId, accessToken);
-    await populateAccountNames(accessToken);
+      const tokenResponse = await plaidClient.itemPublicTokenExchange({
+        public_token: publicToken,
+      });
+      const tokenData = tokenResponse.data;
+      const { item_id: itemId, access_token: accessToken } = tokenData;
+      await db.addItem(itemId, userId, accessToken);
+      await populateBankName(itemId, accessToken);
+      await populateAccountNames(accessToken);
 
-    // Call sync for the first time to activate the sync webhooks
-    await syncTransactions(itemId);
+      // Call sync for the first time to activate the sync webhooks
+      await syncTransactions(itemId);
 
-    res.json({ status: "success" });
-  } catch (error) {
-    console.log(`Running into an error!`);
-    next(error);
+      res.json({ status: "success" });
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
   }
-});
+);
+
+const populateBankName = async (itemId: string, accessToken: string) => {
+  try {
+    const itemResponse = await plaidClient.itemGet({
+      access_token: accessToken,
+    });
+    const institutionId = itemResponse.data.item.institution_id;
+    if (institutionId == null) {
+      return;
+    }
+    const institutionResponse = await plaidClient.institutionsGetById({
+      institution_id: institutionId,
+      country_codes: COUNTRY_CODES,
+    });
+    const institutionName = institutionResponse.data.institution.name;
+    await db.setItemBankName(itemId, institutionName);
+  } catch (error) {
+    console.log(`Ran into an error! ${error}`);
+  }
+};
+
+const populateAccountNames = async (accessToken: string) => {
+  try {
+    const accountsResponse = await plaidClient.accountsGet({
+      access_token: accessToken,
+    });
+    const accountsData = accountsResponse.data;
+    const itemId = accountsData.item.item_id;
+    await Promise.all(
+      accountsData.accounts.map(async (account) => {
+        await db.addAccount(account.account_id, itemId, account.name);
+      })
+    );
+  } catch (error) {
+    console.log(`Ran into an error! ${error}`);
+  }
+};
