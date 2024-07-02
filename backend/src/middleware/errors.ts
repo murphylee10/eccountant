@@ -5,7 +5,7 @@ export const errorHandler: ErrorRequestHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   // Handled errors
   if (err instanceof CustomError) {
@@ -19,12 +19,18 @@ export const errorHandler: ErrorRequestHandler = (
             stack: err.stack,
           },
           null,
-          2
-        )
+          2,
+        ),
       );
     }
 
     return res.status(statusCode).send({ errors });
+  }
+
+  // 4XX type status codes should reach client.
+  if (err.statusCode.toString()[0] == "4") {
+    res.send(err);
+    return;
   }
 
   // Unhandled errors
