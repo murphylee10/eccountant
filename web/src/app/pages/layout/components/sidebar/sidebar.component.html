@@ -1,0 +1,32 @@
+<p-menu [model]="items" styleClass="w-full md:w-15rem">
+  <ng-template pTemplate="start">
+    <div class="flex items-center gap-3 p-3">
+      <div class="relative flex h-8 w-8 items-center justify-center">
+        <i class="pi pi-refresh absolute text-3xl"></i>
+        <i class="pi pi-dollar text-xl text-white"></i>
+      </div>
+      <span class="text-xl font-medium font-semibold">ECCOUNTANT</span>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="submenuheader" let-item>
+    <span class="text-primary font-bold">{{ item.label }}</span>
+  </ng-template>
+
+  <ng-template pTemplate="item" let-item>
+    <a pRipple class="flex items-center p-2 hover:bg-gray-200">
+      <i [class]="item.icon"></i>
+      <span class="ml-2">{{ item.label }}</span>
+    </a>
+  </ng-template>
+
+  <!-- <ng-template pTemplate="end">
+    <div class="flex items-center p-3">
+      <p-avatar image="path/to/user-avatar.jpg" class="mr-2" shape="circle"></p-avatar>
+      <div>
+        <div class="font-bold">Alexajohn</div>
+        <div class="text-sm">John@mail.com</div>
+      </div>
+    </div>
+  </ng-template> -->
+</p-menu>
