@@ -1,7 +1,14 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import {
+  Component,
+  Signal,
+  WritableSignal,
+  computed,
+  signal,
+} from '@angular/core';
+import { AuthService, User } from '@auth0/auth0-angular';
 import { AuthButtonComponent } from '@components/auth/auth-button/auth-button.component';
+import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -11,5 +18,25 @@ import { AuthButtonComponent } from '@components/auth/auth-button/auth-button.co
   styles: ``,
 })
 export class HomeComponent {
-  constructor(public auth: AuthService) { }
+  msg: string = '';
+
+  constructor(
+    public auth: AuthService,
+    private api: ApiService,
+  ) {
+    console.log(window.origin);
+  }
+
+  async testAuth() {
+    try {
+      const [authenticated, authorized] = await Promise.all([
+        this.api.exampleAuth(),
+        this.api.exampleAuthScope(),
+      ]);
+
+      this.msg = `User is ${authenticated.success ? '' : 'not'} authenticated and ${authorized.success ? '' : 'not'} authorized`;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
