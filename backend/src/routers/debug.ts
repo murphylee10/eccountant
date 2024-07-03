@@ -12,22 +12,22 @@ const debugRouter = Router();
  * they are in production.
  */
 debugRouter.post(
-  "/generate_webhook",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = getLoggedInUserId(req);
-      const itemsAndTokens = await db.getItemsAndAccessTokensForUser(userId);
-      const randomItem =
-        itemsAndTokens[Math.floor(Math.random() * itemsAndTokens.length)];
-      const accessToken = randomItem.access_token;
-      const result = await plaidClient.sandboxItemFireWebhook({
-        webhook_code:
-          SandboxItemFireWebhookRequestWebhookCodeEnum.SyncUpdatesAvailable,
-        access_token: accessToken,
-      });
-      res.json(result.data);
-    } catch (error) {
-      next(error);
-    }
-  }
+	"/generate_webhook",
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const userId = getLoggedInUserId(req);
+			const itemsAndTokens = await db.getItemsAndAccessTokensForUser(userId);
+			const randomItem =
+				itemsAndTokens[Math.floor(Math.random() * itemsAndTokens.length)];
+			const accessToken = randomItem.access_token;
+			const result = await plaidClient.sandboxItemFireWebhook({
+				webhook_code:
+					SandboxItemFireWebhookRequestWebhookCodeEnum.SyncUpdatesAvailable,
+				access_token: accessToken,
+			});
+			res.json(result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
 );

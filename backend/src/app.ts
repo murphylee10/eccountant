@@ -9,9 +9,7 @@ import { db } from "@/utils/database/db";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
-
 app.use(cors());
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -21,16 +19,16 @@ app.use("/api/transactions", transactionsRouter);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log("HTTP server on http://localhost:%s", PORT);
+	console.log("HTTP server on http://localhost:%s", PORT);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });
