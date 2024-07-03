@@ -1,0 +1,19 @@
+<ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+  <button
+    class="rounded-xl border border-black px-10 py-5 hover:opacity-50"
+    (click)="
+      auth.logout({ logoutParams: { returnTo: document.location.origin } })
+    "
+  >
+    Log Out
+  </button>
+</ng-container>
+
+<ng-template #loggedOut>
+  <button
+    (click)="auth.loginWithRedirect()"
+    class="rounded-xl border border-black px-10 py-5 hover:opacity-50"
+  >
+    Log In
+  </button>
+</ng-template>
