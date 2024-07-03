@@ -31,7 +31,6 @@ tokensRouter.post(
       });
       res.json(tokenResponse.data);
     } catch (error) {
-      console.log(`Running into an error!`);
       next(error);
     }
   }
