@@ -21,15 +21,23 @@
 //   @tailwind utilities;
 // }
 
-@import "assets/themes/mytheme/theme.scss";
 @import "primeng/resources/primeng.css";
+@import "assets/themes/mytheme/theme.scss";
+// @import "primeng/resources/themes/lara-light-blue/theme.css";
 
-@layer primeng, tailwind-utilities;
-// @layer tailwind-base {
-//   @tailwind base;
-// }
+body,
+html {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+@layer tailwind-base {
+  @tailwind base;
+}
 
 @layer tailwind-utilities {
   @tailwind components;
   @tailwind utilities;
 }
+
+@layer primeng;

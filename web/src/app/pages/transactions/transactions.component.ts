@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [],
+  imports: [ButtonModule],
   templateUrl: './transactions.component.html',
-  styles: ``
+  styles: ``,
 })
-export class TransactionsComponent {
-
-}
+export class TransactionsComponent {}
