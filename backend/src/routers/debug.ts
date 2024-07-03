@@ -1,6 +1,6 @@
+import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
 import { plaidClient } from "@/utils/plaid/client";
-import { getLoggedInUserId } from "@/utils/user/auth";
 import { NextFunction, Request, Router, Response } from "express";
 import { SandboxItemFireWebhookRequestWebhookCodeEnum } from "plaid";
 
@@ -13,10 +13,13 @@ const debugRouter = Router();
  */
 debugRouter.post(
 	"/generate_webhook",
+	requireAuth,
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			const userId = getLoggedInUserId(req);
-			const itemsAndTokens = await db.getItemsAndAccessTokensForUser(userId);
+			const userId = req.auth?.payload.sub;
+			const itemsAndTokens = await db.getItemsAndAccessTokensForUser(
+				userId as string,
+			);
 			const randomItem =
 				itemsAndTokens[Math.floor(Math.random() * itemsAndTokens.length)];
 			const accessToken = randomItem.access_token;
