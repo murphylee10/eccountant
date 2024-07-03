@@ -9,7 +9,7 @@ import { take, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   exampleAuth() {
     return new Promise<{
@@ -38,6 +38,22 @@ export class ApiService {
         }>(encodeURI(`${environment.api_url}/example/authScope`))
         .pipe(take(1))
         .subscribe(res, (err) => res({ success: false, msg: err }));
+    });
+  }
+
+  async storeUserId(
+    userId: string,
+  ): Promise<{ success: boolean; msg: string }> {
+    return new Promise<{ success: boolean; msg: string }>((resolve) => {
+      this.http
+        .post<{
+          success: boolean;
+          msg: string;
+        }>(encodeURI(`${environment.api_url}/users/register`), { userId })
+        .subscribe({
+          next: (response) => resolve(response),
+          error: (err) => resolve({ success: false, msg: err.message }),
+        });
     });
   }
 }
