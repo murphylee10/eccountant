@@ -5,7 +5,12 @@
 	"projects": {
 		"web": {
 			"projectType": "application",
-			"schematics": {},
+			"schematics": {
+				"@schematics/angular:component": {
+					"inlineTemplate": false,
+					"inlineStyle": true
+				}
+			},
 			"root": "",
 			"sourceRoot": "src",
 			"prefix": "app",
@@ -83,5 +88,8 @@
 				}
 			}
 		}
+	},
+	"cli": {
+		"analytics": false
 	}
 }

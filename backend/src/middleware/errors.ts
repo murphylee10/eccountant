@@ -27,6 +27,12 @@ export const errorHandler: ErrorRequestHandler = (
 		return res.status(statusCode).send({ errors });
 	}
 
+	// 4XX type status codes should reach client.
+	if (err.statusCode.toString()[0] == "4") {
+		res.send(err);
+		return;
+	}
+
 	// Unhandled errors
 	console.error(JSON.stringify(err, null, 2));
 	return res

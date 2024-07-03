@@ -6,6 +6,8 @@ import { errorHandler } from "./middleware/errors";
 import "express-async-errors";
 import cors from "cors";
 import { db } from "@/utils/database/db";
+import { requireAuth, requireAuthScope } from "./middleware/auth";
+import { usersRouter } from "./routers/users";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +16,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/api/transactions", transactionsRouter);
+
+app.use("/api/users", usersRouter);
+
+// Example endpoint that requires authentication.
+app.get("/api/example/auth", requireAuth, (req, res) => {
+	return res.json({ success: true, msg: "User is authenticated" });
+});
+
+// Example endpoint that requires authorization.
+app.get(
+	"/api/example/authScope",
+	requireAuth,
+	requireAuthScope("read:example"),
+	(req, res) => {
+		return res.json({ success: true, msg: "User is authorized" });
+	},
+);
 
 // Error handling
 app.use(errorHandler);

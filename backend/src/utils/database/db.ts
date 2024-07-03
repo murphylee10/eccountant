@@ -8,6 +8,23 @@ class Database {
 		this.prisma = new PrismaClient();
 	}
 
+	/* User interactions */
+	async createUserIfNotExists(userId: string) {
+		const existingUser = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+
+		if (existingUser) {
+			return existingUser;
+		}
+
+		// If user does not exist, create a new user
+		const newUser = await this.prisma.user.create({
+			data: { id: userId },
+		});
+		return newUser;
+	}
+
 	/* Transaction interactions */
 
 	async getTransactionsByUser(userId: string, limit: number) {
