@@ -41,6 +41,19 @@ export class ApiService {
     });
   }
 
+  async exampleEvent() {
+    return new Promise<{
+      success: boolean;
+    }>((res) => {
+      this.http
+        .get<{
+          success: boolean;
+        }>(encodeURI(`${environment.api_url}/example/event`))
+        .pipe(take(1))
+        .subscribe(res, (err) => res({ success: false }));
+    });
+  }
+
   async storeUserId(
     userId: string,
   ): Promise<{ success: boolean; msg: string }> {

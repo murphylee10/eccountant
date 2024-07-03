@@ -26,7 +26,7 @@
       "@pages/*": ["src/app/pages/*"],
       "@guards/*": ["src/app/guards/*"],
       "@services/*": ["src/app/services/*"],
-      "@shared/*": ["../shared/lib/*"]
+      "@common/*": ["../common/lib/*"]
     }
   },
   "angularCompilerOptions": {

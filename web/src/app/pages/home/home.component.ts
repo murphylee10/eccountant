@@ -7,8 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { AuthService, User } from '@auth0/auth0-angular';
+import { EventType } from '@common/event';
 import { AuthButtonComponent } from '@components/auth/auth-button/auth-button.component';
 import { ApiService } from '@services/api.service';
+import { EventBusService } from '@services/eventbus.service';
 
 @Component({
   selector: 'app-home',
@@ -22,9 +24,14 @@ export class HomeComponent {
 
   constructor(
     public auth: AuthService,
-    private api: ApiService,
+    public api: ApiService,
+    private eventbus: EventBusService,
   ) {
     console.log(window.origin);
+    const obs = this.eventbus.observe<{ foo: string; bar: number }>(
+      EventType.EXAMPLE,
+    );
+    obs?.subscribe((res) => console.log(res));
   }
 
   async testAuth() {
