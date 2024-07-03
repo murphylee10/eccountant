@@ -8,12 +8,19 @@ import cors from "cors";
 import { db } from "@/utils/database/db";
 import { requireAuth, requireAuthScope } from "./middleware/auth";
 import { usersRouter } from "./routers/users";
+import { EventBus } from "./utils/eventbus/eventbus";
+import { WebSocket } from "ws";
 
-const app: Express = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+// Express Websockets
+// @ts-ignore
+import expressWs from "express-ws";
+import { ExampleEvent } from "@common/event";
+expressWs(app);
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -33,11 +40,26 @@ app.get(
   requireAuthScope("read:example"),
   (req, res) => {
     return res.json({ success: true, msg: "User is authorized" });
-  }
+  },
 );
+
+// Example endpoint that triggers realtime event update.
+const eventbus = EventBus.getInstance(app);
+app.get("/api/example/event", (req, res) => {
+  try {
+    eventbus.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+  } catch (e) {
+    console.log(e);
+    return res.json({ success: false });
+  }
+  return res.json({ success: true });
+});
 
 // Error handling
 app.use(errorHandler);
+
+// // Setup eventbus via websocket protocol.
+// const eventbus = EventBus.getInstance(app);
 
 app.listen(PORT, () => {
   console.log("HTTP server on http://localhost:%s", PORT);
