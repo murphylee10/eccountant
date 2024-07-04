@@ -96,7 +96,7 @@ export class TransactionsComponent implements OnInit {
           if (!acc[transaction.category]) {
             acc[transaction.category] = 0;
           }
-          acc[transaction.category] += transaction.amount;
+          acc[transaction.category] = Number.parseFloat((acc[transaction.category] + transaction.amount).toFixed(2));
         }
         return acc;
       },
