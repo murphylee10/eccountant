@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import {
   ApexChart,
   ApexNonAxisChartSeries,
@@ -20,32 +20,42 @@ export type ChartOptions = {
   templateUrl: './distribution-chart.component.html',
   styles: [],
 })
-export class DistributionChartComponent implements OnInit {
-  public chartOptions: ChartOptions;
+export class DistributionChartComponent implements OnChanges {
+  @Input() categoryData: { [key: string]: number } = {};
 
-  constructor() {
-    this.chartOptions = {
-      series: [44, 55, 13, 43, 22],
-      chart: {
-        width: 380,
-        type: 'pie',
-      },
-      labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: 'bottom',
-            },
+  public chartOptions: ChartOptions = {
+    series: [],
+    chart: {
+      width: 500,
+      type: 'donut',
+    },
+    labels: [],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 300,
+          },
+          legend: {
+            position: 'bottom',
           },
         },
-      ],
-    };
+      },
+    ],
+  };
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['categoryData']) {
+      this.updateChart();
+    }
   }
 
-  ngOnInit(): void {}
+  updateChart() {
+    const categories = Object.keys(this.categoryData);
+    const data = Object.values(this.categoryData);
+
+    this.chartOptions.series = data;
+    this.chartOptions.labels = categories;
+  }
 }

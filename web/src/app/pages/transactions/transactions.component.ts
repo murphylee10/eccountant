@@ -7,6 +7,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import type { PlaidTransaction } from 'src/app/models/transaction.model';
 import { DistributionChartComponent } from './components/distribution-chart/distribution-chart.component';
+import { MonthlySpendChartComponent } from './components/monthly-spend-chart/monthly-spend-chart.component';
+import { SpendingsChartComponent } from './components/spending-chart/spendings-chart.component';
 
 @Component({
   selector: 'app-transactions',
@@ -19,12 +21,16 @@ import { DistributionChartComponent } from './components/distribution-chart/dist
     FormsModule,
     ReactiveFormsModule,
     DistributionChartComponent,
+    MonthlySpendChartComponent,
+    SpendingsChartComponent,
   ],
   templateUrl: './transactions.component.html',
   styles: '',
 })
 export class TransactionsComponent implements OnInit {
   transactions: PlaidTransaction[] = [];
+  categoryData: { [key: string]: number } = {};
+  monthlySpendData: { [key: string]: number } = {};
   years: any[] = [];
   months: any[] = [];
   selectedYear: number | null = null;
@@ -35,8 +41,6 @@ export class TransactionsComponent implements OnInit {
   ngOnInit(): void {
     this.initYearsAndMonths();
     this.fetchTransactionsByDateRange();
-    console.log('hell9o');
-    console.log(this.getCategoryData());
   }
 
   initYearsAndMonths() {
@@ -78,19 +82,41 @@ export class TransactionsComponent implements OnInit {
         .subscribe((data: PlaidTransaction[]) => {
           console.log(data);
           this.transactions = data;
+          this.updateCategoryData();
+          this.updateMonthlySpendData();
         });
     }
   }
 
-  getCategoryData(): { [key: string]: number } {
-    const categoryData: { [key: string]: number } = {};
-    for (const transaction of this.transactions) {
-      if (!categoryData[transaction.category]) {
-        categoryData[transaction.category] = 0;
-      }
-      categoryData[transaction.category] += transaction.amount;
-    }
-    return categoryData;
+  updateCategoryData() {
+    this.categoryData = this.transactions.reduce(
+      (acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+        if (transaction.amount > 0) {
+          // Filter out negative amounts
+          if (!acc[transaction.category]) {
+            acc[transaction.category] = 0;
+          }
+          acc[transaction.category] += transaction.amount;
+        }
+        return acc;
+      },
+      {},
+    );
+  }
+
+  updateMonthlySpendData() {
+    this.monthlySpendData = this.transactions.reduce(
+      (acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+        const month = new Date(transaction.date).getMonth() + 1;
+        if (!acc[month]) {
+          acc[month] = 0;
+        }
+        acc[month] += transaction.amount;
+        return acc;
+      },
+      {},
+    );
+    console.log(this.monthlySpendData);
   }
 
   isVerified(transaction: PlaidTransaction): boolean {
