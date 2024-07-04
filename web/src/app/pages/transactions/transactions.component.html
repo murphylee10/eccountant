@@ -14,8 +14,14 @@
 </div>
 
 <div class="mb-10 flex gap-x-4">
+  <div>
+    <h2>Distribution</h2>
     <transactions-distribution-chart [categoryData]="categoryData"></transactions-distribution-chart>
+  </div>
+  <div>
+    <h2>Spendings</h2>
     <transactions-spendings-chart [categoryData]="categoryData"></transactions-spendings-chart>
+  </div>
   </div>
   
   <!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
