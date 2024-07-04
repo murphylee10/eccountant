@@ -16,4 +16,15 @@ export class PlaidTransactionsService {
       encodeURI(`${environment.api_url}${this.transactionsUrl}/`),
     );
   }
+
+  getTransactionsByDateRange(
+    startDate: string,
+    endDate: string,
+  ): Observable<PlaidTransaction[]> {
+    return this.http.get<PlaidTransaction[]>(
+      encodeURI(
+        `${environment.api_url}${this.transactionsUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
+      ),
+    );
+  }
 }
