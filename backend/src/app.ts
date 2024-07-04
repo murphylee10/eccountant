@@ -8,14 +8,24 @@ import cors from "cors";
 import { db } from "@/utils/database/db";
 import { requireAuth, requireAuthScope } from "./middleware/auth";
 import { usersRouter } from "./routers/users";
+import EventDispatcher from "./utils/events/event-dispatcher";
 import { banksRouter } from "./routers/banks";
 import { tokensRouter } from "./routers/tokens";
+import expressWs from "express-ws";
+import { ExampleEvent } from "@common/event";
 
-const app: Express = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Setup realtime events with websockets
+// @ts-ignore
+expressWs(app);
+const dispatcher = EventDispatcher.getInstance(app);
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 app.use("/api/transactions", transactionsRouter);
 
@@ -40,8 +50,22 @@ app.get(
 	},
 );
 
+// Example endpoint that triggers realtime event update.
+app.get("/api/example/event", (req, res) => {
+  try {
+    dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+  } catch (e) {
+    console.log(e);
+    return res.json({ success: false });
+  }
+  return res.json({ success: true });
+});
+
 // Error handling
 app.use(errorHandler);
+
+// // Setup eventbus via websocket protocol.
+// const eventbus = EventBus.getInstance(app);
 
 app.listen(PORT, () => {
 	console.log("HTTP server on http://localhost:%s", PORT);
