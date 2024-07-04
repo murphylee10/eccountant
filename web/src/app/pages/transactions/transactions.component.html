@@ -1,2 +1,31 @@
-<p>transactions works!</p>
-<p-button>hello</p-button>
+<p-table
+  [value]="transactions"
+  [scrollable]="true"
+  scrollHeight="500px"
+  styleClass="p-datatable-sm"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <!-- <th>User</th> -->
+      <th>Account Name</th>
+      <th>Date</th>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Verified</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-transaction>
+    <tr>
+      <!-- <td>{{ transaction.user_id }}</td> -->
+      <td>{{ transaction.account_name }}</td>
+      <td>{{ transaction.date }}</td>
+      <td>{{ transaction.name }}</td>
+      <td>{{ transaction.amount | currency: transaction.currency_code }}</td>
+      <td>{{ transaction.category }}</td>
+      <td>
+        <i *ngIf="isVerified(transaction)" class="pi pi-check"></i>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
