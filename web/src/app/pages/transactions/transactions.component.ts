@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlaidTransactionsService } from '@services/plaid-transactions.service';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
-import { PlaidTransaction } from 'src/app/models/transaction.model';
+import type { PlaidTransaction } from 'src/app/models/transaction.model';
+import { DistributionChartComponent } from './components/distribution-chart/distribution-chart.component';
+import { MonthlySpendChartComponent } from './components/monthly-spend-chart/monthly-spend-chart.component';
+import { SpendingsChartComponent } from './components/spending-chart/spendings-chart.component';
 
 @Component({
   selector: 'app-transactions',
@@ -17,12 +20,17 @@ import { PlaidTransaction } from 'src/app/models/transaction.model';
     DropdownModule,
     FormsModule,
     ReactiveFormsModule,
+    DistributionChartComponent,
+    MonthlySpendChartComponent,
+    SpendingsChartComponent,
   ],
   templateUrl: './transactions.component.html',
-  styles: ``,
+  styles: '',
 })
 export class TransactionsComponent implements OnInit {
   transactions: PlaidTransaction[] = [];
+  categoryData: { [key: string]: number } = {};
+  monthlySpendData: { [key: string]: number } = {};
   years: any[] = [];
   months: any[] = [];
   selectedYear: number | null = null;
@@ -74,8 +82,41 @@ export class TransactionsComponent implements OnInit {
         .subscribe((data: PlaidTransaction[]) => {
           console.log(data);
           this.transactions = data;
+          this.updateCategoryData();
+          this.updateMonthlySpendData();
         });
     }
+  }
+
+  updateCategoryData() {
+    this.categoryData = this.transactions.reduce(
+      (acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+        if (transaction.amount > 0) {
+          // Filter out negative amounts
+          if (!acc[transaction.category]) {
+            acc[transaction.category] = 0;
+          }
+          acc[transaction.category] += transaction.amount;
+        }
+        return acc;
+      },
+      {},
+    );
+  }
+
+  updateMonthlySpendData() {
+    this.monthlySpendData = this.transactions.reduce(
+      (acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+        const month = new Date(transaction.date).getMonth() + 1;
+        if (!acc[month]) {
+          acc[month] = 0;
+        }
+        acc[month] += transaction.amount;
+        return acc;
+      },
+      {},
+    );
+    console.log(this.monthlySpendData);
   }
 
   isVerified(transaction: PlaidTransaction): boolean {

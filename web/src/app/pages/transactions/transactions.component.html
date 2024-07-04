@@ -13,6 +13,12 @@
   ></p-dropdown>
 </div>
 
+<div class="mb-10 flex gap-x-4">
+    <transactions-distribution-chart [categoryData]="categoryData"></transactions-distribution-chart>
+    <transactions-spendings-chart [categoryData]="categoryData"></transactions-spendings-chart>
+  </div>
+  
+  <!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
 <p-table
   [value]="transactions"
   [scrollable]="true"

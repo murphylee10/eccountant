@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import environment from '@environment';
-import { Observable } from 'rxjs';
-import { PlaidTransaction } from '../models/transaction.model';
+import type { Observable } from 'rxjs';
+import type { PlaidTransaction } from '../models/transaction.model';
 
 @Injectable({
   providedIn: 'root',
