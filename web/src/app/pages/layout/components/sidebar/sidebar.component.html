@@ -17,6 +17,7 @@
     <a
       pRipple
       class="flex items-center p-2 hover:cursor-pointer hover:bg-gray-200"
+      [routerLink]="item.path"
     >
       <i [class]="item.icon"></i>
       <span class="ml-2">{{ item.label }}</span>
