@@ -3,7 +3,7 @@ export enum EventType {
 }
 
 export abstract class Event<T> {
-  abstract id: EventType;
+  id: EventType;
   payload: T;
 
   constructor(payload: T) {
@@ -24,5 +24,5 @@ export abstract class Event<T> {
 }
 
 export class ExampleEvent extends Event<{ foo: string; bar: number }> {
-  id = EventType.EXAMPLE;
+  static id = EventType.EXAMPLE;
 }

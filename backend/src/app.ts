@@ -8,8 +8,7 @@ import cors from "cors";
 import { db } from "@/utils/database/db";
 import { requireAuth, requireAuthScope } from "./middleware/auth";
 import { usersRouter } from "./routers/users";
-import { EventBus } from "./utils/eventbus/eventbus";
-import { WebSocket } from "ws";
+import { EventDispatcher } from "./utils/events/event-dispatcher";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +22,9 @@ expressWs(app);
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Setup realtime events with websockets
+const dispatcher = EventDispatcher.getInstance(app);
 
 app.use("/api/transactions", transactionsRouter);
 
@@ -44,10 +46,9 @@ app.get(
 );
 
 // Example endpoint that triggers realtime event update.
-const eventbus = EventBus.getInstance(app);
 app.get("/api/example/event", (req, res) => {
   try {
-    eventbus.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+    dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
   } catch (e) {
     console.log(e);
     return res.json({ success: false });

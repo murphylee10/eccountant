@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthService } from '@auth0/auth0-angular';
 import environment from '@environment';
-import { take, tap } from 'rxjs';
+import { take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,62 +9,60 @@ import { take, tap } from 'rxjs';
 export class ApiService {
   constructor(private http: HttpClient) {}
 
-  exampleAuth() {
-    return new Promise<{
+  // Custom implementations using httpclient.
+  // Necessary for interceptor to attach auth headers.
+  private async get<T>(endpoint: string) {
+    return new Promise<T>((res, rej) => {
+      this.http
+        .get<T>(encodeURI(`${environment.api_url}${endpoint}`))
+        .pipe(take(1))
+        .subscribe({ next: res, error: rej });
+    });
+  }
+
+  private async post<T>(endpoint: string, body: any) {
+    return new Promise<T>((res, rej) => {
+      this.http
+        .post<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
+        .pipe(take(1))
+        .subscribe({ next: res, error: rej });
+    });
+  }
+
+  public async exampleAuth() {
+    return this.get<{
       success: boolean;
       msg: string;
-    }>((res) => {
-      this.http
-        .get<{
-          success: boolean;
-          msg: string;
-        }>(encodeURI(`${environment.api_url}/example/auth`))
-        .pipe(take(1))
-        .subscribe(res, (err) => res({ success: false, msg: err }));
+    }>('/example/auth').catch((err) => {
+      return { success: false, msg: err };
     });
   }
 
-  async exampleAuthScope() {
-    return new Promise<{
+  public async exampleAuthScope() {
+    return this.get<{
       success: boolean;
       msg: string;
-    }>((res) => {
-      this.http
-        .get<{
-          success: boolean;
-          msg: string;
-        }>(encodeURI(`${environment.api_url}/example/authScope`))
-        .pipe(take(1))
-        .subscribe(res, (err) => res({ success: false, msg: err }));
+    }>('/example/authScope').catch((err) => {
+      return { success: false, msg: err };
     });
   }
 
-  async exampleEvent() {
-    return new Promise<{
+  public async exampleEvent() {
+    return this.get<{
       success: boolean;
-    }>((res) => {
-      this.http
-        .get<{
-          success: boolean;
-        }>(encodeURI(`${environment.api_url}/example/event`))
-        .pipe(take(1))
-        .subscribe(res, (err) => res({ success: false }));
+    }>('/example/event').catch(() => {
+      return { success: false };
     });
   }
 
-  async storeUserId(
+  public async storeUserId(
     userId: string,
   ): Promise<{ success: boolean; msg: string }> {
-    return new Promise<{ success: boolean; msg: string }>((resolve) => {
-      this.http
-        .post<{
-          success: boolean;
-          msg: string;
-        }>(encodeURI(`${environment.api_url}/users/register`), { userId })
-        .subscribe({
-          next: (response) => resolve(response),
-          error: (err) => resolve({ success: false, msg: err.message }),
-        });
+    return this.post<{
+      success: boolean;
+      msg: string;
+    }>('/users/register', { userId }).catch((err) => {
+      return { success: false, msg: err.msg };
     });
   }
 }
