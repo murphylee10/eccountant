@@ -1,0 +1,4 @@
+- clean up error handling (lots of "ran into an error!")
+- remove debug router?
+- organize db methods (and add function headers)
+- the transactions year dropdown is hardcoded to start from 2020 - we should fetch the oldest year of data
