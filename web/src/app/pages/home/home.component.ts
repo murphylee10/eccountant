@@ -1,14 +1,16 @@
 import { AsyncPipe, NgIf } from "@angular/common";
 import {
-	Component,
-	Signal,
-	WritableSignal,
-	computed,
-	signal,
-} from "@angular/core";
-import { AuthService, User } from "@auth0/auth0-angular";
-import { AuthButtonComponent } from "@components/auth/auth-button/auth-button.component";
-import { ApiService } from "@services/api.service";
+  Component,
+  Signal,
+  WritableSignal,
+  computed,
+  signal,
+} from '@angular/core';
+import { AuthService, User } from '@auth0/auth0-angular';
+import { EventType } from '@common/event';
+import { AuthButtonComponent } from '@components/auth/auth-button/auth-button.component';
+import { ApiService } from '@services/api.service';
+import { EventBusService } from '@services/eventbus.service';
 
 @Component({
 	selector: "app-home",
@@ -20,12 +22,17 @@ import { ApiService } from "@services/api.service";
 export class HomeComponent {
 	msg: string = "";
 
-	constructor(
-		public auth: AuthService,
-		private api: ApiService,
-	) {
-		console.log(window.origin);
-	}
+  constructor(
+    public auth: AuthService,
+    public api: ApiService,
+    private eventbus: EventBusService,
+  ) {
+    console.log(window.origin);
+    const obs = this.eventbus.observe<{ foo: string; bar: number }>(
+      EventType.EXAMPLE,
+    );
+    obs.subscribe((res) => console.log(res));
+  }
 
 	async testAuth() {
 		try {
