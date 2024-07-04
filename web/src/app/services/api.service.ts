@@ -1,13 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import environment from '@environment';
-import { take } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import environment from "@environment";
+import { take} from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+	providedIn: "root",
 })
 export class ApiService {
-  constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) {}
 
   // Custom implementations using httpclient.
   // Necessary for interceptor to attach auth headers.

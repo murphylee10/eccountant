@@ -1,0 +1,4 @@
+https://medium.com/@xiaominghu19922/proper-error-handling-in-express-server-with-typescript-8cd4ffb67188
+https://github.com/plaid/tutorial-resources
+https://medium.com/@hish.abdelshafouk/route-guards-in-angular-c9da0d815ef4
+db header comments done by gpt

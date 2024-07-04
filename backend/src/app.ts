@@ -8,41 +8,46 @@ import cors from "cors";
 import { db } from "@/utils/database/db";
 import { requireAuth, requireAuthScope } from "./middleware/auth";
 import { usersRouter } from "./routers/users";
-import { EventDispatcher } from "./utils/events/event-dispatcher";
+import EventDispatcher from "./utils/events/event-dispatcher";
+import { banksRouter } from "./routers/banks";
+import { tokensRouter } from "./routers/tokens";
+import expressWs from "express-ws";
+import { ExampleEvent } from "@common/event";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Express Websockets
+// Setup realtime events with websockets
 // @ts-ignore
-import expressWs from "express-ws";
-import { ExampleEvent } from "@common/event";
 expressWs(app);
+const dispatcher = EventDispatcher.getInstance(app);
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Setup realtime events with websockets
-const dispatcher = EventDispatcher.getInstance(app);
 
 app.use("/api/transactions", transactionsRouter);
 
 app.use("/api/users", usersRouter);
 
+app.use("/api/tokens", tokensRouter);
+
+app.use("/api/banks", banksRouter);
+
 // Example endpoint that requires authentication.
 app.get("/api/example/auth", requireAuth, (req, res) => {
-  return res.json({ success: true, msg: "User is authenticated" });
+	return res.json({ success: true, msg: "User is authenticated" });
 });
 
 // Example endpoint that requires authorization.
 app.get(
-  "/api/example/authScope",
-  requireAuth,
-  requireAuthScope("read:example"),
-  (req, res) => {
-    return res.json({ success: true, msg: "User is authorized" });
-  },
+	"/api/example/authScope",
+	requireAuth,
+	requireAuthScope("read:example"),
+	(req, res) => {
+		return res.json({ success: true, msg: "User is authorized" });
+	},
 );
 
 // Example endpoint that triggers realtime event update.
@@ -63,16 +68,16 @@ app.use(errorHandler);
 // const eventbus = EventBus.getInstance(app);
 
 app.listen(PORT, () => {
-  console.log("HTTP server on http://localhost:%s", PORT);
+	console.log("HTTP server on http://localhost:%s", PORT);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });

@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from "@angular/common";
 import {
   Component,
   Signal,
@@ -13,14 +13,14 @@ import { ApiService } from '@services/api.service';
 import { EventBusService } from '@services/eventbus.service';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [NgIf, AsyncPipe, AuthButtonComponent],
-  templateUrl: './home.component.html',
-  styles: ``,
+	selector: "app-home",
+	standalone: true,
+	imports: [NgIf, AsyncPipe, AuthButtonComponent],
+	templateUrl: "./home.component.html",
+	styles: ``,
 })
 export class HomeComponent {
-  msg: string = '';
+	msg: string = "";
 
   constructor(
     public auth: AuthService,
@@ -31,19 +31,19 @@ export class HomeComponent {
     const obs = this.eventbus.observe<{ foo: string; bar: number }>(
       EventType.EXAMPLE,
     );
-    obs?.subscribe((res) => console.log(res));
+    obs.subscribe((res) => console.log(res));
   }
 
-  async testAuth() {
-    try {
-      const [authenticated, authorized] = await Promise.all([
-        this.api.exampleAuth(),
-        this.api.exampleAuthScope(),
-      ]);
+	async testAuth() {
+		try {
+			const [authenticated, authorized] = await Promise.all([
+				this.api.exampleAuth(),
+				this.api.exampleAuthScope(),
+			]);
 
-      this.msg = `User is ${authenticated.success ? '' : 'not'} authenticated and ${authorized.success ? '' : 'not'} authorized`;
-    } catch (e) {
-      console.error(e);
-    }
-  }
+			this.msg = `User is ${authenticated.success ? "" : "not"} authenticated and ${authorized.success ? "" : "not"} authorized`;
+		} catch (e) {
+			console.error(e);
+		}
+	}
 }

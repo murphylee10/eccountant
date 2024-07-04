@@ -9,6 +9,7 @@ class Database {
   }
 
   /* User interactions */
+
   async createUserIfNotExists(userId: string) {
     const existingUser = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -26,6 +27,40 @@ class Database {
   }
 
   /* Transaction interactions */
+
+  async getTransactionsByDateRange(
+    userId: string,
+    startDate: string,
+    endDate: string
+  ) {
+    const results = await this.prisma.transaction.findMany({
+      where: {
+        user_id: userId,
+        is_removed: false,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return results;
+  }
 
   async getTransactionsByUser(userId: string, limit: number) {
     const results = await this.prisma.transaction.findMany({
@@ -93,9 +128,35 @@ class Database {
 
   /* Item interactions */
 
+  async getBankNamesForUser(userId: string) {
+    const result = await this.prisma.item.findMany({
+      where: {
+        user_id: userId,
+        is_active: true,
+      },
+      select: {
+        id: true,
+        bank_name: true,
+      },
+    });
+    return result;
+  }
+
   async getItemInfo(itemId: string) {
     const result = await this.prisma.item.findUnique({
       where: { id: itemId },
+      select: {
+        user_id: true,
+        access_token: true,
+        transaction_cursor: true,
+      },
+    });
+    return result;
+  }
+
+  async getItemInfoForUser(itemId: string, userId: string) {
+    const result = await this.prisma.item.findUnique({
+      where: { id: itemId, user_id: userId },
       select: {
         user_id: true,
         access_token: true,
@@ -138,6 +199,19 @@ class Database {
       },
     });
     return items;
+  }
+
+  async deactivateItem(itemId: string) {
+    const updateResult = await this.prisma.item.update({
+      where: { id: itemId },
+      data: {
+        access_token: "REVOKED",
+        is_active: false,
+      },
+    });
+    return updateResult;
+
+    // TODO: Potentially Delete transactions for accounts belonging to this item, Delete accounts that belong to this item, Delete the item itself from the database
   }
 
   async saveCursorForItem(cursor: string | undefined, itemId: string) {

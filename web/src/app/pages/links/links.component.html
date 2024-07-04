@@ -1,0 +1,10 @@
+<div>
+  <button (click)="startLink()">Connect a Bank</button>
+  <p>{{ banksMessage }}</p>
+  <ul>
+    <li *ngFor="let bank of connectedBanks">
+      {{ bank.bank_name }}
+      <button (click)="deactivateBank(bank.id)">Deactivate</button>
+    </li>
+  </ul>
+</div>
