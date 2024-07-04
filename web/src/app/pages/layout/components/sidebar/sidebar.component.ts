@@ -20,11 +20,12 @@ export class SidebarComponent implements OnInit {
 			{
 				label: "Main",
 				items: [
-					{ label: "Dashboard", icon: "pi pi-home" },
-					{ label: "Balance", icon: "pi pi-dollar" },
-					{ label: "Cards", icon: "pi pi-credit-card" },
-					{ label: "Transactions", icon: "pi pi-list" },
-					{ label: "Recipients", icon: "pi pi-users" },
+					{ label: "Account", icon: "pi pi-user", path: "/accounts" },
+					{ label: "Dashboard", icon: "pi pi-home", path: "/demo" },
+					{ label: "Balance", icon: "pi pi-dollar", path: "/demo" },
+					{ label: "Cards", icon: "pi pi-credit-card", path: "/demo" },
+					{ label: "Transactions", icon: "pi pi-list", path: "/transactions" },
+					{ label: "Recipients", icon: "pi pi-users", path: "/demo" },
 				],
 			},
 			{
