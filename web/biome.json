@@ -1,4 +1,7 @@
 {
+	"files": {
+		"maxSize": 2000000
+	},
 	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
 	"organizeImports": {
 		"enabled": true
