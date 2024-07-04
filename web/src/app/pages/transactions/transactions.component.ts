@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlaidTransactionsService } from '@services/plaid-transactions.service';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
-import { PlaidTransaction } from 'src/app/models/transaction.model';
+import type { PlaidTransaction } from 'src/app/models/transaction.model';
+import { DistributionChartComponent } from './components/distribution-chart/distribution-chart.component';
 
 @Component({
   selector: 'app-transactions',
@@ -17,9 +18,10 @@ import { PlaidTransaction } from 'src/app/models/transaction.model';
     DropdownModule,
     FormsModule,
     ReactiveFormsModule,
+    DistributionChartComponent,
   ],
   templateUrl: './transactions.component.html',
-  styles: ``,
+  styles: '',
 })
 export class TransactionsComponent implements OnInit {
   transactions: PlaidTransaction[] = [];
@@ -33,6 +35,8 @@ export class TransactionsComponent implements OnInit {
   ngOnInit(): void {
     this.initYearsAndMonths();
     this.fetchTransactionsByDateRange();
+    console.log('hell9o');
+    console.log(this.getCategoryData());
   }
 
   initYearsAndMonths() {
@@ -76,6 +80,17 @@ export class TransactionsComponent implements OnInit {
           this.transactions = data;
         });
     }
+  }
+
+  getCategoryData(): { [key: string]: number } {
+    const categoryData: { [key: string]: number } = {};
+    for (const transaction of this.transactions) {
+      if (!categoryData[transaction.category]) {
+        categoryData[transaction.category] = 0;
+      }
+      categoryData[transaction.category] += transaction.amount;
+    }
+    return categoryData;
   }
 
   isVerified(transaction: PlaidTransaction): boolean {
