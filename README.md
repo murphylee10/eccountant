@@ -8,10 +8,11 @@ Team Name: Angular
 
 ## Project Team
 
-| Full Name    | UTORID   | Student Number | Email                         | Best way to Connect | Slack User Name |
-| ------------ | -------- | -------------- | ----------------------------- | ------------------- | --------------- |
-| Chad Rossouw | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca | 437 262 3168        | Chad Rossouw    |
-| Murphy Lee   | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca   | 416 831 0673        | Murphy Lee      |
+| Full Name     | UTORID   | Student Number | Email                           | Best way to Connect | Slack User Name |
+| ------------- | -------- | -------------- | ------------------------------- | ------------------- | --------------- |
+| Chad Rossouw  | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca   | 437 262 3168        | Chad Rossouw    |
+| Murphy Lee    | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca     | 416 831 0673        | Murphy Lee      |
+| Vincent Zhang |          |                | vincentz.zhang@mail.utoronto.ca |                     | Vincent Zhang   |
 
 ## Project Outline
 
