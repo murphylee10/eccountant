@@ -1,4 +1,4 @@
-<div *ngIf="isDataAvailable()">
+<ng-container *ngIf="isDataAvailable(); else loading">
   <apx-chart
     [series]="chartOptions().series"
     [chart]="chartOptions().chart"
@@ -8,7 +8,7 @@
     [dataLabels]="chartOptions().dataLabels"
     [colors]="chartOptions().colors"
   ></apx-chart>
-</div>
-<div *ngIf="!isDataAvailable()">
+</ng-container>
+<ng-template #loading>
   <p>Loading chart data...</p>
-</div>
+</ng-template>
