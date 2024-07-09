@@ -1,4 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { SignalService } from '@services/signal.service';
 import {
   ApexChart,
   ApexAxisChartSeries,
@@ -22,68 +24,53 @@ export type ChartOptions = {
 @Component({
   selector: 'transactions-spendings-chart',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, CommonModule],
   templateUrl: './spendings-chart.component.html',
   styles: '',
 })
-export class SpendingsChartComponent implements OnChanges {
-  @Input() categoryData: { [key: string]: number } = {};
+export class SpendingsChartComponent {
+  private signalService = inject(SignalService);
 
-  public chartOptions: ChartOptions = {
-    series: [],
-    chart: {
-      height: 350,
-      width: 500,
-      type: 'bar',
-    },
-    xaxis: {
-      categories: [],
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        dataLabels: {
-          position: 'top',
-        },
-      },
-    },
-    fill: {
-      opacity: 1,
-    },
-    dataLabels: {
-      enabled: true,
-      formatter: (val: any) => '$' + val.toFixed(2),
-    },
-    colors: [
-      '#008FFB',
-      '#00E396',
-      '#FEB019',
-      '#FF4560',
-      '#775DD0',
-      '#546E7A',
-      '#26a69a',
-      '#D10CE8',
-    ],
-  };
+  categoryData = this.signalService.categoryData;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['categoryData']) {
-      this.updateChart();
-    }
-  }
+  isDataAvailable = computed(() => Object.keys(this.categoryData()).length > 0);
 
-  updateChart() {
-    const categories = Object.keys(this.categoryData);
-    const data = Object.values(this.categoryData);
+  chartOptions = computed<ChartOptions>(() => {
+    const data = this.categoryData();
+    const categories = Object.keys(data);
+    const series = Object.values(data);
 
-    this.chartOptions.series = [
-      {
+    return {
+      series: [{
         name: 'Spending',
-        data: data,
+        data: series
+      }],
+      chart: {
+        height: 350,
+        width: 500,
+        type: 'bar'
       },
-    ];
-    this.chartOptions.xaxis = {
-      categories: categories,
+      xaxis: {
+        categories: categories
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          dataLabels: {
+            position: 'top'
+          }
+        }
+      },
+      fill: {
+        opacity: 1
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: any) {
+          return '$' + val.toFixed(2);
+        }
+      },
+      colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a', '#D10CE8']
     };
-  }
+  });
 }
