@@ -8,9 +8,14 @@ import { MenuItem } from "primeng/api";
 @Component({
 	selector: "layout-sidebar",
 	standalone: true,
-	imports: [CommonModule, MenuModule, AvatarModule, RippleModule],
+	imports: [
+		CommonModule,
+		MenuModule,
+		AvatarModule,
+		RippleModule,
+	],
 	templateUrl: "./sidebar.component.html",
-	styles: '',
+	styles: "",
 })
 export class SidebarComponent implements OnInit {
 	items: MenuItem[] = [];
