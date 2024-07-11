@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
 					{ label: "Dashboard", icon: "pi pi-home", path: "/demo" },
 					{ label: "Balance", icon: "pi pi-dollar", path: "/demo" },
 					{ label: "Cards", icon: "pi pi-credit-card", path: "/demo" },
-					{ label: "Transactions", icon: "pi pi-list", path: "/transactions" },
+					{ label: "Transactions", icon: "pi pi-list", path: "/user/transactions" },
 					{ label: "Recipients", icon: "pi pi-users", path: "/demo" },
 				],
 			},

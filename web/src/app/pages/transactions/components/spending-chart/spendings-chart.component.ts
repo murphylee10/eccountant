@@ -67,10 +67,10 @@ export class SpendingsChartComponent {
       dataLabels: {
         enabled: true,
         formatter: function (val: any) {
-          return '$' + val.toFixed(2);
+          return `$${val.toFixed(2)}`;
         }
       },
-      colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0', '#546E7A', '#26a69a', '#D10CE8']
+      colors: ['#775DD0','#008FFB', '#00E396', '#FEB019', '#FF4560']
     };
   });
 }

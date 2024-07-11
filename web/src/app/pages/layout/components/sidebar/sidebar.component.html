@@ -1,31 +1,33 @@
-<p-menu [model]="items" styleClass="h-screen fixed w-[15rem]">
+<p-menu [model]="items" styleClass="h-full w-[17rem] border-b-0">
   <ng-template pTemplate="start">
     <div class="flex items-center gap-3 p-3">
       <!-- <div class="relative flex h-8 w-8 items-center justify-center">
         <i class="pi pi-refresh absolute text-3xl"></i>
         <i class="pi pi-dollar text-xl"></i>
       </div> -->
-      <span class="text-xl font-medium font-semibold">
-        <img src="assets/images/EccountantLogoLight.svg" alt="Eccountant Logo" class="w-full">
+      <span class="text-xl font-semibold">
+        <!-- <img src="assets/images/EccountantLogoLight.svg" alt="Eccountant Logo" class="w-full"> -->
          <!-- <app-logo name="test"></app-logo> -->
       </span>
     </div>
   </ng-template>
 
   <ng-template pTemplate="submenuheader" let-item>
-    <span class="text-primary font-bold">{{ item.label }}</span>
+    <div class="w-full pl-2">
+      <span class="text-primary font-bold uppercase w-full tracking-widest text-gray-400">{{ item.label }}</span>
+    </div>
   </ng-template>
 
   <ng-template pTemplate="item" let-item>
     <a
       pRipple
-      class="flex items-center p-2 hover:cursor-pointer hover:bg-gray-200"
+      class="flex items-center py-4 pl-6 hover:cursor-pointer hover:bg-gray-200"
       [routerLink]="item.path"
     >
-      <i [class]="item.icon"></i>
-      <span class="ml-2">{{ item.label }}</span>
+      <i [class]="item.icon" class="mr-2 text-[1.1rem]"></i>
+      <span class="ml-2 font-medium">{{ item.label }}</span>
     </a>
   </ng-template>
 </p-menu>
-<div class="w-[15rem]"></div>
+<div class="w-[17rem]"></div>
 
