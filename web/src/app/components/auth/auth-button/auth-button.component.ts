@@ -8,7 +8,7 @@ import { ApiService } from "@services/api.service";
 	standalone: true,
 	imports: [NgIf, AsyncPipe],
 	templateUrl: "./auth-button.component.html",
-	styles: ``,
+	styles: "",
 })
 export class AuthButtonComponent {
 	// Inject the authentication service into your component through the constructor
