@@ -1,42 +1,47 @@
-import { Component } from '@angular/core';
-import type { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
-import { MenubarModule } from 'primeng/menubar';
+import { Component } from "@angular/core";
+import { AuthService } from "@auth0/auth0-angular";
+import type { MenuItem } from "primeng/api";
+import { MenuModule } from "primeng/menu";
+import { MenubarModule } from "primeng/menubar";
 
 @Component({
-  selector: 'layout-topbar',
-  standalone: true,
-  imports: [MenuModule, MenubarModule],
-  templateUrl: './topbar.component.html',
-  styles: '',
+	selector: "layout-topbar",
+	standalone: true,
+	imports: [MenuModule, MenubarModule],
+	templateUrl: "./topbar.component.html",
+	styles: "",
 })
 export class TopbarComponent {
-  items: MenuItem[] | undefined;
+	items: MenuItem[] | undefined;
 
-  ngOnInit() {
-    this.items = [
-      {
-        label: 'Preferences',
-        icon: 'pi pi-cog',
-        command: () => {
-          this.navigateToPreferences();
-        },
-      },
-      {
-        label: 'Logout',
-        icon: 'pi pi-sign-out',
-        command: () => {
-          this.logout();
-        },
-      },
-    ];
-  }
+	constructor(public auth: AuthService) {}
 
-  navigateToPreferences() {
-    // Navigation logic
-  }
+	ngOnInit() {
+		this.items = [
+			{
+				label: "Preferences",
+				icon: "pi pi-cog",
+				command: () => {
+					this.navigateToPreferences();
+				},
+			},
+			{
+				label: "Logout",
+				icon: "pi pi-sign-out",
+				command: () => {
+					this.auth.logout({
+						logoutParams: { returnTo: window.location.origin },
+					});
+				},
+			},
+		];
+	}
 
-  logout() {
-    // Logout logic
-  }
+	navigateToPreferences() {
+		// Navigation logic
+	}
+
+	logout() {
+		// Logout logic
+	}
 }

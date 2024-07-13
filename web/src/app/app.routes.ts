@@ -25,5 +25,5 @@ export const routes: Routes = [
 	},
 	{ path: "sign-in", component: AuthFormComponent, data: { isSignIn: true } },
 	{ path: "sign-up", component: AuthFormComponent, data: { isSignIn: false } },
-	{ path: "**", redirectTo: "transactions" },
+	{ path: "**", redirectTo: "user/transactions" },
 ];
