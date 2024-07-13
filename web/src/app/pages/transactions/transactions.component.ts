@@ -14,6 +14,7 @@ import { ApiService } from "@services/api.service";
 import { PlaidTokenService } from "@services/plaid-token.service";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { SignalService } from "@services/signal.service";
+import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
 
 @Component({
 	selector: "app-transactions",
@@ -28,6 +29,7 @@ import { SignalService } from "@services/signal.service";
 		DistributionChartComponent,
 		MonthlySpendChartComponent,
 		SpendingsChartComponent,
+		CategoryDisplayPipe,
 	],
 	templateUrl: "./transactions.component.html",
 	styles: "",

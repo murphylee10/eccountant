@@ -1,5 +1,6 @@
 import { RemovedTransaction, Transaction as PlaidTransaction } from "plaid";
 import { Transaction } from "@prisma/client";
+import { CATEGORY_MAP } from "./categoryMap";
 
 export interface SyncedTransactionData {
 	added: PlaidTransaction[];
@@ -30,9 +31,14 @@ export class SimpleTransaction {
 				id: txnObj.transaction_id,
 				user_id: userId,
 				account_id: txnObj.account_id,
-				category: txnObj.personal_finance_category
-					? txnObj.personal_finance_category.primary
-					: null,
+				category:
+					CATEGORY_MAP[
+						txnObj.personal_finance_category
+							? txnObj.personal_finance_category.primary
+							: ""
+					] ||
+					txnObj.personal_finance_category?.primary ||
+					"Unknown",
 				date: txnObj.date,
 				authorized_date: txnObj.authorized_date,
 				name: txnObj.merchant_name ?? txnObj.name,

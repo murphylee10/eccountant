@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+// biome-ignore lint/style/useImportType: angular needs the whole module imported
 import { AuthService } from "@auth0/auth0-angular";
 import type { MenuItem } from "primeng/api";
 import { MenuModule } from "primeng/menu";
