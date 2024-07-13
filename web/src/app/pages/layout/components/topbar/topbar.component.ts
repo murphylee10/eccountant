@@ -30,7 +30,7 @@ export class TopbarComponent {
 				icon: "pi pi-sign-out",
 				command: () => {
 					this.auth.logout({
-						logoutParams: { returnTo: window.location.origin },
+						logoutParams: { returnTo: `${window.location.origin}/sign-in` },
 					});
 				},
 			},
