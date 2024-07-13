@@ -90,6 +90,6 @@ function handleItemWebhook(code: string, requestBody) {
 
 webhookApp.use(errorHandler);
 
-webhookApp.listen(WEBHOOK_PORT, () => {
+webhookApp.listen(8001, () => {
 	console.log("HTTP server on http://localhost:%s", WEBHOOK_PORT);
 });
