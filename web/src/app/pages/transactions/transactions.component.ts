@@ -3,7 +3,8 @@ import { Component, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PlaidTransactionsService } from "@services/plaid-transactions.service";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
+import { TimelineModule } from 'primeng/timeline';
+
 import { TableModule } from "primeng/table";
 import type { PlaidTransaction } from "src/app/models/transaction.model";
 import { DistributionChartComponent } from "./components/distribution-chart/distribution-chart.component";
@@ -23,7 +24,7 @@ import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
 		ButtonModule,
 		TableModule,
 		CommonModule,
-		DropdownModule,
+		TimelineModule,
 		FormsModule,
 		ReactiveFormsModule,
 		DistributionChartComponent,
@@ -49,37 +50,39 @@ export class TransactionsComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.initYearsAndMonths();
+		this.initTransactionRange();
 		this.fetchTransactionsByDateRange();
 	}
 
-	initYearsAndMonths() {
-		const currentYear = new Date().getFullYear();
-		const currentMonth = new Date().getMonth() + 1;
+	async initTransactionRange() {
+		const transactions = await this.apiService.getTransactionsByDateRange(
+			'1924-01-01',
+			new Date().toISOString().split('T')[0],
+		);
+		this.months = [];
 
-		// Initialize years from 2020 to the current year
-		for (let year = 2020; year <= currentYear; year++) {
-			this.years.push({ label: year.toString(), value: year });
+		const first = transactions[transactions.length-1].date;
+		const last = transactions[0].date;
+		const [firstYear, firstMonth] = first.split("-").map(Number);
+		const [lastYear, lastMonth] = last.split("-").map(Number);
+
+		let yearCounter = firstYear;
+		let monthCounter = firstMonth;
+		while (yearCounter !== lastYear || monthCounter !== lastMonth) {
+			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
+			monthCounter++;
+			if (monthCounter > 12) {
+				monthCounter = 1;
+				yearCounter++;
+			}
 		}
+	}
 
-		// Initialize months
-		this.months = [
-			{ label: "January", value: 1 },
-			{ label: "February", value: 2 },
-			{ label: "March", value: 3 },
-			{ label: "April", value: 4 },
-			{ label: "May", value: 5 },
-			{ label: "June", value: 6 },
-			{ label: "July", value: 7 },
-			{ label: "August", value: 8 },
-			{ label: "September", value: 9 },
-			{ label: "October", value: 10 },
-			{ label: "November", value: 11 },
-			{ label: "December", value: 12 },
-		];
-
-		this.selectedYear = currentYear;
-		this.selectedMonth = currentMonth;
+	monthSelection(event: any, label:any) {
+		event.preventDefault();
+		this.selectedYear = parseInt(label.split("-")[0]);
+		this.selectedMonth = parseInt(label.split("-")[1]);
+		this.fetchTransactionsByDateRange();
 	}
 
 	async fetchTransactionsByDateRange() {
