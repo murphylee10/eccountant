@@ -13,45 +13,45 @@ webhookApp.use(bodyParser.urlencoded({ extended: false }));
 webhookApp.use(bodyParser.json());
 
 webhookApp.post(
-	"/server/receive_webhook",
-	async (req: Request, res: Response, next: NextFunction) => {
-		try {
-			console.log("**INCOMING WEBHOOK**");
-			console.dir(req.body, { colors: true, depth: null });
-			const product = req.body.webhook_type as string;
-			const code = req.body.webhook_code as string;
+  "/server/receive_webhook",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log("**INCOMING WEBHOOK**");
+      console.dir(req.body, { colors: true, depth: null });
+      const product = req.body.webhook_type as string;
+      const code = req.body.webhook_code as string;
 
-			// TODO (maybe): Verify webhook
-			switch (product) {
-				case "TRANSACTIONS":
-					handleTxnWebhook(code, req.body.item_id);
-					break;
-				// case "ITEM":
-				//   handleItemWebhook(code, req.body);
-				//   break;
-				default:
-					console.log(`Can't handle webhook product ${product}`);
-					break;
-			}
-			res.json({ status: "received" });
-		} catch (error) {
-			next(error);
-		}
-	},
+      // TODO (maybe): Verify webhook
+      switch (product) {
+        case "TRANSACTIONS":
+          handleTxnWebhook(code, req.body.item_id);
+          break;
+        // case "ITEM":
+        //   handleItemWebhook(code, req.body);
+        //   break;
+        default:
+          console.log(`Can't handle webhook product ${product}`);
+          break;
+      }
+      res.json({ status: "received" });
+    } catch (error) {
+      next(error);
+    }
+  },
 );
 
 function handleTxnWebhook(code: string, itemId: string) {
-	switch (code) {
-		case "SYNC_UPDATES_AVAILABLE":
-			syncTransactions(itemId);
-			console.log("got webhook for sync updates");
-			break;
-		// If we're using sync, we don't really need to concern ourselves with the
-		// other transactions-related webhooks
-		default:
-			console.log(`Can't handle webhook code ${code}`);
-			break;
-	}
+  switch (code) {
+    case "SYNC_UPDATES_AVAILABLE":
+      syncTransactions(itemId);
+      console.log("got webhook for sync updates");
+      break;
+    // If we're using sync, we don't really need to concern ourselves with the
+    // other transactions-related webhooks
+    default:
+      console.log(`Can't handle webhook code ${code}`);
+      break;
+  }
 }
 
 /* Look into later
@@ -93,5 +93,5 @@ function handleItemWebhook(code: string, requestBody) {
 webhookApp.use(errorHandler);
 
 webhookApp.listen(WEBHOOK_PORT, () => {
-	console.log("HTTP server on http://localhost:%s", WEBHOOK_PORT);
+  console.log("HTTP server on http://localhost:%s", WEBHOOK_PORT);
 });

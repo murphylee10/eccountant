@@ -1,51 +1,111 @@
-<div class="w-full h-screen relative">
-    <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-[7rem]">
-      <h2 class="text-center text-2xl font-bold mb-4">
-        {{ isSignIn ? 'Sign In' : 'Sign Up' }}
-      </h2>
-      <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <div *ngIf="!isSignIn">
-          <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
-          <input id="fullName" type="text" pInputText formControlName="fullName"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"/>
-          <div *ngIf="authForm.get('fullName')?.invalid && authForm.get('fullName')?.touched" class="text-red-500 text-sm">Full Name is required</div>
+<div class="relative h-screen w-full">
+  <div class="mx-auto mt-[7rem] max-w-md rounded-lg bg-white p-6 shadow-md">
+    <h2 class="mb-4 text-center text-2xl font-bold">
+      {{ isSignIn ? "Sign In" : "Sign Up" }}
+    </h2>
+    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div *ngIf="!isSignIn">
+        <label for="fullName" class="block text-sm font-medium text-gray-700"
+          >Full Name</label
+        >
+        <input
+          id="fullName"
+          type="text"
+          pInputText
+          formControlName="fullName"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+        <div
+          *ngIf="
+            authForm.get('fullName')?.invalid &&
+            authForm.get('fullName')?.touched
+          "
+          class="text-sm text-red-500"
+        >
+          Full Name is required
         </div>
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-          <input id="username" type="text" pInputText formControlName="username"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"/>
-          <div *ngIf="authForm.get('username')?.invalid && authForm.get('username')?.touched" class="text-red-500 text-sm">Username is required</div>
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input id="password" type="password" pPassword formControlName="password"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"/>
-          <div *ngIf="authForm.get('password')?.invalid && authForm.get('password')?.touched" class="text-red-500 text-sm">Password is required</div>
-        </div>
-        <button pButton type="submit" label="{{ isSignIn ? 'Sign In' : 'Sign Up' }}"
-                [disabled]="authForm.invalid" class="p-2 w-full text-white rounded hover:bg-blue-700"></button>
-      </form>
-      <div class="mt-4 flex items-center justify-between">
-        <hr class="w-full border-t border-gray-300">
-        <span class="px-2 text-gray-500 flex items-center">or</span>
-        <hr class="w-full border-t border-gray-300">
       </div>
-      <div class="mt-4">
-        <!-- <button pButton class="p-button p-2 w-full bg-gray-200 text-black hover:bg-gray-300 border-gray-200 ">
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700"
+          >Username</label
+        >
+        <input
+          id="username"
+          type="text"
+          pInputText
+          formControlName="username"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+        <div
+          *ngIf="
+            authForm.get('username')?.invalid &&
+            authForm.get('username')?.touched
+          "
+          class="text-sm text-red-500"
+        >
+          Username is required
+        </div>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700"
+          >Password</label
+        >
+        <input
+          id="password"
+          type="password"
+          pPassword
+          formControlName="password"
+          class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+        <div
+          *ngIf="
+            authForm.get('password')?.invalid &&
+            authForm.get('password')?.touched
+          "
+          class="text-sm text-red-500"
+        >
+          Password is required
+        </div>
+      </div>
+      <button
+        pButton
+        type="submit"
+        label="{{ isSignIn ? 'Sign In' : 'Sign Up' }}"
+        [disabled]="authForm.invalid"
+        class="w-full rounded p-2 text-white hover:bg-blue-700"
+      ></button>
+    </form>
+    <div class="mt-4 flex items-center justify-between">
+      <hr class="w-full border-t border-gray-300" />
+      <span class="flex items-center px-2 text-gray-500">or</span>
+      <hr class="w-full border-t border-gray-300" />
+    </div>
+    <div class="mt-4">
+      <!-- <button pButton class="p-button p-2 w-full bg-gray-200 text-black hover:bg-gray-300 border-gray-200 ">
           <i class="pi pi-user" class="mr-2 text-[1.1rem]"></i>
           <span>Sign In With Provider</span>
         </button> -->
-        <button pButton (click)="auth.loginWithRedirect({appState: { target: '/user/transactions' }})" class="p-2 w-full flex items-center justify-center bg-white text-black bg-gray-300 border border-gray-300 hover:bg-gray-400">
-            <i class="pi pi-user mr-2"></i>
-            <span>Sign in with Provider</span>
-        </button>      
-      </div>
-      <div class="mt-4 text-center" *ngIf="isSignIn">
-        <a routerLink="/sign-up" class="hover:underline">No account? Create one</a>
-      </div>
-    
-      <div class="mt-4 text-center" *ngIf="!isSignIn">
-        <a routerLink="/sign-in" class="hover:underline hover:cursor-pointer">Already a user? Sign in</a>
-      </div>
+      <button
+        pButton
+        (click)="
+          auth.loginWithRedirect({ appState: { target: '/user/transactions' } })
+        "
+        class="flex w-full items-center justify-center border border-gray-300 bg-gray-300 bg-white p-2 text-black hover:bg-gray-400"
+      >
+        <i class="pi pi-user mr-2"></i>
+        <span>Sign in with Provider</span>
+      </button>
     </div>
+    <div class="mt-4 text-center" *ngIf="isSignIn">
+      <a routerLink="/sign-up" class="hover:underline"
+        >No account? Create one</a
+      >
+    </div>
+
+    <div class="mt-4 text-center" *ngIf="!isSignIn">
+      <a routerLink="/sign-in" class="hover:cursor-pointer hover:underline"
+        >Already a user? Sign in</a
+      >
+    </div>
+  </div>
 </div>

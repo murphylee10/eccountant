@@ -1,16 +1,16 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
-import { PlaidTransactionsService } from "./plaid-transactions.service";
+import { PlaidTransactionsService } from './plaid-transactions.service';
 
-describe("PlaidTransactionsService", () => {
-	let service: PlaidTransactionsService;
+describe('PlaidTransactionsService', () => {
+  let service: PlaidTransactionsService;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(PlaidTransactionsService);
-	});
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(PlaidTransactionsService);
+  });
 
-	it("should be created", () => {
-		expect(service).toBeTruthy();
-	});
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });

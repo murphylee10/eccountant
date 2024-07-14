@@ -5,18 +5,18 @@ $primaryDarkerColor: #617c8a !default;
 $primaryTextColor: #ffffff !default;
 
 $colors: (
-    "blue": #4db6ed,
-    "green": #64ba8d,
-    "yellow": #fad350,
-    "cyan": #66e2ea,
-    "pink": #ec75bc,
-    "indigo": #558de1,
-    "teal": #4cac9b,
-    "orange": #f0ab43,
-    "bluegray": #7f94a2,
-    "purple": #b071c6,
-    "red": #ff5735,
-    "primary": $primaryColor,
+  "blue": #4db6ed,
+  "green": #64ba8d,
+  "yellow": #fad350,
+  "cyan": #66e2ea,
+  "pink": #ec75bc,
+  "indigo": #558de1,
+  "teal": #4cac9b,
+  "orange": #f0ab43,
+  "bluegray": #7f94a2,
+  "purple": #b071c6,
+  "red": #ff5735,
+  "primary": $primaryColor,
 ) !default;
 
 //highlight
@@ -27,20 +27,26 @@ $highlightFocusBg: darken($highlightBg, 0.24) !default;
 
 //global
 $fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+  Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $fontSize: 1rem !default;
 $fontWeight: normal !default;
 $textColor: #666666 !default;
 $textSecondaryColor: #a6a6a6 !default;
 $borderRadius: 2px !default;
 $transitionDuration: 0.2s !default;
-$formElementTransition: background-color $transitionDuration,
-    color $transitionDuration, border-color $transitionDuration,
-    box-shadow $transitionDuration !default;
-$actionIconTransition: background-color $transitionDuration,
-    color $transitionDuration, box-shadow $transitionDuration !default;
-$listItemTransition: background-color $transitionDuration,
-    border-color $transitionDuration, box-shadow $transitionDuration !default;
+$formElementTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  border-color $transitionDuration,
+  box-shadow $transitionDuration !default;
+$actionIconTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  box-shadow $transitionDuration !default;
+$listItemTransition:
+  background-color $transitionDuration,
+  border-color $transitionDuration,
+  box-shadow $transitionDuration !default;
 $primeIconFontSize: 1rem !default;
 $divider: 1px solid #dadada !default;
 $inlineSpacing: 0.5rem !default; //spacing between inline elements
@@ -57,7 +63,7 @@ $scaleLG: 1.25 !default;
 $focusOutlineColor: lighten($primaryColor, 35%) !default;
 $focusOutline: 0 none !default;
 $focusOutlineOffset: 0 !default;
-$inputFocusOutlineOffset:$focusOutlineOffset !default;
+$inputFocusOutlineOffset: $focusOutlineOffset !default;
 $focusShadow: 0 0 0 0.2rem $focusOutlineColor !default;
 
 //action icons
@@ -138,8 +144,10 @@ $buttonHoverBorderColor: $primaryDarkColor !default;
 $buttonActiveBg: $primaryDarkerColor !default;
 $buttonTextActiveColor: $primaryTextColor !default;
 $buttonActiveBorderColor: $primaryDarkerColor !default;
-$raisedButtonShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !default;
+$raisedButtonShadow:
+  0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+  0px 1px 5px 0px rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
 $textButtonHoverBgOpacity: 0.04 !default;
@@ -442,7 +450,9 @@ $cardSubTitleFontWeight: 700 !default;
 $cardSubTitleColor: $textSecondaryColor !default;
 $cardContentPadding: 1rem 0 !default;
 $cardFooterPadding: 1rem 0 0 0 !default;
-$cardShadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24) !default;
+$cardShadow:
+  0 1px 3px rgba(0, 0, 0, 0.12),
+  0 1px 2px rgba(0, 0, 0, 0.24) !default;
 
 //editor
 $editorToolbarBg: $panelHeaderBg !default;
@@ -835,55 +845,54 @@ $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
 
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol";
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol";
-    --surface-a: #ffffff;
-    --surface-b: #f4f4f4;
-    --surface-c: #eaeaea;
-    --surface-d: #dadada;
-    --surface-e: #ffffff;
-    --surface-f: #ffffff;
-    --text-color: #495057;
-    --text-color-secondary: #6c757d;
-    --primary-color: #{$primaryColor};
-    --primary-color-text: #{$primaryTextColor};
-    --surface-0: #ffffff;
-    --surface-50: #eef1f2;
-    --surface-100: #dde2e4;
-    --surface-200: #bbc5ca;
-    --surface-300: #98a8af;
-    --surface-400: #768b95;
-    --surface-500: #546e7a;
-    --surface-600: #435862;
-    --surface-700: #324249;
-    --surface-800: #222c31;
-    --surface-900: #111618;
-    --gray-50: #eef1f2;
-    --gray-100: #dde2e4;
-    --gray-200: #bbc5ca;
-    --gray-300: #98a8af;
-    --gray-400: #768b95;
-    --gray-500: #546e7a;
-    --gray-600: #435862;
-    --gray-700: #324249;
-    --gray-800: #222c31;
-    --gray-900: #111618;
-    --content-padding: #{$panelContentPadding};
-    --inline-spacing: #{$inlineSpacing};
-    --border-radius: #{$borderRadius};
-    --surface-ground: #f4f4f4;
-    --surface-section: #ffffff;
-    --surface-card: #ffffff;
-    --surface-overlay: #ffffff;
-    --surface-border: #dadada;
-    --surface-hover: #eaeaea;
-    --maskbg: #{$maskBg};
-    --highlight-bg: #{$highlightBg};
-    --highlight-text-color: #{$highlightTextColor};
-    --focus-ring: #{$focusShadow};
-    color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --surface-a: #ffffff;
+  --surface-b: #f4f4f4;
+  --surface-c: #eaeaea;
+  --surface-d: #dadada;
+  --surface-e: #ffffff;
+  --surface-f: #ffffff;
+  --text-color: #495057;
+  --text-color-secondary: #6c757d;
+  --primary-color: #{$primaryColor};
+  --primary-color-text: #{$primaryTextColor};
+  --surface-0: #ffffff;
+  --surface-50: #eef1f2;
+  --surface-100: #dde2e4;
+  --surface-200: #bbc5ca;
+  --surface-300: #98a8af;
+  --surface-400: #768b95;
+  --surface-500: #546e7a;
+  --surface-600: #435862;
+  --surface-700: #324249;
+  --surface-800: #222c31;
+  --surface-900: #111618;
+  --gray-50: #eef1f2;
+  --gray-100: #dde2e4;
+  --gray-200: #bbc5ca;
+  --gray-300: #98a8af;
+  --gray-400: #768b95;
+  --gray-500: #546e7a;
+  --gray-600: #435862;
+  --gray-700: #324249;
+  --gray-800: #222c31;
+  --gray-900: #111618;
+  --content-padding: #{$panelContentPadding};
+  --inline-spacing: #{$inlineSpacing};
+  --border-radius: #{$borderRadius};
+  --surface-ground: #f4f4f4;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: #dadada;
+  --surface-hover: #eaeaea;
+  --maskbg: #{$maskBg};
+  --highlight-bg: #{$highlightBg};
+  --highlight-text-color: #{$highlightTextColor};
+  --focus-ring: #{$focusShadow};
+  color-scheme: light;
 }

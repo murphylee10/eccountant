@@ -1,16 +1,16 @@
 $colors: (
-    "blue": #2196f3,
-    "green": #4caf50,
-    "yellow": #fbc02d,
-    "cyan": #00bcd4,
-    "pink": #e91e63,
-    "indigo": #3f51b5,
-    "teal": #009688,
-    "orange": #f57c00,
-    "bluegray": #607d8b,
-    "purple": #9c27b0,
-    "red": #ff4032,
-    "primary": $primaryColor,
+  "blue": #2196f3,
+  "green": #4caf50,
+  "yellow": #fbc02d,
+  "cyan": #00bcd4,
+  "pink": #e91e63,
+  "indigo": #3f51b5,
+  "teal": #009688,
+  "orange": #f57c00,
+  "bluegray": #607d8b,
+  "purple": #9c27b0,
+  "red": #ff4032,
+  "primary": $primaryColor,
 ) !default;
 
 //shades
@@ -26,18 +26,22 @@ $hoverBg: rgba(255, 255, 255, 0.03) !default;
 
 //global
 $fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+  Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $fontSize: 1rem !default;
 $fontWeight: normal !default;
 $textColor: $shade000 !default;
 $textSecondaryColor: $shade100 !default;
 $borderRadius: 3px !default;
 $transitionDuration: 0.2s !default;
-$formElementTransition: background-color $transitionDuration,
-    color $transitionDuration, border-color $transitionDuration,
-    box-shadow $transitionDuration !default;
-$actionIconTransition: background-color $transitionDuration,
-    color $transitionDuration, box-shadow $transitionDuration !default;
+$formElementTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  border-color $transitionDuration,
+  box-shadow $transitionDuration !default;
+$actionIconTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  box-shadow $transitionDuration !default;
 $listItemTransition: box-shadow $transitionDuration !default;
 $primeIconFontSize: 1rem !default;
 $divider: 1px solid $shade600 !default;
@@ -55,7 +59,7 @@ $scaleLG: 1.25 !default;
 $focusOutlineColor: $primaryLightColor !default;
 $focusOutline: 0 none !default;
 $focusOutlineOffset: 0 !default;
-$inputFocusOutlineOffset:$focusOutlineOffset !default;
+$inputFocusOutlineOffset: $focusOutlineOffset !default;
 $focusShadow: 0 0 0 1px $focusOutlineColor !default;
 
 //action icons
@@ -115,8 +119,10 @@ $inputListHeaderBorder: 0 none !default;
 $inputOverlayBg: $inputListBg !default;
 $inputOverlayHeaderBg: $inputListHeaderBg !default;
 $inputOverlayBorder: 1px solid $shade600 !default;
-$inputOverlayShadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
+$inputOverlayShadow:
+  0 2px 4px -1px rgba(0, 0, 0, 0.2),
+  0 4px 5px 0 rgba(0, 0, 0, 0.14),
+  0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
 
 //password
 $passwordMeterBg: $shade600 !default;
@@ -137,8 +143,10 @@ $buttonHoverBorderColor: $primaryDarkColor !default;
 $buttonActiveBg: $primaryDarkerColor !default;
 $buttonTextActiveColor: $primaryTextColor !default;
 $buttonActiveBorderColor: $primaryDarkerColor !default;
-$raisedButtonShadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12) !default;
+$raisedButtonShadow:
+  0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+  0px 1px 5px 0px rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
 $textButtonHoverBgOpacity: 0.04 !default;
@@ -152,25 +160,25 @@ $secondaryButtonBg: #78909c !default;
 $secondaryButtonTextColor: #ffffff !default;
 $secondaryButtonBorder: 1px solid $secondaryButtonBg !default;
 $secondaryButtonHoverBg: scale-color(
-    $secondaryButtonBg,
-    $lightness: -10%
+  $secondaryButtonBg,
+  $lightness: -10%
 ) !default;
 $secondaryButtonTextHoverColor: $secondaryButtonTextColor !default;
 $secondaryButtonHoverBorderColor: scale-color(
-    $secondaryButtonBg,
-    $lightness: -10%
+  $secondaryButtonBg,
+  $lightness: -10%
 ) !default;
 $secondaryButtonActiveBg: scale-color(
-    $secondaryButtonBg,
-    $lightness: -20%
+  $secondaryButtonBg,
+  $lightness: -20%
 ) !default;
 $secondaryButtonTextActiveColor: $secondaryButtonTextColor !default;
 $secondaryButtonActiveBorderColor: scale-color(
-    $secondaryButtonBg,
-    $lightness: -20%
+  $secondaryButtonBg,
+  $lightness: -20%
 ) !default;
 $secondaryButtonFocusShadow: 0 0 0 1px
-    scale-color($secondaryButtonBg, $lightness: 30%) !default;
+  scale-color($secondaryButtonBg, $lightness: 30%) !default;
 
 $infoButtonBg: #81d4fa !default;
 $infoButtonTextColor: #121212 !default;
@@ -178,14 +186,14 @@ $infoButtonBorder: 1px solid $infoButtonBg !default;
 $infoButtonHoverBg: scale-color($infoButtonBg, $lightness: -10%) !default;
 $infoButtonTextHoverColor: $infoButtonTextColor !default;
 $infoButtonHoverBorderColor: scale-color(
-    $infoButtonBg,
-    $lightness: -10%
+  $infoButtonBg,
+  $lightness: -10%
 ) !default;
 $infoButtonActiveBg: scale-color($infoButtonBg, $lightness: -20%) !default;
 $infoButtonTextActiveColor: $infoButtonTextColor !default;
 $infoButtonActiveBorderColor: scale-color(
-    $infoButtonBg,
-    $lightness: -20%
+  $infoButtonBg,
+  $lightness: -20%
 ) !default;
 $infoButtonFocusShadow: 0 0 0 1px scale-color($infoButtonBg, $lightness: 30%) !default;
 
@@ -195,20 +203,20 @@ $successButtonBorder: 1px solid $successButtonBg !default;
 $successButtonHoverBg: scale-color($successButtonBg, $lightness: -10%) !default;
 $successButtonTextHoverColor: $successButtonTextColor !default;
 $successButtonHoverBorderColor: scale-color(
-    $successButtonBg,
-    $lightness: -10%
+  $successButtonBg,
+  $lightness: -10%
 ) !default;
 $successButtonActiveBg: scale-color(
-    $successButtonBg,
-    $lightness: -20%
+  $successButtonBg,
+  $lightness: -20%
 ) !default;
 $successButtonTextActiveColor: $successButtonTextColor !default;
 $successButtonActiveBorderColor: scale-color(
-    $successButtonBg,
-    $lightness: -20%
+  $successButtonBg,
+  $lightness: -20%
 ) !default;
 $successButtonFocusShadow: 0 0 0 1px
-    scale-color($successButtonBg, $lightness: 30%) !default;
+  scale-color($successButtonBg, $lightness: 30%) !default;
 
 $warningButtonBg: #ffe082 !default;
 $warningButtonTextColor: #121212 !default;
@@ -216,20 +224,20 @@ $warningButtonBorder: 1px solid $warningButtonBg !default;
 $warningButtonHoverBg: scale-color($warningButtonBg, $lightness: -10%) !default;
 $warningButtonTextHoverColor: $warningButtonTextColor !default;
 $warningButtonHoverBorderColor: scale-color(
-    $warningButtonBg,
-    $lightness: -10%
+  $warningButtonBg,
+  $lightness: -10%
 ) !default;
 $warningButtonActiveBg: scale-color(
-    $warningButtonBg,
-    $lightness: -20%
+  $warningButtonBg,
+  $lightness: -20%
 ) !default;
 $warningButtonTextActiveColor: $warningButtonTextColor !default;
 $warningButtonActiveBorderColor: scale-color(
-    $warningButtonBg,
-    $lightness: -20%
+  $warningButtonBg,
+  $lightness: -20%
 ) !default;
 $warningButtonFocusShadow: 0 0 0 1px
-    scale-color($warningButtonBg, $lightness: 30%) !default;
+  scale-color($warningButtonBg, $lightness: 30%) !default;
 
 $helpButtonBg: #ce93d8 !default;
 $helpButtonTextColor: #121212 !default;
@@ -237,14 +245,14 @@ $helpButtonBorder: 1px solid $helpButtonBg !default;
 $helpButtonHoverBg: scale-color($helpButtonBg, $lightness: -10%) !default;
 $helpButtonTextHoverColor: $helpButtonTextColor !default;
 $helpButtonHoverBorderColor: scale-color(
-    $helpButtonBg,
-    $lightness: -10%
+  $helpButtonBg,
+  $lightness: -10%
 ) !default;
 $helpButtonActiveBg: scale-color($helpButtonBg, $lightness: -20%) !default;
 $helpButtonTextActiveColor: $helpButtonTextColor !default;
 $helpButtonActiveBorderColor: scale-color(
-    $helpButtonBg,
-    $lightness: -20%
+  $helpButtonBg,
+  $lightness: -20%
 ) !default;
 $helpButtonFocusShadow: 0 0 0 1px scale-color($helpButtonBg, $lightness: 30%) !default;
 
@@ -254,17 +262,17 @@ $dangerButtonBorder: 1px solid $dangerButtonBg !default;
 $dangerButtonHoverBg: scale-color($dangerButtonBg, $lightness: -10%) !default;
 $dangerButtonTextHoverColor: $dangerButtonTextColor !default;
 $dangerButtonHoverBorderColor: scale-color(
-    $dangerButtonBg,
-    $lightness: -10%
+  $dangerButtonBg,
+  $lightness: -10%
 ) !default;
 $dangerButtonActiveBg: scale-color($dangerButtonBg, $lightness: -20%) !default;
 $dangerButtonTextActiveColor: $dangerButtonTextColor !default;
 $dangerButtonActiveBorderColor: scale-color(
-    $dangerButtonBg,
-    $lightness: -20%
+  $dangerButtonBg,
+  $lightness: -20%
 ) !default;
 $dangerButtonFocusShadow: 0 0 0 1px
-    scale-color($dangerButtonBg, $lightness: 30%) !default;
+  scale-color($dangerButtonBg, $lightness: 30%) !default;
 
 $linkButtonColor: $primaryColor !default;
 $linkButtonHoverColor: $primaryColor !default;
@@ -493,8 +501,10 @@ $cardSubTitleFontWeight: 700 !default;
 $cardSubTitleColor: $shade100 !default;
 $cardContentPadding: 1rem 0 !default;
 $cardFooterPadding: 1rem 0 0 0 !default;
-$cardShadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
+$cardShadow:
+  0 2px 1px -1px rgba(0, 0, 0, 0.2),
+  0 1px 1px 0 rgba(0, 0, 0, 0.14),
+  0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
 
 //editor
 $editorToolbarBg: $panelHeaderBg !default;
@@ -638,22 +648,22 @@ $infoMessageIconColor: scale-color($infoMessageBg, $lightness: -75%) !default;
 $successMessageBg: #c8e6c9 !default;
 $successMessageBorder: solid scale-color($successMessageBg, $lightness: -50%) !default;
 $successMessageTextColor: scale-color(
-    $successMessageBg,
-    $lightness: -75%
+  $successMessageBg,
+  $lightness: -75%
 ) !default;
 $successMessageIconColor: scale-color(
-    $successMessageBg,
-    $lightness: -75%
+  $successMessageBg,
+  $lightness: -75%
 ) !default;
 $warningMessageBg: #ffecb3 !default;
 $warningMessageBorder: solid scale-color($warningMessageBg, $lightness: -50%) !default;
 $warningMessageTextColor: scale-color(
-    $warningMessageBg,
-    $lightness: -75%
+  $warningMessageBg,
+  $lightness: -75%
 ) !default;
 $warningMessageIconColor: scale-color(
-    $warningMessageBg,
-    $lightness: -75%
+  $warningMessageBg,
+  $lightness: -75%
 ) !default;
 $errorMessageBg: #ffcdd2 !default;
 $errorMessageBorder: solid scale-color($errorMessageBg, $lightness: -50%) !default;
@@ -663,8 +673,10 @@ $errorMessageIconColor: scale-color($errorMessageBg, $lightness: -75%) !default;
 //overlays
 $overlayContentBorder: 1px solid $shade600 !default;
 $overlayContentBg: $panelContentBg !default;
-$overlayContainerShadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
-    0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12) !default;
+$overlayContainerShadow:
+  0px 11px 15px -7px rgba(0, 0, 0, 0.2),
+  0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+  0px 9px 46px 8px rgba(0, 0, 0, 0.12) !default;
 
 //dialog
 $dialogHeaderBg: $shade800 !default;
@@ -732,8 +744,10 @@ $submenuHeaderBorderRadius: 0 !default;
 $submenuHeaderFontWeight: 600 !default;
 $overlayMenuBg: $menuBg !default;
 $overlayMenuBorder: 1px solid $shade600 !default;
-$overlayMenuShadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
+$overlayMenuShadow:
+  0 2px 4px -1px rgba(0, 0, 0, 0.2),
+  0 4px 5px 0 rgba(0, 0, 0, 0.14),
+  0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
 $verticalMenuPadding: 0.25rem 0 !default;
 $verticalMenuitemMargin: 0 !default;
 $menuSeparatorMargin: 0.25rem 0 !default;
@@ -901,55 +915,54 @@ $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
 
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol";
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol";
-    --surface-a: #{$shade800};
-    --surface-b: #{$shade900};
-    --surface-c: #{$hoverBg};
-    --surface-d: #{$shade600};
-    --surface-e: #{$shade800};
-    --surface-f: #{$shade800};
-    --text-color: #{$shade000};
-    --text-color-secondary: #{$shade100};
-    --primary-color: #{$primaryColor};
-    --primary-color-text: #{$primaryTextColor};
-    --surface-0: #121212;
-    --surface-50: #2a2a2a;
-    --surface-100: #414141;
-    --surface-200: #595959;
-    --surface-300: #717171;
-    --surface-400: #898989;
-    --surface-500: #a0a0a0;
-    --surface-600: #b8b8b8;
-    --surface-700: #d0d0d0;
-    --surface-800: #e7e7e7;
-    --surface-900: #ffffff;
-    --gray-50: #e7e7e7;
-    --gray-100: #d0d0d0;
-    --gray-200: #b8b8b8;
-    --gray-300: #a0a0a0;
-    --gray-400: #898989;
-    --gray-500: #717171;
-    --gray-600: #595959;
-    --gray-700: #414141;
-    --gray-800: #2a2a2a;
-    --gray-900: #121212;
-    --content-padding: #{$panelContentPadding};
-    --inline-spacing: #{$inlineSpacing};
-    --border-radius: #{$borderRadius};
-    --surface-ground: #121212;
-    --surface-section: #121212;
-    --surface-card: #1e1e1e;
-    --surface-overlay: #1e1e1e;
-    --surface-border: #383838;
-    --surface-hover: rgba(255, 255, 255, 0.03);
-    --maskbg: #{$maskBg};
-    --focus-ring: #{$focusShadow};
-    --highlight-bg: #{$highlightBg};
-    --highlight-text-color: #{$highlightTextColor};
-    color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --surface-a: #{$shade800};
+  --surface-b: #{$shade900};
+  --surface-c: #{$hoverBg};
+  --surface-d: #{$shade600};
+  --surface-e: #{$shade800};
+  --surface-f: #{$shade800};
+  --text-color: #{$shade000};
+  --text-color-secondary: #{$shade100};
+  --primary-color: #{$primaryColor};
+  --primary-color-text: #{$primaryTextColor};
+  --surface-0: #121212;
+  --surface-50: #2a2a2a;
+  --surface-100: #414141;
+  --surface-200: #595959;
+  --surface-300: #717171;
+  --surface-400: #898989;
+  --surface-500: #a0a0a0;
+  --surface-600: #b8b8b8;
+  --surface-700: #d0d0d0;
+  --surface-800: #e7e7e7;
+  --surface-900: #ffffff;
+  --gray-50: #e7e7e7;
+  --gray-100: #d0d0d0;
+  --gray-200: #b8b8b8;
+  --gray-300: #a0a0a0;
+  --gray-400: #898989;
+  --gray-500: #717171;
+  --gray-600: #595959;
+  --gray-700: #414141;
+  --gray-800: #2a2a2a;
+  --gray-900: #121212;
+  --content-padding: #{$panelContentPadding};
+  --inline-spacing: #{$inlineSpacing};
+  --border-radius: #{$borderRadius};
+  --surface-ground: #121212;
+  --surface-section: #121212;
+  --surface-card: #1e1e1e;
+  --surface-overlay: #1e1e1e;
+  --surface-border: #383838;
+  --surface-hover: rgba(255, 255, 255, 0.03);
+  --maskbg: #{$maskBg};
+  --focus-ring: #{$focusShadow};
+  --highlight-bg: #{$highlightBg};
+  --highlight-text-color: #{$highlightTextColor};
+  color-scheme: dark;
 }

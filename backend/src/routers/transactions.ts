@@ -35,14 +35,14 @@ transactionsRouter.get(
       const transactions = await db.getTransactionsByDateRange(
         userId,
         startDate as string,
-        endDate as string
+        endDate as string,
       );
       res.json(transactions);
     } catch (error) {
       console.log(`Running into an error!`);
       next(error);
     }
-  }
+  },
 );
 
 transactionsRouter.get(
@@ -52,15 +52,13 @@ transactionsRouter.get(
     try {
       const userId = req.auth?.payload.sub as string;
 
-      const transaction = await db.getFirstTransaction(
-        userId,
-      );
+      const transaction = await db.getFirstTransaction(userId);
       res.json(transaction);
     } catch (error) {
       console.log(`Running into an error!`);
       next(error);
     }
-  }
+  },
 );
 
 transactionsRouter.get(
@@ -70,15 +68,13 @@ transactionsRouter.get(
     try {
       const userId = req.auth?.payload.sub as string;
 
-      const transaction = await db.getLastTransaction(
-        userId,
-      );
+      const transaction = await db.getLastTransaction(userId);
       res.json(transaction);
     } catch (error) {
       console.log(`Running into an error!`);
       next(error);
     }
-  }
+  },
 );
 
 export default transactionsRouter;

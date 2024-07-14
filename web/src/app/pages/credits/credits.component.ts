@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './credits.component.html',
-  styles: ``
+  styles: ``,
 })
-export class CreditsComponent {
-
-}
+export class CreditsComponent {}

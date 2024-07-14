@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, SimpleChanges, OnChanges, inject, computed } from '@angular/core';
+import {
+  Component,
+  Input,
+  SimpleChanges,
+  OnChanges,
+  inject,
+  computed,
+} from '@angular/core';
 import { SignalService } from '@services/signal.service';
 import {
   ApexChart,
@@ -30,7 +37,7 @@ export class DistributionChartComponent {
   isDataAvailable = computed(() => Object.keys(this.categoryData()).length > 0);
 
   chartOptions = computed<ChartOptions>(() => {
-    console.log(this.categoryData())
+    console.log(this.categoryData());
     const data = this.categoryData();
     const categories = Object.keys(data);
     const series = Object.values(data);

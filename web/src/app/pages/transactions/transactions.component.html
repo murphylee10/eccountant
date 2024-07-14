@@ -7,13 +7,11 @@
         </div>
       </ng-template>
       <ng-template pTemplate="opposite">
-          <span>&nbsp;</span>
+        <span>&nbsp;</span>
       </ng-template>
     </p-timeline>
   </div>
-  <div *ngIf="months.length === 0">
-    Loading timeline...
-  </div>
+  <div *ngIf="months.length === 0">Loading timeline...</div>
 </div>
 
 <div class="mb-10 flex gap-x-4">
@@ -25,9 +23,9 @@
     <h2>Spendings</h2>
     <transactions-spendings-chart></transactions-spendings-chart>
   </div>
-  </div>
-  
-  <!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
+</div>
+
+<!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
 <p-table
   [value]="transactions"
   [scrollable]="true"

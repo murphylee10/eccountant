@@ -8,10 +8,9 @@ describe('DistributionChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DistributionChartComponent]
-    })
-    .compileComponents();
-    
+      imports: [DistributionChartComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(DistributionChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

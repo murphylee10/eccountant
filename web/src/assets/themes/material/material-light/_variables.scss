@@ -1,16 +1,16 @@
 $colors: (
-    "blue": #2196f3,
-    "green": #689f38,
-    "yellow": #fbc02d,
-    "cyan": #00bcd4,
-    "pink": #e91e63,
-    "indigo": #4e5fbb,
-    "teal": #009688,
-    "orange": #ff9800,
-    "bluegray": #607d8b,
-    "purple": #9c27b0,
-    "red": #f44336,
-    "primary": $primaryColor,
+  "blue": #2196f3,
+  "green": #689f38,
+  "yellow": #fbc02d,
+  "cyan": #00bcd4,
+  "pink": #e91e63,
+  "indigo": #4e5fbb,
+  "teal": #009688,
+  "orange": #ff9800,
+  "bluegray": #607d8b,
+  "purple": #9c27b0,
+  "red": #f44336,
+  "primary": $primaryColor,
 ) !default;
 
 $emphasis-high: rgba(0, 0, 0, 0.87) !default;
@@ -21,19 +21,23 @@ $overlayColor: #000000 !default;
 
 //global
 $fontFamily: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial,
-    "Lucida Grande", sans-serif !default;
+  "Lucida Grande", sans-serif !default;
 $fontSize: 1rem !default;
 $fontWeight: normal !default;
 $textColor: $emphasis-high !default;
 $textSecondaryColor: $emphasis-medium !default;
 $borderRadius: 4px !default;
 $transitionDuration: 0.2s !default;
-$formElementTransition: background-color $transitionDuration,
-    border-color $transitionDuration, color $transitionDuration,
-    box-shadow $transitionDuration,
-    background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1) !default;
-$actionIconTransition: background-color $transitionDuration,
-    color $transitionDuration, box-shadow $transitionDuration !default;
+$formElementTransition:
+  background-color $transitionDuration,
+  border-color $transitionDuration,
+  color $transitionDuration,
+  box-shadow $transitionDuration,
+  background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1) !default;
+$actionIconTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  box-shadow $transitionDuration !default;
 $listItemTransition: none !default;
 $primeIconFontSize: 1rem !default;
 $divider: 1px solid rgba(0, 0, 0, 0.12) !default;
@@ -116,8 +120,10 @@ $inputListHeaderBorder: 1px solid rgba(0, 0, 0, 0.12) !default;
 $inputOverlayBg: $inputListBg !default;
 $inputOverlayHeaderBg: $inputListHeaderBg !default;
 $inputOverlayBorder: 0 none !default;
-$inputOverlayShadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12) !default;
+$inputOverlayShadow:
+  0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12) !default;
 
 //password
 $passwordMeterBg: rgba($primaryColor, 0.32) !default;
@@ -138,8 +144,10 @@ $buttonHoverBorderColor: transparent !default;
 $buttonActiveBg: rgba($primaryColor, 0.68) !default;
 $buttonTextActiveColor: $primaryTextColor !default;
 $buttonActiveBorderColor: transparent !default;
-$raisedButtonShadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
+$raisedButtonShadow:
+  0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
 $textButtonHoverBgOpacity: 0.04 !default;
@@ -215,16 +223,16 @@ $dangerButtonTextActiveColor: #ffffff !default;
 $dangerButtonActiveBorderColor: transparent !default;
 $dangerButtonFocusShadow: none !default;
 
-$contrastButtonBg:#212121 !default;
-$contrastButtonTextColor:#ffffff !default;
-$contrastButtonBorder:1px solid #212121 !default;
-$contrastButtonHoverBg:#424242 !default;
-$contrastButtonTextHoverColor:$contrastButtonTextColor !default;
-$contrastButtonHoverBorderColor:#424242 !default;
-$contrastButtonActiveBg:#616161 !default;
-$contrastButtonTextActiveColor:$contrastButtonTextColor !default;
-$contrastButtonActiveBorderColor:#616161 !default;
-$contrastButtonFocusShadow:none !default;
+$contrastButtonBg: #212121 !default;
+$contrastButtonTextColor: #ffffff !default;
+$contrastButtonBorder: 1px solid #212121 !default;
+$contrastButtonHoverBg: #424242 !default;
+$contrastButtonTextHoverColor: $contrastButtonTextColor !default;
+$contrastButtonHoverBorderColor: #424242 !default;
+$contrastButtonActiveBg: #616161 !default;
+$contrastButtonTextActiveColor: $contrastButtonTextColor !default;
+$contrastButtonActiveBorderColor: #616161 !default;
+$contrastButtonFocusShadow: none !default;
 
 $linkButtonColor: $primaryColor !default;
 $linkButtonHoverColor: $primaryColor !default;
@@ -417,7 +425,7 @@ $tabviewHeaderSpacing: 0 !default;
 $tabviewHeaderBorder: solid rgba(0, 0, 0, 0.12) !default;
 $tabviewHeaderBorderWidth: 0 0 1px 0 !default;
 $tabviewHeaderBorderColor: transparent transparent rgba(0, 0, 0, 0.12)
-    transparent !default;
+  transparent !default;
 $tabviewHeaderBg: #ffffff !default;
 $tabviewHeaderTextColor: $textSecondaryColor !default;
 $tabviewHeaderFontWeight: 500 !default;
@@ -454,8 +462,10 @@ $cardSubTitleFontWeight: 400 !default;
 $cardSubTitleColor: $textSecondaryColor !default;
 $cardContentPadding: 1rem 0 !default;
 $cardFooterPadding: 1rem 0 0 0 !default;
-$cardShadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
+$cardShadow:
+  0 2px 1px -1px rgba(0, 0, 0, 0.2),
+  0 1px 1px 0 rgba(0, 0, 0, 0.14),
+  0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
 
 //editor
 $editorToolbarBg: $panelHeaderBg !default;
@@ -585,8 +595,10 @@ $toastMessageTextMargin: 0 0 0 1rem !default;
 $toastMargin: 0 0 1rem 0 !default;
 $toastPadding: 1.5rem !default;
 $toastBorderWidth: 0 0 0 0 !default;
-$toastShadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12) !default;
+$toastShadow:
+  0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12) !default;
 $toastOpacity: 0.9 !default;
 $toastTitleFontWeight: 700 !default;
 $toastDetailMargin: $inlineSpacing 0 0 0 !default;
@@ -620,8 +632,10 @@ $contrastMessageIconColor: $contrastButtonTextColor !default;
 //overlays
 $overlayContentBorder: 0 none !default;
 $overlayContentBg: $panelContentBg !default;
-$overlayContainerShadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
-    0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12) !default;
+$overlayContainerShadow:
+  0 11px 15px -7px rgba(0, 0, 0, 0.2),
+  0 24px 38px 3px rgba(0, 0, 0, 0.14),
+  0 9px 46px 8px rgba(0, 0, 0, 0.12) !default;
 
 //dialog
 $dialogHeaderBg: #ffffff !default;
@@ -689,8 +703,10 @@ $submenuHeaderBorderRadius: 0 !default;
 $submenuHeaderFontWeight: 400 !default;
 $overlayMenuBg: $menuBg !default;
 $overlayMenuBorder: 0 none !default;
-$overlayMenuShadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
+$overlayMenuShadow:
+  0 2px 4px -1px rgba(0, 0, 0, 0.2),
+  0 4px 5px 0 rgba(0, 0, 0, 0.14),
+  0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
 $verticalMenuPadding: 0.5rem 0 !default;
 $verticalMenuitemMargin: 0 !default;
 $menuSeparatorMargin: 0.5rem 0 !default;
@@ -858,53 +874,53 @@ $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
 
 :root {
-    font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica,
-        Arial, "Lucida Grande", sans-serif;
-    --font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica,
-        Arial, "Lucida Grande", sans-serif;
-    --surface-a: #ffffff;
-    --surface-b: #fafafa;
-    --surface-c: rgba(0, 0, 0, 0.04);
-    --surface-d: rgba(0, 0, 0, 0.12);
-    --surface-e: #ffffff;
-    --surface-f: #ffffff;
-    --text-color: #{$textColor};
-    --text-color-secondary: #{$textSecondaryColor};
-    --primary-color: #{$primaryColor};
-    --primary-color-text: #{$primaryTextColor};
-    --surface-0: #ffffff;
-    --surface-50: #fafafa;
-    --surface-100: #f5f5f5;
-    --surface-200: #eeeeee;
-    --surface-300: #e0e0e0;
-    --surface-400: #bdbdbd;
-    --surface-500: #9e9e9e;
-    --surface-600: #757575;
-    --surface-700: #616161;
-    --surface-800: #424242;
-    --surface-900: #212121;
-    --gray-50: #fafafa;
-    --gray-100: #f5f5f5;
-    --gray-200: #eeeeee;
-    --gray-300: #e0e0e0;
-    --gray-400: #bdbdbd;
-    --gray-500: #9e9e9e;
-    --gray-600: #757575;
-    --gray-700: #616161;
-    --gray-800: #424242;
-    --gray-900: #212121;
-    --content-padding: #{$panelContentPadding};
-    --inline-spacing: #{$inlineSpacing};
-    --border-radius: #{$borderRadius};
-    --surface-ground: #fafafa;
-    --surface-section: #ffffff;
-    --surface-card: #ffffff;
-    --surface-overlay: #ffffff;
-    --surface-border: rgba(0, 0, 0, 0.12);
-    --surface-hover: rgba(0, 0, 0, 0.04);
-    --maskbg: #{$maskBg};
-    --highlight-bg: #{$highlightBg};
-    --highlight-text-color: #{$highlightTextColor};
-    --focus-ring: #{$focusShadow};
-    color-scheme: light;
+  font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica,
+    Arial, "Lucida Grande", sans-serif;
+  --font-family: Roboto, "Helvetica Neue Light", "Helvetica Neue", Helvetica,
+    Arial, "Lucida Grande", sans-serif;
+  --surface-a: #ffffff;
+  --surface-b: #fafafa;
+  --surface-c: rgba(0, 0, 0, 0.04);
+  --surface-d: rgba(0, 0, 0, 0.12);
+  --surface-e: #ffffff;
+  --surface-f: #ffffff;
+  --text-color: #{$textColor};
+  --text-color-secondary: #{$textSecondaryColor};
+  --primary-color: #{$primaryColor};
+  --primary-color-text: #{$primaryTextColor};
+  --surface-0: #ffffff;
+  --surface-50: #fafafa;
+  --surface-100: #f5f5f5;
+  --surface-200: #eeeeee;
+  --surface-300: #e0e0e0;
+  --surface-400: #bdbdbd;
+  --surface-500: #9e9e9e;
+  --surface-600: #757575;
+  --surface-700: #616161;
+  --surface-800: #424242;
+  --surface-900: #212121;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #eeeeee;
+  --gray-300: #e0e0e0;
+  --gray-400: #bdbdbd;
+  --gray-500: #9e9e9e;
+  --gray-600: #757575;
+  --gray-700: #616161;
+  --gray-800: #424242;
+  --gray-900: #212121;
+  --content-padding: #{$panelContentPadding};
+  --inline-spacing: #{$inlineSpacing};
+  --border-radius: #{$borderRadius};
+  --surface-ground: #fafafa;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: rgba(0, 0, 0, 0.12);
+  --surface-hover: rgba(0, 0, 0, 0.04);
+  --maskbg: #{$maskBg};
+  --highlight-bg: #{$highlightBg};
+  --highlight-text-color: #{$highlightTextColor};
+  --focus-ring: #{$focusShadow};
+  color-scheme: light;
 }

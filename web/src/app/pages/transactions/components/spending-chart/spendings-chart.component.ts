@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { SignalService } from '@services/signal.service';
 import {
   ApexChart,
@@ -41,36 +48,38 @@ export class SpendingsChartComponent {
     const series = Object.values(data);
 
     return {
-      series: [{
-        name: 'Spending',
-        data: series
-      }],
+      series: [
+        {
+          name: 'Spending',
+          data: series,
+        },
+      ],
       chart: {
         height: 350,
         width: 500,
-        type: 'bar'
+        type: 'bar',
       },
       xaxis: {
-        categories: categories
+        categories: categories,
       },
       plotOptions: {
         bar: {
           horizontal: false,
           dataLabels: {
-            position: 'top'
-          }
-        }
+            position: 'top',
+          },
+        },
       },
       fill: {
-        opacity: 1
+        opacity: 1,
       },
       dataLabels: {
         enabled: true,
         formatter: function (val: any) {
           return `$${val.toFixed(2)}`;
-        }
+        },
       },
-      colors: ['#775DD0','#008FFB', '#00E396', '#FEB019', '#FF4560']
+      colors: ['#775DD0', '#008FFB', '#00E396', '#FEB019', '#FF4560'],
     };
   });
 }
