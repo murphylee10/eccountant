@@ -2,12 +2,7 @@
   <p-timeline [value]="months" layout="horizontal" align="alternate">
     <ng-template pTemplate="content" let-label>
       <div class="p-timeline-item">
-        <div class="p-timeline-marker"></div>
-        <div class="p-timeline-content">
-          <div class="p-timeline-header">{{ label.header }}</div>
-          <div class="p-timeline-body">{{ label.content }}</div>
-          <a href="#" (click)="monthSelection($event, label)">{{ label }}</a>
-        </div>
+        <a href="#" (click)="monthSelection($event, label)">{{ label }}</a>
       </div>
     </ng-template>
     <ng-template pTemplate="opposite" let-month>
