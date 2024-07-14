@@ -49,14 +49,8 @@ export class TransactionsComponent implements OnInit {
 		private signalService: SignalService,
 	) {}
 
-	// ngOnInit(): void {
-	// 	// this.initTransactionRange();
-	// 	this.initYearsAndMonths();
-	// 	this.fetchTransactionsByDateRange();
-	// }
-
-	async ngOnInit(): Promise<void> {
-		await this.initTransactionRange();
+	ngOnInit(): void {
+		this.initTransactionRange();
 		this.fetchTransactionsByDateRange();
 	}
 
@@ -64,14 +58,12 @@ export class TransactionsComponent implements OnInit {
 		const currentYear = new Date().getFullYear();
 		const currentMonth = new Date().getMonth() + 1;
 
-
 		const endDate = `${currentYear}-${currentMonth.toString().padStart(2, "0")}-${new Date(currentYear, currentMonth, 0).getDate()}`;
 		const transactions = await this.apiService.getTransactionsByDateRange(
 			'1924-01-01',
 			endDate,
 		)
 		this.months = [];
-
 
 		const first = transactions[transactions.length-1].date;
 		const last = transactions[0].date;
