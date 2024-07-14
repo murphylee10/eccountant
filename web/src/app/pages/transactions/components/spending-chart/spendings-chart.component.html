@@ -1,0 +1,14 @@
+<ng-container *ngIf="isDataAvailable(); else loading">
+  <apx-chart
+    [series]="chartOptions().series"
+    [chart]="chartOptions().chart"
+    [xaxis]="chartOptions().xaxis"
+    [plotOptions]="chartOptions().plotOptions"
+    [fill]="chartOptions().fill"
+    [dataLabels]="chartOptions().dataLabels"
+    [colors]="chartOptions().colors"
+  ></apx-chart>
+</ng-container>
+<ng-template #loading>
+  <p>Loading chart data...</p>
+</ng-template>

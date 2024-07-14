@@ -8,10 +8,12 @@ Team Name: Angular
 
 ## Project Team
 
-| Full Name     | UTORID   | Student Number | Email                                                 | Best way to Connect | Slack User Name |
-| ------------- | -------- | -------------- | ----------------------------------------------------- | ------------------- | --------------- |
-| Chad Rossouw  | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca                         | 437 262 3168        | Chad Rossouw    |   |
-| Murphy Lee    | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca  | 416 831 0673        | Murphy Lee      |
+| Full Name     | UTORID   | Student Number | Email                           | Best way to Connect | Slack User Name |
+| ------------- | -------- | -------------- | ------------------------------- | ------------------- | --------------- |
+| Chad Rossouw  | rossouw2 | 1008873088     | chad.rossouw@mail.utoronto.ca   | 437 262 3168        | Chad Rossouw    |
+| Murphy Lee    | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca     | 416 831 0673        | Murphy Lee      |
+| Vincent Zhang |          |                | vincentz.zhang@mail.utoronto.ca |                     | Vincent Zhang   |
+
 
 ## Project Outline
 
@@ -70,11 +72,7 @@ Eccountant will meet the requirements as follows:
 1. **Using Plaid's Webhooks:**
 
    - **Transactions Webhooks:**
-     - `INITIAL_UPDATE`: Fired when an initial transaction pull is completed, providing transaction data for the last 30 days. This ensures that users have an up-to-date overview of their recent financial activities as soon as they link their accounts.
-     - `HISTORICAL_UPDATE`: Fired when the historical transaction pull is completed, providing transaction data older than 30 days. This allows users to analyze their long-term spending patterns and trends.
-     - `DEFAULT_UPDATE`: Fired when new or updated transaction data is available. This keeps the users' transaction records current, ensuring real-time accuracy in their spending analysis.
-     - `TRANSACTIONS_REMOVED`: Fired when transactions are removed from the dataset. This helps maintain data integrity by reflecting accurate transaction histories.
-   - These webhooks will automatically update the user's transaction data in Eccountant, ensuring that the application always displays the most recent and accurate financial information.
+     - `TRANSACTIONS_SYNC`: This webhook is fired whenever there are new or updated transactions available for the user. It provides a unified and streamlined way to ensure that the user's transaction data is always up-to-date. The `TRANSACTIONS_SYNC` webhook simplifies the process by consolidating the functionality of multiple individual webhooks, such as `INITIAL_UPDATE`, `HISTORICAL_UPDATE`, `DEFAULT_UPDATE`, and `TRANSACTIONS_REMOVED`. This ensures that users have the most accurate and current financial information in Eccountant at all times.
 
 2. **A Piece of the Application Being Real-Time:**
    - The dashboard overview and the detailed spending analysis page will be updated in real-time as new transactions are detected through Plaid's webhooks. This means that users will see their latest spending activities and updated financial summaries without needing to manually refresh the page.

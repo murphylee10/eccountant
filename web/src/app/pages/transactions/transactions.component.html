@@ -1,0 +1,59 @@
+<div class="mb-10 flex gap-x-2">
+  <div *ngIf="months.length > 0">
+    <p-timeline [value]="months" layout="horizontal" align="alternate">
+      <ng-template pTemplate="content" let-label>
+        <div class="p-timeline-item">
+          <a href="#" (click)="monthSelection($event, label)">{{ label }}</a>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="opposite">
+        <span>&nbsp;</span>
+      </ng-template>
+    </p-timeline>
+  </div>
+  <div *ngIf="months.length === 0">Loading timeline...</div>
+</div>
+
+<div class="mb-10 flex gap-x-4">
+  <div>
+    <h2>Distribution</h2>
+    <transactions-distribution-chart></transactions-distribution-chart>
+  </div>
+  <div>
+    <h2>Spendings</h2>
+    <transactions-spendings-chart></transactions-spendings-chart>
+  </div>
+</div>
+
+<!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
+<p-table
+  [value]="transactions"
+  [scrollable]="true"
+  scrollHeight="500px"
+  styleClass="p-datatable-sm"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <!-- <th>User</th> -->
+      <th>Account Name</th>
+      <th>Date</th>
+      <th>Name</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Verified</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-transaction>
+    <tr>
+      <!-- <td>{{ transaction.user_id }}</td> -->
+      <td>{{ transaction.account.name }}</td>
+      <td>{{ transaction.date }}</td>
+      <td>{{ transaction.name }}</td>
+      <td>{{ transaction.amount | currency: transaction.currency_code }}</td>
+      <td>{{ transaction.category | categoryDisplay }}</td>
+      <td class="flex justify-center">
+        <i [class]="getVerificationIcon(transaction)"></i>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,0 +1,53 @@
+// /* You can add global styles to this file, and also import other style files */
+// /* Tailwind */
+// // @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
+// @import "assets/themes/material/material-light/standard/indigo/theme.scss";
+// @import "primeng/resources/themes/lara-light-blue/theme.css";
+// @import "primeng/resources/primeng.css";
+
+// @layer tailwind-base, primeng, tailwind-utilities;
+// @layer tailwind-base {
+//   @tailwind base;
+// }
+// @layer primeng {
+//   @import "assets/themes/mytheme/theme.scss";
+//   @import "primeng/resources/primeng.css";
+// }
+// @layer tailwind-utilities {
+//   @tailwind components;
+//   @tailwind utilities;
+// }
+
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+@import "assets/themes/mytheme/theme.scss";
+// @import "primeng/resources/themes/lara-light-blue/theme.css";
+
+body,
+html {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+@layer primeng;
