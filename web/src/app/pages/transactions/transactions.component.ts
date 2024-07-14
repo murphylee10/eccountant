@@ -101,6 +101,9 @@ export class TransactionsComponent implements OnInit {
 	monthSelection(event: any, label:any) {
 		event.preventDefault();
 		console.log(label)
+		this.selectedYear = parseInt(label.split("-")[0]);
+		this.selectedMonth = parseInt(label.split("-")[1]);
+		this.fetchTransactionsByDateRange();
 	}
 
 	// initYearsAndMonths() {
