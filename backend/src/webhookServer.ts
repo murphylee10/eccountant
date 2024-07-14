@@ -2,6 +2,7 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errors";
 import "express-async-errors";
+import "dotenv/config";
 import { syncTransactions } from "@/utils/plaid/transactions";
 
 const webhookApp: Express = express();
@@ -43,6 +44,7 @@ function handleTxnWebhook(code: string, itemId: string) {
 	switch (code) {
 		case "SYNC_UPDATES_AVAILABLE":
 			syncTransactions(itemId);
+			console.log("got webhook for sync updates");
 			break;
 		// If we're using sync, we don't really need to concern ourselves with the
 		// other transactions-related webhooks

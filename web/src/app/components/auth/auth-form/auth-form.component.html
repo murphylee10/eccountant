@@ -25,6 +25,21 @@
         <button pButton type="submit" label="{{ isSignIn ? 'Sign In' : 'Sign Up' }}"
                 [disabled]="authForm.invalid" class="p-2 w-full text-white rounded hover:bg-blue-700"></button>
       </form>
+      <div class="mt-4 flex items-center justify-between">
+        <hr class="w-full border-t border-gray-300">
+        <span class="px-2 text-gray-500 flex items-center">or</span>
+        <hr class="w-full border-t border-gray-300">
+      </div>
+      <div class="mt-4">
+        <!-- <button pButton class="p-button p-2 w-full bg-gray-200 text-black hover:bg-gray-300 border-gray-200 ">
+          <i class="pi pi-user" class="mr-2 text-[1.1rem]"></i>
+          <span>Sign In With Provider</span>
+        </button> -->
+        <button pButton (click)="auth.loginWithRedirect({appState: { target: '/user/transactions' }})" class="p-2 w-full flex items-center justify-center bg-white text-black bg-gray-300 border border-gray-300 hover:bg-gray-400">
+            <i class="pi pi-user mr-2"></i>
+            <span>Sign in with Provider</span>
+        </button>      
+      </div>
       <div class="mt-4 text-center" *ngIf="isSignIn">
         <a routerLink="/sign-up" class="hover:underline">No account? Create one</a>
       </div>

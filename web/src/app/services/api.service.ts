@@ -78,4 +78,8 @@ export class ApiService {
 			`${this.transactionsUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
 		);
 	}
+
+	fireWebhook() {
+		return this.post<any>("/debug/generate_webhook", {});
+	}
 }

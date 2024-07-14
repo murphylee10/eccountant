@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Inject, Input } from "@angular/core";
 // biome-ignore lint/style/useImportType: angular needs the whole module for elements passed in constructor
 import {
 	FormBuilder,
@@ -7,12 +7,14 @@ import {
 	ReactiveFormsModule,
 	FormsModule,
 } from "@angular/forms";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DOCUMENT } from "@angular/common";
 // biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { InputTextModule } from "primeng/inputtext";
 import { PasswordModule } from "primeng/password";
 import { ButtonModule } from "primeng/button";
+// biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
+import { AuthService } from "@auth0/auth0-angular";
 
 @Component({
 	selector: "app-auth-form",
@@ -34,6 +36,8 @@ export class AuthFormComponent {
 	authForm: FormGroup;
 
 	constructor(
+		@Inject(DOCUMENT) public document: Document,
+		public auth: AuthService,
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
