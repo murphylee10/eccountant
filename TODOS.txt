@@ -2,3 +2,8 @@
 - remove debug router?
 - organize db methods (and add function headers)
 - the transactions year dropdown is hardcoded to start from 2020 - we should fetch the oldest year of data
+- timeline:
+    - selected node becomes filled instead of (Selected) marker
+    - allow selection node to be clickable
+    - when timeline is longer than the screen width, allow scrolling
+    - when card has no transactions in any months should not indicate timeline is still loading

@@ -55,6 +55,7 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	updateSelectedTimeline() {
+		// Adds marker to selected year-month and removes marker from others.
 		const MARKER = " (Selected)";
 		this.months = this.months.map((month) => {
 			const [year, monthNumber] = month.split("-");
@@ -70,11 +71,13 @@ export class TransactionsComponent implements OnInit {
 	async initTransactionRange() {
 		this.months = [];
 
+		// Get first and last transactions to determine transaction display range.
 		const first = await this.apiService.getFirstTransaction();
 		const last = await this.apiService.getLastTransaction();
 		const [firstYear, firstMonth] = first.date.split("-").map(Number);
 		const [lastYear, lastMonth] = last.date.split("-").map(Number);
 
+		// Add in all months between first and last transaction.
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
 		for (;;) {
@@ -88,12 +91,15 @@ export class TransactionsComponent implements OnInit {
 				break;
 			}
 		}
+
+		// Set selected year and month to last transaction and update timeline selection.
 		this.selectedMonth = lastMonth;
 		this.selectedYear = lastYear;
 		this.updateSelectedTimeline();
 	}
 
 	monthSelection(event: Event, label: string) {
+		// On click handler for month selection.
 		event.preventDefault();
 		this.selectedYear = parseInt(label.split("-")[0]);
 		this.selectedMonth = parseInt(label.split("-")[1]);
