@@ -1,12 +1,12 @@
 import { db } from "@/utils/database/db";
 import { plaidClient } from "./client";
-import { RemovedTransaction, Transaction } from "plaid";
+import type { RemovedTransaction, Transaction } from "plaid";
 import {
-	SyncedTransactionData,
+	type SyncedTransactionData,
 	SimpleTransaction,
 } from "../types/transactions";
 
-export const syncTransactions = async function (itemId: string) {
+export const syncTransactions = async (itemId: string) => {
 	// Step 1: Retrieve our access token and cursor from the database
 
 	const itemInfo = await db.getItemInfo(itemId);
@@ -73,11 +73,11 @@ export const syncTransactions = async function (itemId: string) {
 	return summary;
 };
 
-export const fetchNewSyncData = async function (
+export const fetchNewSyncData = async (
 	accessToken: string,
 	initialCursor: string | undefined,
 	retriesLeft = 3,
-): Promise<SyncedTransactionData> {
+): Promise<SyncedTransactionData> => {
 	const allData = {
 		added: [] as Transaction[],
 		removed: [] as RemovedTransaction[],

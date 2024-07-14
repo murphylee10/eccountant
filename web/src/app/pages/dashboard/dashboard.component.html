@@ -1,7 +1,8 @@
-<div class="container mx-auto p-4 border border-gray-300 rounded-lg max-w-md">
+<div class="container mx-auto p-4 border-1 border-solid border-gray-300 rounded-lg max-w-md">
   <div class="header flex justify-between items-center mb-4">
     <h3 class="text-lg font-bold">Accounts</h3>
     <p-dropdown 
+    *ngIf="banks.length > 0"
       [options]="banks" 
       [(ngModel)]="selectedBankId" 
       (onChange)="onBankChange($event)">
@@ -15,8 +16,9 @@
         <p>Balance: {{ account.balances.current | currency }}</p>
       </div>
     </div>
-  </div>
-  
+</div>
+<div *ngIf="banks.length === 0">No banks to display...</div>
+
     <div class="footer mt-4 text-right">
     <a 
       class="text-blue-500 flex items-center justify-end uppercase cursor-pointer" 

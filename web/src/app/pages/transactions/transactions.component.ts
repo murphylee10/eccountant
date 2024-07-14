@@ -3,13 +3,13 @@ import { Component, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PlaidTransactionsService } from "@services/plaid-transactions.service";
 import { ButtonModule } from "primeng/button";
-import { TimelineModule } from 'primeng/timeline';
+import { TimelineModule } from "primeng/timeline";
 
 import { TableModule } from "primeng/table";
 import type { PlaidTransaction } from "src/app/models/transaction.model";
-import { DistributionChartComponent } from "./components/distribution-chart/distribution-chart.component";
+import { DistributionChartComponent } from "../../components/distribution-chart/distribution-chart.component";
 import { MonthlySpendChartComponent } from "./components/monthly-spend-chart/monthly-spend-chart.component";
-import { SpendingsChartComponent } from "./components/spending-chart/spendings-chart.component";
+import { SpendingsChartComponent } from "../../components/spending-chart/spendings-chart.component";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from "@services/api.service";
 import { PlaidTokenService } from "@services/plaid-token.service";
@@ -49,39 +49,69 @@ export class TransactionsComponent implements OnInit {
 		private signalService: SignalService,
 	) {}
 
-	ngOnInit(): void {
-		this.initTransactionRange();
+	async ngOnInit(): Promise<void> {
+		await this.initTransactionRange();
 		this.fetchTransactionsByDateRange();
 	}
 
+	updateSelectedTimeline() {
+		// Adds marker to selected year-month and removes marker from others.
+		const MARKER = " (Selected)";
+		this.months = this.months.map((month) => {
+			const [year, monthNumber] = month.split("-");
+			const label = `${year}-${monthNumber}`;
+			if (
+				parseInt(year) === this.selectedYear &&
+				parseInt(monthNumber) === this.selectedMonth
+			) {
+				return `${label}${MARKER}`;
+			} else {
+				return label.replace(MARKER, "");
+			}
+		});
+	}
+
 	async initTransactionRange() {
-		const transactions = await this.apiService.getTransactionsByDateRange(
-			'1924-01-01',
-			new Date().toISOString().split('T')[0],
-		);
 		this.months = [];
 
-		const first = transactions[transactions.length-1].date;
-		const last = transactions[0].date;
-		const [firstYear, firstMonth] = first.split("-").map(Number);
-		const [lastYear, lastMonth] = last.split("-").map(Number);
+		// Get first and last transactions to determine transaction display range.
+		const first = await this.apiService.getFirstTransaction();
+		const last = await this.apiService.getLastTransaction();
+		const [firstYear, firstMonth] = first.date.split("-").map(Number);
+		const [lastYear, lastMonth] = last.date.split("-").map(Number);
 
+		// Add in all months between first and last transaction.
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
-		while (yearCounter !== lastYear || monthCounter !== lastMonth) {
-			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
+		for (;;) {
+			this.months.push(
+				`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`,
+			);
 			monthCounter++;
 			if (monthCounter > 12) {
 				monthCounter = 1;
 				yearCounter++;
 			}
+			if (
+				yearCounter > lastYear ||
+				(yearCounter === lastYear && monthCounter > lastMonth)
+			) {
+				break;
+			}
 		}
+
+		// Set selected year and month to last transaction and update timeline selection.
+		this.selectedMonth = lastMonth;
+		this.selectedYear = lastYear;
+		this.updateSelectedTimeline();
 	}
 
-	monthSelection(event: any, label:any) {
+	monthSelection(event: Event, label: string) {
+		// On click handler for month selection.
 		event.preventDefault();
 		this.selectedYear = parseInt(label.split("-")[0]);
 		this.selectedMonth = parseInt(label.split("-")[1]);
+		this.updateSelectedTimeline();
 		this.fetchTransactionsByDateRange();
 	}
 

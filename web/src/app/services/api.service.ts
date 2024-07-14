@@ -80,6 +80,18 @@ export class ApiService {
 		);
 	}
 
+	getFirstTransaction(): Promise<PlaidTransaction> {
+		return this.get<PlaidTransaction>(
+			`${this.transactionsUrl}/first-transaction`,
+		);
+	}
+
+	getLastTransaction(): Promise<PlaidTransaction> {
+		return this.get<PlaidTransaction>(
+			`${this.transactionsUrl}/last-transaction`,
+		);
+	}
+
 	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
 		return this.get<{ id: string; bank_name: string }[]>(
 			`${this.banksUrl}/list`,

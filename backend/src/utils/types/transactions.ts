@@ -1,5 +1,5 @@
-import { RemovedTransaction, Transaction as PlaidTransaction } from "plaid";
-import { Transaction } from "@prisma/client";
+import type { RemovedTransaction, Transaction as PlaidTransaction } from "plaid";
+import type { Transaction } from "@prisma/client";
 import { CATEGORY_MAP } from "./categoryMap";
 
 export interface SyncedTransactionData {

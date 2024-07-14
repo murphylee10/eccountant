@@ -1,7 +1,7 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
 import { plaidClient } from "@/utils/plaid/client";
-import { Request, Router } from "express";
+import { type Request, Router } from "express";
 
 interface DeactivateRequest extends Request {
 	body: {

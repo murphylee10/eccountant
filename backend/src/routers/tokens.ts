@@ -1,4 +1,9 @@
-import { Request, Router, Response, NextFunction } from "express";
+import {
+	type Request,
+	Router,
+	type Response,
+	type NextFunction,
+} from "express";
 import { plaidClient } from "@/utils/plaid/client";
 import { Products } from "plaid";
 import { db } from "@/utils/database/db";
@@ -62,7 +67,7 @@ tokensRouter.post(
 
 			res.json({ status: "success" });
 		} catch (error) {
-			console.log(`Running into an error!`);
+			console.log("Running into an error!");
 			next(error);
 		}
 	},

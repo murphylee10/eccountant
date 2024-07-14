@@ -29,7 +29,6 @@ export class SidebarComponent implements OnInit {
 						icon: "pi pi-list",
 						path: "/user/transactions",
 					},
-					{ label: "Recipients", icon: "pi pi-users", path: "/demo" },
 				],
 			},
 			{
@@ -37,7 +36,6 @@ export class SidebarComponent implements OnInit {
 				items: [
 					{ label: "Integrations", icon: "pi pi-sitemap" },
 					{ label: "Settings", icon: "pi pi-cog" },
-					{ label: "Get Help", icon: "pi pi-question-circle" },
 				],
 			},
 		];
