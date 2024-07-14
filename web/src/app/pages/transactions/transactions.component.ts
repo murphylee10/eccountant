@@ -98,8 +98,9 @@ export class TransactionsComponent implements OnInit {
 		}
 	}
 
-	monthSelection(event: any, even2:any) {
-		console.log(event, even2)
+	monthSelection(event: any, label:any) {
+		event.preventDefault();
+		console.log(label)
 	}
 
 	// initYearsAndMonths() {
