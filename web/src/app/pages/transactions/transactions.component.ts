@@ -75,6 +75,8 @@ export class TransactionsComponent implements OnInit {
 				break;
 			}
 		}
+		this.selectedMonth = lastMonth;
+		this.selectedYear = lastYear;
 	}
 
 	monthSelection(event: Event, label: string) {
