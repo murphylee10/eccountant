@@ -56,12 +56,6 @@ export class TransactionsComponent implements OnInit {
 
 	async initTransactionRange() {
 		this.months = [];
-		// const transactions = await this.apiService.getTransactionsByDateRange(
-		// 	'1924-01-01',
-		// 	new Date().toISOString().split('T')[0],
-		// );
-		// const first = transactions[transactions.length-1].date;
-		// const last = transactions[0].date;
 
 		const first = await this.apiService.getFirstTransaction();
 		const last = await this.apiService.getLastTransaction();
@@ -81,7 +75,6 @@ export class TransactionsComponent implements OnInit {
 				break;
 			}
 		}
-		console.log(this.months);
 	}
 
 	monthSelection(event: Event, label: string) {
