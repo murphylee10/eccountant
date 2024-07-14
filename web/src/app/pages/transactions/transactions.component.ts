@@ -68,12 +68,15 @@ export class TransactionsComponent implements OnInit {
 
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
-		while (yearCounter !== lastYear || monthCounter !== lastMonth) {
+		for (;;) {
 			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
 			monthCounter++;
 			if (monthCounter > 12) {
 				monthCounter = 1;
 				yearCounter++;
+			}
+			if (yearCounter > lastYear || (yearCounter === lastYear && monthCounter > lastMonth)) {
+				break;
 			}
 		}
 	}
