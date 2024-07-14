@@ -49,22 +49,24 @@ export class TransactionsComponent implements OnInit {
 		private signalService: SignalService,
 	) {}
 
-	ngOnInit(): void {
-		this.initTransactionRange();
+	async ngOnInit(): Promise<void> {
+		await this.initTransactionRange();
 		this.fetchTransactionsByDateRange();
 	}
 
 	async initTransactionRange() {
-		const transactions = await this.apiService.getTransactionsByDateRange(
-			'1924-01-01',
-			new Date().toISOString().split('T')[0],
-		);
 		this.months = [];
+		// const transactions = await this.apiService.getTransactionsByDateRange(
+		// 	'1924-01-01',
+		// 	new Date().toISOString().split('T')[0],
+		// );
+		// const first = transactions[transactions.length-1].date;
+		// const last = transactions[0].date;
 
-		const first = transactions[transactions.length-1].date;
-		const last = transactions[0].date;
-		const [firstYear, firstMonth] = first.split("-").map(Number);
-		const [lastYear, lastMonth] = last.split("-").map(Number);
+		const first = await this.apiService.getFirstTransaction();
+		const last = await this.apiService.getLastTransaction();
+		const [firstYear, firstMonth] = first.date.split("-").map(Number);
+		const [lastYear, lastMonth] = last.date.split("-").map(Number);
 
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
@@ -79,9 +81,10 @@ export class TransactionsComponent implements OnInit {
 				break;
 			}
 		}
+		console.log(this.months);
 	}
 
-	monthSelection(event: any, label:any) {
+	monthSelection(event: Event, label: string) {
 		event.preventDefault();
 		this.selectedYear = parseInt(label.split("-")[0]);
 		this.selectedMonth = parseInt(label.split("-")[1]);

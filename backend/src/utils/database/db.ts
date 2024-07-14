@@ -27,6 +27,57 @@ class Database {
 	}
 
 	/* Transaction interactions */
+	async getFirstTransaction	(
+		userId: string,
+	) {
+		const result = await this.prisma.transaction.findFirst({
+			where: {
+				user_id: userId,
+				is_removed: false,
+			},
+			orderBy: {
+				date: "asc",
+			},
+			include: {
+				account: {
+					select: {
+						name: true,
+						item: {
+							select: {
+								bank_name: true,
+							},
+						},
+					},
+				},
+			},
+		});
+		
+		return result;
+	}
+	async getLastTransaction(userId: string) {
+		const result = await this.prisma.transaction.findFirst({
+			where: {
+				user_id: userId,
+				is_removed: false,
+			},
+			orderBy: {
+				date: "desc",
+			},
+			include: {
+				account: {
+					select: {
+						name: true,
+						item: {
+							select: {
+								bank_name: true,
+							},
+						},
+					},
+				},
+			},
+		});
+		return result;
+	}
 
 	async getTransactionsByDateRange(
 		userId: string,

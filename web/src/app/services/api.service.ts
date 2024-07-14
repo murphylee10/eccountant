@@ -79,6 +79,18 @@ export class ApiService {
 		);
 	}
 
+	getFirstTransaction(): Promise<PlaidTransaction> {
+		return this.get<PlaidTransaction>(
+			`${this.transactionsUrl}/first-transaction`,
+		);
+	}
+
+	getLastTransaction(): Promise<PlaidTransaction> {
+		return this.get<PlaidTransaction>(
+			`${this.transactionsUrl}/last-transaction`,
+		);
+	}
+
 	fireWebhook() {
 		return this.post<any>("/debug/generate_webhook", {});
 	}

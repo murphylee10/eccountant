@@ -45,4 +45,40 @@ transactionsRouter.get(
   }
 );
 
+transactionsRouter.get(
+  "/first-transaction",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth?.payload.sub as string;
+
+      const transaction = await db.getFirstTransaction(
+        userId,
+      );
+      res.json(transaction);
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
+  }
+);
+
+transactionsRouter.get(
+  "/last-transaction",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth?.payload.sub as string;
+
+      const transaction = await db.getLastTransaction(
+        userId,
+      );
+      res.json(transaction);
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
+  }
+);
+
 export default transactionsRouter;
