@@ -48,17 +48,39 @@ export class TransactionsComponent implements OnInit {
 		private signalService: SignalService,
 	) {}
 
-	ngOnInit(): void {
-		this.initYearsAndMonths();
+	// ngOnInit(): void {
+	// 	this.initTransactionRange();
+	// 	// this.initYearsAndMonths();
+	// 	this.fetchTransactionsByDateRange();
+	// }
+
+	async ngOnInit(): Promise<void> {
+		await this.initTransactionRange();
+		// this.initYearsAndMonths();
 		this.fetchTransactionsByDateRange();
 	}
 
-	initYearsAndMonths() {
+	async initTransactionRange() {
 		const currentYear = new Date().getFullYear();
 		const currentMonth = new Date().getMonth() + 1;
 
-		// Initialize years from 2020 to the current year
-		for (let year = 2020; year <= currentYear; year++) {
+		const endDate = `${currentYear}-${currentMonth.toString().padStart(2, "0")}-${new Date(currentYear, currentMonth, 0).getDate()}`;
+		const transactions = await this.apiService.getTransactionsByDateRange(
+			'1924-01-01',
+			endDate,
+		);
+		const first = transactions[transactions.length-1].date;
+		const last = transactions[0].date;
+		const firstYear = parseInt(first.split("-")[0])
+		const lastYear = parseInt(last.split("-")[0])
+		const lastMonth = parseInt(last.split("-")[1])
+		console.log(first);
+		console.log(last);
+		console.log(firstYear);
+		console.log(lastYear);
+		console.log(lastMonth);
+
+		for (let year = firstYear; year <= lastYear; year++) {
 			this.years.push({ label: year.toString(), value: year });
 		}
 
@@ -78,9 +100,43 @@ export class TransactionsComponent implements OnInit {
 			{ label: "December", value: 12 },
 		];
 
+		// this.selectedYear = lastYear;
 		this.selectedYear = currentYear;
-		this.selectedMonth = currentMonth;
+		this.selectedMonth = lastMonth;
+		console.log(this.selectedYear);
+		console.log(new Date().getFullYear())
+		console.log(typeof new Date().getFullYear());
+		console.log(typeof (new Date().getMonth() + 1));
 	}
+
+	// initYearsAndMonths() {
+	// 	const currentYear = new Date().getFullYear();
+	// 	const currentMonth = new Date().getMonth() + 1;
+
+	// 	// Initialize years from 2020 to the current year
+	// 	for (let year = 2020; year <= currentYear; year++) {
+	// 		this.years.push({ label: year.toString(), value: year });
+	// 	}
+
+	// 	// Initialize months
+	// 	this.months = [
+	// 		{ label: "January", value: 1 },
+	// 		{ label: "February", value: 2 },
+	// 		{ label: "March", value: 3 },
+	// 		{ label: "April", value: 4 },
+	// 		{ label: "May", value: 5 },
+	// 		{ label: "June", value: 6 },
+	// 		{ label: "July", value: 7 },
+	// 		{ label: "August", value: 8 },
+	// 		{ label: "September", value: 9 },
+	// 		{ label: "October", value: 10 },
+	// 		{ label: "November", value: 11 },
+	// 		{ label: "December", value: 12 },
+	// 	];
+
+	// 	this.selectedYear = currentYear;
+	// 	this.selectedMonth = currentMonth;
+	// }
 
 	async fetchTransactionsByDateRange() {
 		if (this.selectedYear && this.selectedMonth) {
