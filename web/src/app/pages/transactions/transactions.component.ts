@@ -55,13 +55,14 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	updateSelectedTimeline() {
+		const MARKER = " (Selected)";
 		this.months = this.months.map((month) => {
 			const [year, monthNumber] = month.split("-");
 			const label = `${year}-${monthNumber}`;
 			if (parseInt(year) === this.selectedYear && parseInt(monthNumber) === this.selectedMonth) {
-				return `${label} (Selected)`;
+				return `${label}${MARKER}`;
 			} else {
-				return label.replace(" (Selected)", "");
+				return label.replace(MARKER, "");
 			}
 		});
 	}
