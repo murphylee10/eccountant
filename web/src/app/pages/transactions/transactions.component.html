@@ -1,16 +1,4 @@
 <div class="mb-10 flex gap-x-2">
-  <!-- <p-dropdown
-    [options]="years"
-    [(ngModel)]="selectedYear"
-    (ngModelChange)="fetchTransactionsByDateRange()"
-    placeholder="Select a year"
-  ></p-dropdown>
-  <p-dropdown
-    [options]="months"
-    [(ngModel)]="selectedMonth"
-    (ngModelChange)="fetchTransactionsByDateRange()"
-    placeholder="Select a month"
-  ></p-dropdown> -->
   <p-timeline [value]="months" layout="horizontal" align="alternate">
     <ng-template pTemplate="content" let-event>
       <div class="p-timeline-item">
@@ -26,16 +14,6 @@
         <span>&nbsp;</span>
     </ng-template>
   </p-timeline>
-  
-
-  <!-- <p-timeline [value]="months" layout="horizontal" align="alternate">
-    <ng-template pTemplate="content" let-event>
-        {{ event }}
-    </ng-template>
-    <ng-template pTemplate="opposite" let-event>
-        <span>&nbsp;</span>
-    </ng-template>
-  </p-timeline> -->
 </div>
 
 <div class="mb-10 flex gap-x-4">

@@ -3,7 +3,6 @@ import { Component, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PlaidTransactionsService } from "@services/plaid-transactions.service";
 import { ButtonModule } from "primeng/button";
-// import { DropdownModule } from "primeng/dropdown";
 import { TimelineModule } from 'primeng/timeline';
 
 import { TableModule } from "primeng/table";
@@ -25,7 +24,6 @@ import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
 		ButtonModule,
 		TableModule,
 		CommonModule,
-		// DropdownModule,
 		TimelineModule,
 		FormsModule,
 		ReactiveFormsModule,
@@ -59,7 +57,6 @@ export class TransactionsComponent implements OnInit {
 
 	async ngOnInit(): Promise<void> {
 		await this.initTransactionRange();
-		// this.initYearsAndMonths();
 		this.fetchTransactionsByDateRange();
 	}
 
@@ -100,40 +97,10 @@ export class TransactionsComponent implements OnInit {
 
 	monthSelection(event: any, label:any) {
 		event.preventDefault();
-		console.log(label)
 		this.selectedYear = parseInt(label.split("-")[0]);
 		this.selectedMonth = parseInt(label.split("-")[1]);
 		this.fetchTransactionsByDateRange();
 	}
-
-	// initYearsAndMonths() {
-	// 	const currentYear = new Date().getFullYear();
-	// 	const currentMonth = new Date().getMonth() + 1;
-
-	// 	// Initialize years from 2020 to the current year
-	// 	for (let year = 2020; year <= currentYear; year++) {
-	// 		this.years.push({ label: year.toString(), value: year });
-	// 	}
-
-	// 	// Initialize months
-	// 	this.months = [
-	// 		{ label: "January", value: 1 },
-	// 		{ label: "February", value: 2 },
-	// 		{ label: "March", value: 3 },
-	// 		{ label: "April", value: 4 },
-	// 		{ label: "May", value: 5 },
-	// 		{ label: "June", value: 6 },
-	// 		{ label: "July", value: 7 },
-	// 		{ label: "August", value: 8 },
-	// 		{ label: "September", value: 9 },
-	// 		{ label: "October", value: 10 },
-	// 		{ label: "November", value: 11 },
-	// 		{ label: "December", value: 12 },
-	// 	];
-
-	// 	this.selectedYear = currentYear;
-	// 	this.selectedMonth = currentMonth;
-	// }
 
 	async fetchTransactionsByDateRange() {
 		if (this.selectedYear && this.selectedMonth) {
