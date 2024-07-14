@@ -54,6 +54,18 @@ export class TransactionsComponent implements OnInit {
 		this.fetchTransactionsByDateRange();
 	}
 
+	updateSelectedTimeline() {
+		this.months = this.months.map((month) => {
+			const [year, monthNumber] = month.split("-");
+			const label = `${year}-${monthNumber}`;
+			if (parseInt(year) === this.selectedYear && parseInt(monthNumber) === this.selectedMonth) {
+				return `${label} (Selected)`;
+			} else {
+				return label.replace(" (Selected)", "");
+			}
+		});
+	}
+
 	async initTransactionRange() {
 		this.months = [];
 
@@ -77,12 +89,14 @@ export class TransactionsComponent implements OnInit {
 		}
 		this.selectedMonth = lastMonth;
 		this.selectedYear = lastYear;
+		this.updateSelectedTimeline();
 	}
 
 	monthSelection(event: Event, label: string) {
 		event.preventDefault();
 		this.selectedYear = parseInt(label.split("-")[0]);
 		this.selectedMonth = parseInt(label.split("-")[1]);
+		this.updateSelectedTimeline();
 		this.fetchTransactionsByDateRange();
 	}
 
