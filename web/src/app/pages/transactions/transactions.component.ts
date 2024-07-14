@@ -55,34 +55,25 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	async initTransactionRange() {
-		const currentYear = new Date().getFullYear();
-		const currentMonth = new Date().getMonth() + 1;
-
-		const endDate = `${currentYear}-${currentMonth.toString().padStart(2, "0")}-${new Date(currentYear, currentMonth, 0).getDate()}`;
 		const transactions = await this.apiService.getTransactionsByDateRange(
 			'1924-01-01',
-			endDate,
-		)
+			new Date().toISOString().split('T')[0],
+		);
 		this.months = [];
 
 		const first = transactions[transactions.length-1].date;
 		const last = transactions[0].date;
-		const firstYear = parseInt(first.split("-")[0])
-		const firstMonth = parseInt(first.split("-")[1])
-		const lastYear = parseInt(last.split("-")[0])
-		const lastMonth = parseInt(last.split("-")[1])
+		const [firstYear, firstMonth] = first.split("-").map(Number);
+		const [lastYear, lastMonth] = last.split("-").map(Number);
 
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
-		for (;;) {
+		while (yearCounter !== lastYear || monthCounter !== lastMonth) {
 			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
 			monthCounter++;
 			if (monthCounter > 12) {
 				monthCounter = 1;
 				yearCounter++;
-			}
-			if (yearCounter == lastYear && monthCounter == lastMonth) {
-				break;
 			}
 		}
 	}
