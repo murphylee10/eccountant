@@ -98,6 +98,10 @@ export class TransactionsComponent implements OnInit {
 		}
 	}
 
+	monthSelection(event: any, even2:any) {
+		console.log(event, even2)
+	}
+
 	// initYearsAndMonths() {
 	// 	const currentYear = new Date().getFullYear();
 	// 	const currentMonth = new Date().getMonth() + 1;

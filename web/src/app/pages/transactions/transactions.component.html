@@ -11,15 +11,31 @@
     (ngModelChange)="fetchTransactionsByDateRange()"
     placeholder="Select a month"
   ></p-dropdown> -->
-
   <p-timeline [value]="months" layout="horizontal" align="alternate">
+    <ng-template pTemplate="content" let-event>
+      <div class="p-timeline-item">
+        <div class="p-timeline-marker"></div>
+        <div class="p-timeline-content">
+          <div class="p-timeline-header">{{ event.header }}</div>
+          <div class="p-timeline-body">{{ event.content }}</div>
+          <a href="#" (click)="monthSelection($event, event)">{{ event }}</a>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="opposite" let-event>
+        <span>&nbsp;</span>
+    </ng-template>
+  </p-timeline>
+  
+
+  <!-- <p-timeline [value]="months" layout="horizontal" align="alternate">
     <ng-template pTemplate="content" let-event>
         {{ event }}
     </ng-template>
     <ng-template pTemplate="opposite" let-event>
         <span>&nbsp;</span>
     </ng-template>
-  </p-timeline>
+  </p-timeline> -->
 </div>
 
 <div class="mb-10 flex gap-x-4">
