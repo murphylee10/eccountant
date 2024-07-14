@@ -83,16 +83,20 @@ export class TransactionsComponent implements OnInit {
 		const lastYear = parseInt(last.split("-")[0])
 		const lastMonth = parseInt(last.split("-")[1])
 
-		for (let month = firstMonth; month <= 12; month++) {
-			this.months.push(`${firstYear}-${month.toString().padStart(2, "0")}`);
-		}
-		for (let year = firstYear+1; year < lastYear; year++) {
-			for (let month = 1; month <= 12; month++) {
-				this.months.push(`${year}-${month.toString().padStart(2, "0")}`);
+		let yearCounter = firstYear;
+		let monthCounter = firstMonth;
+		for (;;) {
+			console.log("monthCounter", monthCounter);
+			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
+			monthCounter++;
+			if (monthCounter > 12) {
+				monthCounter = 1;
+				yearCounter++;
 			}
-		}
-		for (let month = 1; month <= lastMonth; month++) {
-			this.months.push(`${lastYear}-${month.toString().padStart(2, "0")}`);
+			if (yearCounter == lastYear && monthCounter == lastMonth) {
+				break;
+			}
+			console.log("yearCounter", yearCounter);
 		}
 		console.log(this.months);
 
