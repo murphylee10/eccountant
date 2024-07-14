@@ -52,20 +52,19 @@ export class LinksComponent {
 
 	refreshConnectedBanks(): void {
 		this.plaidTokenService.getConnectedBanks().subscribe((data) => {
+			console.log(data);
 			if (data == null || data.length === 0) {
 				this.banksMessage = "You aren't connected to any banks yet.";
 			} else if (data.length === 1) {
 				this.banksMessage = `You're connected to ${data[0].bank_name ?? "unknown"}`;
 			} else {
-				this.banksMessage =
-					`You're connected to ` +
-					data
-						.map(
-							(e, idx) =>
-								(idx == data.length - 1 && data.length > 1 ? "and " : "") +
-								(e.bank_name ?? "(Unknown)"),
-						)
-						.join(data.length !== 2 ? ", " : " ");
+				this.banksMessage = `You're connected to ${data
+					.map(
+						(e, idx) =>
+							(idx === data.length - 1 && data.length > 1 ? "and " : "") +
+							(e.bank_name ?? "(Unknown)"),
+					)
+					.join(data.length !== 2 ? ", " : " ")}`;
 			}
 			this.connectedBanks = data;
 		});

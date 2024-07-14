@@ -9,6 +9,7 @@ import { PlaidTransaction } from "../models/transaction.model";
 })
 export class ApiService {
 	private transactionsUrl = "/transactions";
+	private banksUrl = "/banks";
 
 	constructor(private http: HttpClient) {}
 
@@ -76,6 +77,22 @@ export class ApiService {
 	): Promise<PlaidTransaction[]> {
 		return this.get<PlaidTransaction[]>(
 			`${this.transactionsUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
+		);
+	}
+
+	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
+		return this.get<{ id: string; bank_name: string }[]>(
+			`${this.banksUrl}/list`,
+		).catch((err) => {
+			return [];
+		});
+	}
+
+	public async getAccounts(itemId: string): Promise<any[]> {
+		return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
+			(err) => {
+				return [];
+			},
 		);
 	}
 

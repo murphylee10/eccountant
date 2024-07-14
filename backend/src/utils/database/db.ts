@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { SimpleTransaction } from "../types/transactions";
+import type { SimpleTransaction } from "../types/transactions";
 
 class Database {
 	private prisma: PrismaClient;
@@ -137,6 +137,17 @@ class Database {
 			select: {
 				id: true,
 				bank_name: true,
+			},
+		});
+		return result;
+	}
+
+	async getAccountsWithBank(itemId: string, userId: string) {
+		const result = await db.prisma.item.findUnique({
+			where: {
+				id: itemId,
+				user_id: userId,
+				is_active: true,
 			},
 		});
 		return result;
