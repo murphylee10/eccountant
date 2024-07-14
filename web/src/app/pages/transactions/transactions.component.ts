@@ -67,87 +67,65 @@ export class TransactionsComponent implements OnInit {
 		const currentYear = new Date().getFullYear();
 		const currentMonth = new Date().getMonth() + 1;
 
-		// Initialize months
-		this.months = [
-			{ label: "January", value: 1 },
-			{ label: "February", value: 2 },
-			{ label: "March", value: 3 },
-			{ label: "April", value: 4 },
-			{ label: "May", value: 5 },
-			{ label: "June", value: 6 },
-			{ label: "July", value: 7 },
-			{ label: "August", value: 8 },
-			{ label: "September", value: 9 },
-			{ label: "October", value: 10 },
-			{ label: "November", value: 11 },
-			{ label: "December", value: 12 },
-		];
-
 
 		const endDate = `${currentYear}-${currentMonth.toString().padStart(2, "0")}-${new Date(currentYear, currentMonth, 0).getDate()}`;
-		const transactions = this.apiService.getTransactionsByDateRange(
+		const transactions = await this.apiService.getTransactionsByDateRange(
 			'1924-01-01',
 			endDate,
-		).then((transactions) => {
-			console.log(transactions);
+		)
+		this.months = [];
 
-			const first = transactions[transactions.length-1].date;
-			const last = transactions[0].date;
-			const firstYear = parseInt(first.split("-")[0])
-			const lastYear = parseInt(last.split("-")[0])
-			const lastMonth = parseInt(last.split("-")[1])
-			console.log(first);
-			console.log(last);
-			console.log(firstYear);
-			console.log(lastYear);
-			console.log(lastMonth);
-	
-			for (let year = firstYear; year <= lastYear; year++) {
-				this.years.push({ label: year.toString(), value: year });
-			}
-	
-	
-			// this.selectedYear = lastYear;
-			this.selectedYear = currentYear;
-			this.selectedMonth = lastMonth;
-			this.selectedYear = 2024;
-			this.selectedMonth = 6;
-			console.log(this.selectedYear);
-			console.log(new Date().getFullYear())
-			console.log(typeof new Date().getFullYear());
-			console.log(typeof (new Date().getMonth() + 1));
-		});
 
-	}
+		const first = transactions[transactions.length-1].date;
+		const last = transactions[0].date;
+		const firstYear = parseInt(first.split("-")[0])
+		const firstMonth = parseInt(first.split("-")[1])
+		const lastYear = parseInt(last.split("-")[0])
+		const lastMonth = parseInt(last.split("-")[1])
 
-	initYearsAndMonths() {
-		const currentYear = new Date().getFullYear();
-		const currentMonth = new Date().getMonth() + 1;
-
-		// Initialize years from 2020 to the current year
-		for (let year = 2020; year <= currentYear; year++) {
-			this.years.push({ label: year.toString(), value: year });
+		for (let month = firstMonth; month <= 12; month++) {
+			this.months.push(`${firstYear}-${month.toString().padStart(2, "0")}`);
 		}
+		for (let year = firstYear+1; year < lastYear; year++) {
+			for (let month = 1; month <= 12; month++) {
+				this.months.push(`${year}-${month.toString().padStart(2, "0")}`);
+			}
+		}
+		for (let month = 1; month <= lastMonth; month++) {
+			this.months.push(`${lastYear}-${month.toString().padStart(2, "0")}`);
+		}
+		console.log(this.months);
 
-		// Initialize months
-		this.months = [
-			{ label: "January", value: 1 },
-			{ label: "February", value: 2 },
-			{ label: "March", value: 3 },
-			{ label: "April", value: 4 },
-			{ label: "May", value: 5 },
-			{ label: "June", value: 6 },
-			{ label: "July", value: 7 },
-			{ label: "August", value: 8 },
-			{ label: "September", value: 9 },
-			{ label: "October", value: 10 },
-			{ label: "November", value: 11 },
-			{ label: "December", value: 12 },
-		];
-
-		this.selectedYear = currentYear;
-		this.selectedMonth = currentMonth;
 	}
+
+	// initYearsAndMonths() {
+	// 	const currentYear = new Date().getFullYear();
+	// 	const currentMonth = new Date().getMonth() + 1;
+
+	// 	// Initialize years from 2020 to the current year
+	// 	for (let year = 2020; year <= currentYear; year++) {
+	// 		this.years.push({ label: year.toString(), value: year });
+	// 	}
+
+	// 	// Initialize months
+	// 	this.months = [
+	// 		{ label: "January", value: 1 },
+	// 		{ label: "February", value: 2 },
+	// 		{ label: "March", value: 3 },
+	// 		{ label: "April", value: 4 },
+	// 		{ label: "May", value: 5 },
+	// 		{ label: "June", value: 6 },
+	// 		{ label: "July", value: 7 },
+	// 		{ label: "August", value: 8 },
+	// 		{ label: "September", value: 9 },
+	// 		{ label: "October", value: 10 },
+	// 		{ label: "November", value: 11 },
+	// 		{ label: "December", value: 12 },
+	// 	];
+
+	// 	this.selectedYear = currentYear;
+	// 	this.selectedMonth = currentMonth;
+	// }
 
 	async fetchTransactionsByDateRange() {
 		if (this.selectedYear && this.selectedMonth) {
