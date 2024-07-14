@@ -108,6 +108,10 @@ export class ApiService {
 		);
 	}
 
+	public async deactivateBank(itemId: string) {
+		return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
+	}
+
 	fireWebhook() {
 		return this.post<any>("/debug/generate_webhook", {});
 	}

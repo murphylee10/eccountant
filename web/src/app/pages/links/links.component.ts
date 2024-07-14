@@ -1,26 +1,51 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
+// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
+import { ApiService } from "@services/api.service";
+// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { PlaidTokenService } from "@services/plaid-token.service";
-import { Bank } from "src/app/models/bank.model";
-import { Plaid } from "src/app/models/plaid.model";
+import { AccordionModule } from "primeng/accordion";
+import { BadgeModule } from "primeng/badge";
+import { ButtonModule } from "primeng/button";
+import { bankLogos } from "src/app/models/bank-logos-map";
+import type { Bank } from "src/app/models/bank.model";
+import type { Plaid } from "src/app/models/plaid.model";
 
-declare var Plaid: Plaid;
+declare let Plaid: Plaid;
 
 @Component({
 	selector: "app-links",
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, AccordionModule, BadgeModule, ButtonModule],
 	templateUrl: "./links.component.html",
-	styles: ``,
+	styles: "",
 })
 export class LinksComponent {
 	banksMessage: string | undefined;
-	connectedBanks: Bank[] = [];
+	// connectedBanks: Bank[] = [];
+	connectedBanks: any[] = [];
 
-	constructor(private plaidTokenService: PlaidTokenService) {}
+	constructor(
+		private apiService: ApiService,
+		private plaidTokenService: PlaidTokenService,
+	) {}
 
-	ngOnInit(): void {
-		this.refreshConnectedBanks();
+	async ngOnInit() {
+		const banksList = await this.apiService.getBanks();
+		this.connectedBanks = await Promise.all(
+			banksList.map(async (bank) => {
+				const accounts = await this.apiService.getAccounts(bank.id);
+				return {
+					...bank,
+					accounts,
+					accountCount: accounts.length,
+				};
+			}),
+		);
+	}
+
+	getBankLogo(bankName: string): string {
+		return bankLogos[bankName] || "assets/images/default-bank.png";
 	}
 
 	startLink(): void {
@@ -70,9 +95,13 @@ export class LinksComponent {
 		});
 	}
 
-	deactivateBank(itemId: string): void {
+	deactivateBank(event: Event, itemId: string): void {
 		this.plaidTokenService.deactivateBank(itemId).subscribe(() => {
-			this.refreshConnectedBanks();
+			event.preventDefault();
+			event.stopPropagation();
+			this.connectedBanks = this.connectedBanks.filter(
+				(bank) => bank.id !== itemId,
+			);
 		});
 	}
 }
