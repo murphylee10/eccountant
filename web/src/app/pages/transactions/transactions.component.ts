@@ -3,7 +3,9 @@ import { Component, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { PlaidTransactionsService } from "@services/plaid-transactions.service";
 import { ButtonModule } from "primeng/button";
-import { DropdownModule } from "primeng/dropdown";
+// import { DropdownModule } from "primeng/dropdown";
+import { TimelineModule } from 'primeng/timeline';
+
 import { TableModule } from "primeng/table";
 import type { PlaidTransaction } from "src/app/models/transaction.model";
 import { DistributionChartComponent } from "./components/distribution-chart/distribution-chart.component";
@@ -23,7 +25,8 @@ import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
 		ButtonModule,
 		TableModule,
 		CommonModule,
-		DropdownModule,
+		// DropdownModule,
+		TimelineModule,
 		FormsModule,
 		ReactiveFormsModule,
 		DistributionChartComponent,
