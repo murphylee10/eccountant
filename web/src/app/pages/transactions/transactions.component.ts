@@ -86,7 +86,6 @@ export class TransactionsComponent implements OnInit {
 		let yearCounter = firstYear;
 		let monthCounter = firstMonth;
 		for (;;) {
-			console.log("monthCounter", monthCounter);
 			this.months.push(`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`);
 			monthCounter++;
 			if (monthCounter > 12) {
@@ -96,10 +95,7 @@ export class TransactionsComponent implements OnInit {
 			if (yearCounter == lastYear && monthCounter == lastMonth) {
 				break;
 			}
-			console.log("yearCounter", yearCounter);
 		}
-		console.log(this.months);
-
 	}
 
 	// initYearsAndMonths() {
