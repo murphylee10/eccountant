@@ -5,10 +5,11 @@ import { db } from "@/utils/database/db";
 import { COUNTRY_CODES } from "@/utils/plaid/config";
 import { syncTransactions } from "@/utils/plaid/transactions";
 import { requireAuth } from "@/middleware/auth";
+import "dotenv/config";
 
 export const tokensRouter = Router();
 
-const WEBHOOK_URL = process.env.WEBHOOK_URL;
+const WEBHOOK_URL = process.env.PLAID_WEBHOOK_URL;
 const CLIENT_NAME = process.env.CLIENT_NAME || "Eccountant";
 
 /**

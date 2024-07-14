@@ -4,7 +4,7 @@ import { plaidClient } from "@/utils/plaid/client";
 import { NextFunction, Request, Router, Response } from "express";
 import { SandboxItemFireWebhookRequestWebhookCodeEnum } from "plaid";
 
-const debugRouter = Router();
+export const debugRouter = Router();
 
 /**
  * This code will eventually be used to generate a test webhook, which can

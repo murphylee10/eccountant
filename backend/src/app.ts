@@ -13,6 +13,7 @@ import { banksRouter } from "./routers/banks";
 import { tokensRouter } from "./routers/tokens";
 import expressWs from "express-ws";
 import { ExampleEvent } from "@common/event";
+import { debugRouter } from "./routers/debug";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,12 +27,13 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 app.use("/api/transactions", transactionsRouter);
 
 app.use("/api/users", usersRouter);
 
 app.use("/api/tokens", tokensRouter);
+
+app.use("/api/debug", debugRouter);
 
 app.use("/api/banks", banksRouter);
 
@@ -52,13 +54,13 @@ app.get(
 
 // Example endpoint that triggers realtime event update.
 app.get("/api/example/event", (req, res) => {
-  try {
-    dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
-  } catch (e) {
-    console.log(e);
-    return res.json({ success: false });
-  }
-  return res.json({ success: true });
+	try {
+		dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+	} catch (e) {
+		console.log(e);
+		return res.json({ success: false });
+	}
+	return res.json({ success: true });
 });
 
 // Error handling
