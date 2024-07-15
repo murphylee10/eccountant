@@ -49,7 +49,7 @@ jobs:
           fi
 
       - name: Create environment.prod.ts
-        if: env.WEB_CHANGED == 'true'
+        # if: env.WEB_CHANGED == 'true'
         working-directory: web
         run: |
           echo "export const environment = {" > src/environments/environment.prod.ts
