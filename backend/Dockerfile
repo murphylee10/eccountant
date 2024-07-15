@@ -15,8 +15,7 @@ WORKDIR /usr/src/app/backend
 # Copy package files from backend directory
 COPY backend/prisma ./prisma
 
-COPY backend/package.json ./
-COPY backend/package-lock.json ./
+COPY backend/package*.json ./
 
 RUN npm install
 
