@@ -341,6 +341,7 @@ class Database {
 		  // const result = await this.prisma.$queryRaw`SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'groceries' AND strftime('%m', t.date) = '06';`
       // const result = await this.prisma.$queryRaw`SELECT SUM(Transaction.amount) AS total_spent FROM Transaction INNER JOIN Account ON Transaction.account_id = Account.id WHERE Transaction.category = 'groceries' AND EXTRACT(MONTH FROM TIMESTAMP WITH TIME ZONE Transaction.date) = 6;`
 
+      // const result = await this.prisma.$queryRaw`SELECT SUM(amount) FROM "Transaction" WHERE "date" LIKE '20%' AND EXTRACT(MONTH FROM "date") = 7;`
       const result = await this.prisma.$queryRaw`${Prisma.raw(query)}`;
 			return result;
 		} catch (error) {

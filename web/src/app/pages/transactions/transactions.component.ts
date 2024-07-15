@@ -109,7 +109,9 @@ export class TransactionsComponent implements OnInit {
 
 
 	async testOllama() {
-    const question = "How much did I spend on food and drink in June?";
+    const question = "How much did I spend in July?";
+    // const question = "How much did I spend on food and drink in June?";
+    // const LLM_MODEL = 'llama3:8b';
     const LLM_MODEL = 'qwen:110b';
     // const LLM_MODEL = 'qwen';
 
@@ -117,7 +119,7 @@ export class TransactionsComponent implements OnInit {
 			model: LLM_MODEL,
 			messages: [{ role: 'user', content: `
 model Transaction {
-  category: is type String and is one of 'Entertainment', 'Food and Drink', 'General Merchandise', 'Transportation', 'Travel'.
+  category: is type String and is one of 'Income', 'Transfer In', 'Transfer Out', 'Loan Payments', 'Bank Fees', 'Entertainment', 'Food and Drink', 'General Merchandise', 'Home Improvement', 'Medical', 'Personal Care', 'General Services', 'Government and Non-Profit', 'Transportation', 'Travel', 'Rent and Utilities'
   date: is type String in the format 'YYYY-MM-DD'.
   name: is type String is the name of the transaction.
   amount: is type Float.
@@ -128,11 +130,12 @@ Task: convert into an SQL query based on the relation(s) defined above.
 
 Requirements:
 - Respond with only the SQL query.
+- Prioritize making the query simple and efficient.
+- Do not include any formatting.
 - All relations names in double quotes.
 - Do not use any non-postgreSQL functions.
-- Compare dates using string comparison i.e., >=, < ,etc. and not with BETWEEN.
-- If no date is specified, use 2024.
-- If no month is specified, use July.
+- The current date at the time of writing is 2024-07-15. Therefore, if the question does not specify a year, use 2024 and if the question does not specify a month, use July, otherwise use the year or month that is specified.
+- The date is type string, so compare dates using string comparison i.e., >=, < ,etc. otherwise you need to convert to a date object before comparing.
 				 ` }],
 		  })
 		  const content = response.message.content;
