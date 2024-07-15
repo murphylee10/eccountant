@@ -2,25 +2,22 @@
 # This compiles the Angular project to static HTML and js files.
 FROM node:20-alpine as build
 
-# Set the working directory to /app
-WORKDIR /app
-
-# Copy the common directory
-COPY ../common ./common
-
-# Copy the web directory to /app/web
-COPY . ./web
-
-# Change the working directory to /app/web
+# Set the working directory to /app/web for the Angular app
 WORKDIR /app/web
 ENV PATH /app/web/node_modules/.bin:$PATH
 
-# Copy package files
-COPY package.json ./
-COPY package-lock.json ./
+# Copy package files from the web directory
+COPY web/package.json ./
+COPY web/package-lock.json ./
 
 # Install dependencies
 RUN npm ci --silent
+
+# Copy the web source files into /app/web
+COPY web/ ./
+
+# Copy the common directory into /app/common
+COPY common ../common
 
 # Build the Angular app
 RUN npm run build
