@@ -37,6 +37,7 @@ import { CategoryDisplayPipe } from 'src/app/utils/category-display.pipe';
 })
 export class TransactionsComponent implements OnInit {
   transactions: PlaidTransaction[] = [];
+  // test comment
   // categoryData: { [key: string]: number } = {};
   // monthlySpendData: { [key: string]: number } = {};
   years: any[] = [];
