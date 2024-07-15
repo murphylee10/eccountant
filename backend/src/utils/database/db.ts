@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { SimpleTransaction } from "../types/transactions";
+import type { SimpleTransaction } from "../types/transactions";
 
 class Database {
   private prisma: PrismaClient;
@@ -26,56 +26,87 @@ class Database {
     return newUser;
   }
 
-  /* Transaction interactions */
-  async getFirstTransaction(userId: string) {
-    const result = await this.prisma.transaction.findFirst({
-      where: {
-        user_id: userId,
-        is_removed: false,
-      },
-      orderBy: {
-        date: "asc",
-      },
-      include: {
-        account: {
-          select: {
-            name: true,
-            item: {
-              select: {
-                bank_name: true,
-              },
-            },
-          },
-        },
-      },
-    });
+	/* Transaction interactions */
+	async getRecentTransactions(userId: string, limit: number) {
+		const results = await this.prisma.transaction.findMany({
+			where: {
+				user_id: userId,
+				is_removed: false,
+			},
+			orderBy: {
+				date: "desc",
+			},
+			take: limit,
+			include: {
+				account: {
+					select: {
+						name: true,
+						item: {
+							select: {
+								bank_name: true,
+							},
+						},
+					},
+				},
+			},
+		});
 
-    return result;
-  }
-  async getLastTransaction(userId: string) {
-    const result = await this.prisma.transaction.findFirst({
-      where: {
-        user_id: userId,
-        is_removed: false,
-      },
-      orderBy: {
-        date: "desc",
-      },
-      include: {
-        account: {
-          select: {
-            name: true,
-            item: {
-              select: {
-                bank_name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    return result;
-  }
+		return results.map((transaction) => ({
+			...transaction,
+			account_name: transaction.account.name,
+			bank_name: transaction.account.item.bank_name,
+		}));
+	}
+
+	async getFirstTransaction(userId: string) {
+		const result = await this.prisma.transaction.findFirst({
+			where: {
+				user_id: userId,
+				is_removed: false,
+			},
+			orderBy: {
+				date: "asc",
+			},
+			include: {
+				account: {
+					select: {
+						name: true,
+						item: {
+							select: {
+								bank_name: true,
+							},
+						},
+					},
+				},
+			},
+		});
+
+		return result;
+	}
+	async getLastTransaction(userId: string) {
+		const result = await this.prisma.transaction.findFirst({
+			where: {
+				user_id: userId,
+				is_removed: false,
+			},
+			orderBy: {
+				date: "desc",
+			},
+			include: {
+				account: {
+					select: {
+						name: true,
+						item: {
+							select: {
+								bank_name: true,
+							},
+						},
+					},
+				},
+			},
+		});
+		return result;
+	}
 
   async getTransactionsByDateRange(
     userId: string,
@@ -177,19 +208,30 @@ class Database {
 
   /* Item interactions */
 
-  async getBankNamesForUser(userId: string) {
-    const result = await this.prisma.item.findMany({
-      where: {
-        user_id: userId,
-        is_active: true,
-      },
-      select: {
-        id: true,
-        bank_name: true,
-      },
-    });
-    return result;
-  }
+	async getBankNamesForUser(userId: string) {
+		const result = await this.prisma.item.findMany({
+			where: {
+				user_id: userId,
+				is_active: true,
+			},
+			select: {
+				id: true,
+				bank_name: true,
+			},
+		});
+		return result;
+	}
+
+	async getAccountsWithBank(itemId: string, userId: string) {
+		const result = await db.prisma.item.findUnique({
+			where: {
+				id: itemId,
+				user_id: userId,
+				is_active: true,
+			},
+		});
+		return result;
+	}
 
   async getItemInfo(itemId: string) {
     const result = await this.prisma.item.findUnique({

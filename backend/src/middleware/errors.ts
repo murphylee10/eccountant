@@ -1,4 +1,9 @@
-import { NextFunction, Request, Response, ErrorRequestHandler } from "express";
+import type {
+	NextFunction,
+	Request,
+	Response,
+	ErrorRequestHandler,
+} from "express";
 import { CustomError } from "../utils/errors/CustomError";
 
 export const errorHandler: ErrorRequestHandler = (
@@ -27,11 +32,12 @@ export const errorHandler: ErrorRequestHandler = (
     return res.status(statusCode).send({ errors });
   }
 
-  // 4XX type status codes should reach client.
-  if (err.statusCode && err.statusCode.toString()[0] == "4") {
-    res.send(err);
-    return;
-  }
+	// 4XX type status codes should reach client.
+	// @ts-ignore
+	if (err.statusCode && err.statusCode.toString()[0] === "4") {
+		res.send(err);
+		return;
+	}
 
   // Unhandled errors
   console.error(JSON.stringify(err, null, 2));

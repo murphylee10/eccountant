@@ -8,7 +8,8 @@ import { PlaidTransaction } from '../models/transaction.model';
   providedIn: 'root',
 })
 export class ApiService {
-  private transactionsUrl = '/transactions';
+	private transactionsUrl = "/transactions";
+	private banksUrl = "/banks";
 
   constructor(private http: HttpClient) {}
 
@@ -85,11 +86,31 @@ export class ApiService {
     );
   }
 
-  getLastTransaction(): Promise<PlaidTransaction> {
-    return this.get<PlaidTransaction>(
-      `${this.transactionsUrl}/last-transaction`,
-    );
-  }
+	getLastTransaction(): Promise<PlaidTransaction> {
+		return this.get<PlaidTransaction>(
+			`${this.transactionsUrl}/last-transaction`,
+		);
+	}
+
+	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
+		return this.get<{ id: string; bank_name: string }[]>(
+			`${this.banksUrl}/list`,
+		).catch((err) => {
+			return [];
+		});
+	}
+
+	public async getAccounts(itemId: string): Promise<any[]> {
+		return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
+			(err) => {
+				return [];
+			},
+		);
+	}
+
+	public async deactivateBank(itemId: string) {
+		return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
+	}
 
   fireWebhook() {
     return this.post<any>('/debug/generate_webhook', {});

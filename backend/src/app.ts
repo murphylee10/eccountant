@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { type Express, Request, Response } from "express";
 import { transactionsRouter } from "./routers/transactions";
 import bodyParser from "body-parser";
 import "dotenv/config";
@@ -11,11 +11,16 @@ import { usersRouter } from "./routers/users";
 import EventDispatcher from "./utils/events/event-dispatcher";
 import { banksRouter } from "./routers/banks";
 import { tokensRouter } from "./routers/tokens";
-import expressWs from "express-ws";
 import { ExampleEvent } from "@common/event";
 import { debugRouter } from "./routers/debug";
+import expressWs, {
+	Application as ExpressWsApplication,
+	type WithWebsocketMethod,
+} from "express-ws";
 
-const app = express();
+type ExtendedExpress = Express & WithWebsocketMethod;
+
+const app = express() as ExtendedExpress;
 const PORT = process.env.PORT || 3000;
 
 // Setup realtime events with websockets

@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, type OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PlaidTransactionsService } from '@services/plaid-transactions.service';
-import { ButtonModule } from 'primeng/button';
-import { TimelineModule } from 'primeng/timeline';
+import { CommonModule } from "@angular/common";
+import { Component, type OnInit } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PlaidTransactionsService } from "@services/plaid-transactions.service";
+import { ButtonModule } from "primeng/button";
+import { TimelineModule } from "primeng/timeline";
 
-import { TableModule } from 'primeng/table';
-import type { PlaidTransaction } from 'src/app/models/transaction.model';
-import { DistributionChartComponent } from './components/distribution-chart/distribution-chart.component';
-import { MonthlySpendChartComponent } from './components/monthly-spend-chart/monthly-spend-chart.component';
-import { SpendingsChartComponent } from './components/spending-chart/spendings-chart.component';
+import { TableModule } from "primeng/table";
+import type { PlaidTransaction } from "src/app/models/transaction.model";
+import { DistributionChartComponent } from "../../components/distribution-chart/distribution-chart.component";
+import { MonthlySpendChartComponent } from "./components/monthly-spend-chart/monthly-spend-chart.component";
+import { SpendingsChartComponent } from "../../components/spending-chart/spendings-chart.component";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from '@services/api.service';
 import { PlaidTokenService } from '@services/plaid-token.service';
@@ -54,22 +54,22 @@ export class TransactionsComponent implements OnInit {
     this.fetchTransactionsByDateRange();
   }
 
-  updateSelectedTimeline() {
-    // Adds marker to selected year-month and removes marker from others.
-    const MARKER = ' (Selected)';
-    this.months = this.months.map((month) => {
-      const [year, monthNumber] = month.split('-');
-      const label = `${year}-${monthNumber}`;
-      if (
-        parseInt(year) === this.selectedYear &&
-        parseInt(monthNumber) === this.selectedMonth
-      ) {
-        return `${label}${MARKER}`;
-      } else {
-        return label.replace(MARKER, '');
-      }
-    });
-  }
+	updateSelectedTimeline() {
+		// Adds marker to selected year-month and removes marker from others.
+		const MARKER = " (Selected)";
+		this.months = this.months.map((month) => {
+			const [year, monthNumber] = month.split("-");
+			const label = `${year}-${monthNumber}`;
+			if (
+				parseInt(year) === this.selectedYear &&
+				parseInt(monthNumber) === this.selectedMonth
+			) {
+				return `${label}${MARKER}`;
+			} else {
+				return label.replace(MARKER, "");
+			}
+		});
+	}
 
   async initTransactionRange() {
     this.months = [];
@@ -80,25 +80,25 @@ export class TransactionsComponent implements OnInit {
     const [firstYear, firstMonth] = first.date.split('-').map(Number);
     const [lastYear, lastMonth] = last.date.split('-').map(Number);
 
-    // Add in all months between first and last transaction.
-    let yearCounter = firstYear;
-    let monthCounter = firstMonth;
-    for (;;) {
-      this.months.push(
-        `${yearCounter}-${monthCounter.toString().padStart(2, '0')}`,
-      );
-      monthCounter++;
-      if (monthCounter > 12) {
-        monthCounter = 1;
-        yearCounter++;
-      }
-      if (
-        yearCounter > lastYear ||
-        (yearCounter === lastYear && monthCounter > lastMonth)
-      ) {
-        break;
-      }
-    }
+		// Add in all months between first and last transaction.
+		let yearCounter = firstYear;
+		let monthCounter = firstMonth;
+		for (;;) {
+			this.months.push(
+				`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`,
+			);
+			monthCounter++;
+			if (monthCounter > 12) {
+				monthCounter = 1;
+				yearCounter++;
+			}
+			if (
+				yearCounter > lastYear ||
+				(yearCounter === lastYear && monthCounter > lastMonth)
+			) {
+				break;
+			}
+		}
 
     // Set selected year and month to last transaction and update timeline selection.
     this.selectedMonth = lastMonth;

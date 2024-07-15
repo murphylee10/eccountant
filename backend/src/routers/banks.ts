@@ -1,7 +1,7 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
 import { plaidClient } from "@/utils/plaid/client";
-import { Request, Router } from "express";
+import { type Request, Router } from "express";
 
 interface DeactivateRequest extends Request {
   body: {
@@ -20,6 +20,32 @@ banksRouter.get("/list", requireAuth, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+banksRouter.get("/accounts/:itemId", requireAuth, async (req, res, next) => {
+	try {
+		const userId = req.auth?.payload.sub as string;
+		const { itemId } = req.params;
+
+		// Retrieve the access token for the specified item
+		const item = await db.getAccountsWithBank(itemId, userId);
+
+		if (!item || !item.access_token) {
+			return res
+				.status(404)
+				.json({ error: "Bank not found or not accessible" });
+		}
+
+		// Retrieve accounts and balances from Plaid
+		const response = await plaidClient.accountsGet({
+			access_token: item.access_token,
+		});
+		const accounts = response.data.accounts;
+
+		return res.json(accounts);
+	} catch (error) {
+		next(error);
+	}
 });
 
 banksRouter.post(
