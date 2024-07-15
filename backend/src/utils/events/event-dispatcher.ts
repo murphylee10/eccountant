@@ -1,6 +1,7 @@
 import type { WebSocket } from "ws";
 import type { Express } from "express";
 import type { Event } from "@common/event";
+import type { Application } from "express-ws";
 
 const EVENTBUS_ENDPOINT = "/eventbus";
 
@@ -8,12 +9,12 @@ export default class EventDispatcher {
 	private static instance: EventDispatcher;
 	private ws: WebSocket;
 
-	private constructor(app: Express) {
+	private constructor(app: Application) {
 		this.setupWs(app);
 	}
 
 	// Method to get the single instance of the class
-	public static getInstance(app?: Express): EventDispatcher {
+	public static getInstance(app?: Application): EventDispatcher {
 		if (!EventDispatcher.instance) {
 			if (!app) throw Error("EventDispatcher server not created");
 			EventDispatcher.instance = new EventDispatcher(app);
@@ -21,7 +22,7 @@ export default class EventDispatcher {
 		return EventDispatcher.instance;
 	}
 
-	private setupWs(app: Express) {
+	private setupWs(app: Application) {
 		app.ws(`/api${EVENTBUS_ENDPOINT}`, (ws: WebSocket, req: any) => {
 			this.ws = ws;
 			console.log("established ws");
