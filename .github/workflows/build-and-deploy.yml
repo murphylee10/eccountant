@@ -22,25 +22,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set environment variables for paths
-        id: vars
-        run: |
-          echo "WEB_CHANGED=false" >> $GITHUB_ENV
-          echo "BACKEND_CHANGED=false" >> $GITHUB_ENV
-          if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^web/'; then
-            echo "WEB_CHANGED=true" >> $GITHUB_ENV
-          fi
-          if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^backend/'; then
-            echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
-          fi
-          if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^common/'; then
-            echo "WEB_CHANGED=true" >> $GITHUB_ENV
-            echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
-          fi
+      # - name: Set environment variables for paths
+      #   id: vars
+      #   run: |
+      #     echo "WEB_CHANGED=false" >> $GITHUB_ENV
+      #     echo "BACKEND_CHANGED=false" >> $GITHUB_ENV
+      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^web/'; then
+      #       echo "WEB_CHANGED=true" >> $GITHUB_ENV
+      #     fi
+      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^backend/'; then
+      #       echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
+      #     fi
+      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^common/'; then
+      #       echo "WEB_CHANGED=true" >> $GITHUB_ENV
+      #       echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
+      #     fi
 
       # Frontend build and push
       - name: Ensure environment.ts exists
-        if: env.WEB_CHANGED == 'true'
+        # if: env.WEB_CHANGED == 'true'
         working-directory: web
         run: |
           if [ ! -f src/environments/environment.ts ]; then
@@ -63,7 +63,7 @@ jobs:
           echo "export default environment;" >> src/environments/environment.prod.ts
 
       - name: Build frontend image
-        if: env.WEB_CHANGED == 'true'
+        # if: env.WEB_CHANGED == 'true'
         run: docker build -t $FRONTEND_IMAGE_NAME -f web/Dockerfile .
 
       - name: Log into GitHub Container Registry
@@ -84,7 +84,7 @@ jobs:
 
       # Backend build and push
       - name: Create .env file
-        if: env.BACKEND_CHANGED == 'true'
+        # if: env.BACKEND_CHANGED == 'true'
         working-directory: backend
         run: |
           echo "PORT=${{ secrets.PORT }}" > .env
@@ -101,7 +101,7 @@ jobs:
           echo "AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }}" >> .env
 
       - name: Build backend image
-        if: env.BACKEND_CHANGED == 'true'
+        # if: env.BACKEND_CHANGED == 'true'
         run: docker build -t $BACKEND_IMAGE_NAME -f backend/Dockerfile .
 
       - name: Push backend image to GitHub Container Registry
