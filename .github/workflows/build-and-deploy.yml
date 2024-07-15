@@ -9,6 +9,7 @@ on:
       - backend/**
       - common/**
       - docker-compose.prod.yml
+      - .github/workflows/*
 
 env:
   FRONTEND_IMAGE_NAME: eccountant-web
