@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./lib",
+    "composite": true // This is required for project references
+  },
+  "include": ["lib"]
+}
