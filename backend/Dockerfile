@@ -22,6 +22,8 @@ RUN npm install
 # Bundle app source
 COPY backend/ ./
 
+RUN npm run build
+
 # Expose necessary ports
 EXPOSE 3000
 EXPOSE 8001
