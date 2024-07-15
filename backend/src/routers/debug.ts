@@ -1,7 +1,12 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
 import { plaidClient } from "@/utils/plaid/client";
-import { NextFunction, Request, Router, Response } from "express";
+import {
+	type NextFunction,
+	type Request,
+	Router,
+	type Response,
+} from "express";
 import { SandboxItemFireWebhookRequestWebhookCodeEnum } from "plaid";
 
 export const debugRouter = Router();

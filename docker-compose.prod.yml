@@ -1,0 +1,77 @@
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+      - ./vhost:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - ./acme:/etc/acme.sh
+    environment:
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+      - DEFAULT_EMAIL=murphy.lee@mail.utoronto.ca
+      
+  db:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: eccountant
+      POSTGRES_PASSWORD: eccountant
+      POSTGRES_DB: eccountant
+    volumes:
+      # - /postgres_data:/var/lib/postgresql/data
+      # - /var/lib/docker/volumes/postgres_volume/_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+      # - /var/lib/postgresql/data
+    ports:
+      - "5555:5432"
+
+  frontend:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-web
+    container_name: web
+    restart: always
+    expose:
+      - 80
+    environment:
+      - VIRTUAL_HOST=eccountant.live
+      - LETSENCRYPT_HOST=eccountant.live
+
+  backend:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
+    container_name: backend
+    restart: always
+    expose:
+      - 3000
+    environment:
+      - VIRTUAL_HOST=api.eccountant.live
+      - LETSENCRYPT_HOST=api.eccountant.live
+    command: ["node", "dist/app.js"]
+
+  webhook:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
+    container_name: webhook
+    restart: always
+    expose:
+      - 8001
+    environment:
+      - VIRTUAL_HOST=webhook.eccountant.live
+      - LETSENCRYPT_HOST=webhook.eccountant.live
+    command: ["node", "dist/webhookServer.js"]
+
+volumes:
+  postgres_data:

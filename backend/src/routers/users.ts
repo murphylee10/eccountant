@@ -1,6 +1,6 @@
 import { db } from "@/utils/database/db";
 import { Router } from "express";
-import { Request } from "express";
+import type { Request } from "express";
 
 export const usersRouter = Router();
 

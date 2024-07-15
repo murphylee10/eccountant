@@ -15,31 +15,29 @@ import type { MenuItem } from 'primeng/api';
 export class SidebarComponent implements OnInit {
   items: MenuItem[] = [];
 
-  ngOnInit() {
-    this.items = [
-      {
-        label: 'Main',
-        items: [
-          { label: 'Account', icon: 'pi pi-user', path: '/user/accounts' },
-          { label: 'Dashboard', icon: 'pi pi-home', path: '/user/dashboard' },
-          { label: 'Balance', icon: 'pi pi-dollar', path: '/demo' },
-          { label: 'Cards', icon: 'pi pi-credit-card', path: '/demo' },
-          {
-            label: 'Transactions',
-            icon: 'pi pi-list',
-            path: '/user/transactions',
-          },
-          { label: 'Recipients', icon: 'pi pi-users', path: '/demo' },
-        ],
-      },
-      {
-        label: 'Other',
-        items: [
-          { label: 'Integrations', icon: 'pi pi-sitemap' },
-          { label: 'Settings', icon: 'pi pi-cog' },
-          { label: 'Get Help', icon: 'pi pi-question-circle' },
-        ],
-      },
-    ];
-  }
+	ngOnInit() {
+		this.items = [
+			{
+				label: "Main",
+				items: [
+					{ label: "Account", icon: "pi pi-user", path: "/user/accounts" },
+					{ label: "Dashboard", icon: "pi pi-home", path: "/user/dashboard" },
+					{ label: "Balance", icon: "pi pi-dollar", path: "/demo" },
+					{ label: "Cards", icon: "pi pi-credit-card", path: "/demo" },
+					{
+						label: "Transactions",
+						icon: "pi pi-list",
+						path: "/user/transactions",
+					},
+				],
+			},
+			{
+				label: "Other",
+				items: [
+					{ label: "Integrations", icon: "pi pi-sitemap" },
+					{ label: "Settings", icon: "pi pi-cog" },
+				],
+			},
+		];
+	}
 }
