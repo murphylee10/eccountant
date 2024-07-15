@@ -44,7 +44,8 @@ jobs:
       - name: Ensure environment.ts exists
         run: |
           if [ ! -f src/environments/environment.ts ]; then
-            echo "export const environment = {};" > src/environments/environment.ts
+            echo "const environment = { production: false };" > src/environments/environment.ts
+            echo "export default environment;" >> src/environments/environment.ts
           fi
 
       - name: Create environment.prod.ts
@@ -57,6 +58,7 @@ jobs:
           echo "  api_url: '${{ secrets.PROD_API_URL }}'," >> src/environments/environment.prod.ts
           # Add any other environment variables here
           echo "};" >> src/environments/environment.prod.ts
+          echo "export default environment;" >> src/environments/environment.prod.ts
 
       - name: Install dependencies
         run: npm install
