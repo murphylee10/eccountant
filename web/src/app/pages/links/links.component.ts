@@ -48,32 +48,32 @@ export class LinksComponent {
 		return bankLogos[bankName] || "assets/images/default-bank.png";
 	}
 
-	startLink(): void {
-		this.plaidTokenService.generateLinkToken().subscribe((data) => {
-			const handler = Plaid.create({
-				token: data.link_token,
-				onSuccess: (publicToken, metadata) => {
-					console.log(`Finished with Link! ${JSON.stringify(metadata)}`);
-					this.plaidTokenService
-						.exchangePublicToken(publicToken)
-						.subscribe(() => {
-							this.refreshConnectedBanks();
-						});
-				},
-				onExit: (err, metadata) => {
-					console.log(
-						`Exited early. Error: ${JSON.stringify(err)} Metadata: ${JSON.stringify(metadata)}`,
-					);
-				},
-				onEvent: (eventName, metadata) => {
-					console.log(
-						`Event ${eventName}, Metadata: ${JSON.stringify(metadata)}`,
-					);
-				},
-			});
-			handler.open();
-		});
-	}
+  startLink(): void {
+    this.plaidTokenService.generateLinkToken().subscribe((data) => {
+      const handler = Plaid.create({
+        token: data.link_token,
+        onSuccess: (publicToken, metadata) => {
+          console.log(`Finished with Link! ${JSON.stringify(metadata)}`);
+          this.plaidTokenService
+            .exchangePublicToken(publicToken)
+            .subscribe(() => {
+              this.refreshConnectedBanks();
+            });
+        },
+        onExit: (err, metadata) => {
+          console.log(
+            `Exited early. Error: ${JSON.stringify(err)} Metadata: ${JSON.stringify(metadata)}`,
+          );
+        },
+        onEvent: (eventName, metadata) => {
+          console.log(
+            `Event ${eventName}, Metadata: ${JSON.stringify(metadata)}`,
+          );
+        },
+      });
+      handler.open();
+    });
+  }
 
 	refreshConnectedBanks(): void {
 		this.plaidTokenService.getConnectedBanks().subscribe((data) => {

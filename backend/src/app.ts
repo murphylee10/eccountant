@@ -44,28 +44,28 @@ app.use("/api/banks", banksRouter);
 
 // Example endpoint that requires authentication.
 app.get("/api/example/auth", requireAuth, (req, res) => {
-	return res.json({ success: true, msg: "User is authenticated" });
+  return res.json({ success: true, msg: "User is authenticated" });
 });
 
 // Example endpoint that requires authorization.
 app.get(
-	"/api/example/authScope",
-	requireAuth,
-	requireAuthScope("read:example"),
-	(req, res) => {
-		return res.json({ success: true, msg: "User is authorized" });
-	},
+  "/api/example/authScope",
+  requireAuth,
+  requireAuthScope("read:example"),
+  (req, res) => {
+    return res.json({ success: true, msg: "User is authorized" });
+  },
 );
 
 // Example endpoint that triggers realtime event update.
 app.get("/api/example/event", (req, res) => {
-	try {
-		dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
-	} catch (e) {
-		console.log(e);
-		return res.json({ success: false });
-	}
-	return res.json({ success: true });
+  try {
+    dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+  } catch (e) {
+    console.log(e);
+    return res.json({ success: false });
+  }
+  return res.json({ success: true });
 });
 
 // Error handling
@@ -75,16 +75,16 @@ app.use(errorHandler);
 // const eventbus = EventBus.getInstance(app);
 
 app.listen(PORT, () => {
-	console.log("HTTP server on http://localhost:%s", PORT);
+  console.log("HTTP server on http://localhost:%s", PORT);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
-	await db.disconnect();
-	process.exit(0);
+  await db.disconnect();
+  process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-	await db.disconnect();
-	process.exit(0);
+  await db.disconnect();
+  process.exit(0);
 });

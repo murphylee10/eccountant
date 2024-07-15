@@ -1,15 +1,23 @@
 <div class="">
   <p-menubar styleClass="bg-white py-3 px-6 border-t-0">
-      <ng-template pTemplate="start">
-        <a href="/">
-          <img src="assets/images/EccountantLogoLight.svg" alt="Eccountant Logo" class="w-[16rem]">
-        </a>
-          <!-- Other Menubar items can go here -->
-      </ng-template>
-      <ng-template pTemplate="end">
-          <img src="assets/images/github-logo.png" class="w-10 h-10 rounded-full cursor-pointer" (click)="menu.toggle($event)">
-      </ng-template>
+    <ng-template pTemplate="start">
+      <a href="/">
+        <img
+          src="assets/images/EccountantLogoLight.svg"
+          alt="Eccountant Logo"
+          class="w-[16rem]"
+        />
+      </a>
+      <!-- Other Menubar items can go here -->
+    </ng-template>
+    <ng-template pTemplate="end">
+      <img
+        src="assets/images/github-logo.png"
+        class="h-10 w-10 cursor-pointer rounded-full"
+        (click)="menu.toggle($event)"
+      />
+    </ng-template>
   </p-menubar>
-  
+
   <p-menu #menu [popup]="true" [model]="items"></p-menu>
 </div>

@@ -1,22 +1,22 @@
 .p-cascadeselect {
-    box-shadow: $inputShadow;
+  box-shadow: $inputShadow;
+
+  .p-cascadeselect-label {
+    box-shadow: none;
+  }
+
+  &.p-disabled {
+    opacity: 1;
+    background-color: $disabledInputBg;
 
     .p-cascadeselect-label {
-        box-shadow: none;
+      background-color: $disabledInputBg;
+      color: $textSecondaryColor;
     }
-
-    &.p-disabled {
-        opacity: 1;
-        background-color: $disabledInputBg;
-
-        .p-cascadeselect-label {
-            background-color: $disabledInputBg;
-            color: $textSecondaryColor;
-        }
-    }
+  }
 }
 
 div.p-cascadeselect-panel {
-    border: 0 none;
-    box-shadow: none;
+  border: 0 none;
+  box-shadow: none;
 }

@@ -9,18 +9,18 @@ $highlightTextColor: #7254f3 !default;
 $highlightFocusBg: darken($highlightBg, 6%) !default;
 
 $colors: (
-    "blue": #54b0f3,
-    "green": #29c76f,
-    "yellow": #f3d054,
-    "cyan": #3ec9d6,
-    "pink": #ea5455,
-    "indigo": #5464f3,
-    "teal": #0dc381,
-    "orange": #ff9f42,
-    "bluegray": #6878a0,
-    "purple": #7254f3,
-    "red": #ff384b,
-    "primary": $primaryColor,
+  "blue": #54b0f3,
+  "green": #29c76f,
+  "yellow": #f3d054,
+  "cyan": #3ec9d6,
+  "pink": #ea5455,
+  "indigo": #5464f3,
+  "teal": #0dc381,
+  "orange": #ff9f42,
+  "bluegray": #6878a0,
+  "purple": #7254f3,
+  "red": #ff384b,
+  "primary": $primaryColor,
 ) !default;
 
 //reused color variables
@@ -43,11 +43,15 @@ $textColor: $shade700 !default;
 $textSecondaryColor: $shade600 !default;
 $borderRadius: 6px !default;
 $transitionDuration: 0.2s !default;
-$formElementTransition: background-color $transitionDuration,
-    color $transitionDuration, border-color $transitionDuration,
-    box-shadow $transitionDuration !default;
-$actionIconTransition: background-color $transitionDuration,
-    color $transitionDuration, box-shadow $transitionDuration !default;
+$formElementTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  border-color $transitionDuration,
+  box-shadow $transitionDuration !default;
+$actionIconTransition:
+  background-color $transitionDuration,
+  color $transitionDuration,
+  box-shadow $transitionDuration !default;
 $listItemTransition: box-shadow $transitionDuration !default;
 $primeIconFontSize: 1rem !default;
 $divider: 1px solid $shade300 !default;
@@ -65,7 +69,7 @@ $scaleLG: 1.25 !default;
 $focusOutlineColor: $primaryLightColor !default;
 $focusOutline: 0 none !default;
 $focusOutlineOffset: 0 !default;
-$inputFocusOutlineOffset:$focusOutlineOffset !default;
+$inputFocusOutlineOffset: $focusOutlineOffset !default;
 $focusShadow: 0 0 0 1px $focusOutlineColor !default;
 
 //action icons
@@ -147,8 +151,10 @@ $buttonHoverBorderColor: $primaryDarkColor !default;
 $buttonActiveBg: $primaryDarkerColor !default;
 $buttonTextActiveColor: $primaryTextColor !default;
 $buttonActiveBorderColor: $primaryDarkerColor !default;
-$raisedButtonShadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
+$raisedButtonShadow:
+  0 3px 1px -2px rgba(0, 0, 0, 0.2),
+  0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
 $textButtonHoverBgOpacity: 0.04 !default;
@@ -162,25 +168,25 @@ $secondaryButtonBg: #a1c30d !default;
 $secondaryButtonTextColor: #ffffff !default;
 $secondaryButtonBorder: 1px solid $secondaryButtonBg !default;
 $secondaryButtonHoverBg: scale-color(
-    $secondaryButtonBg,
-    $lightness: -10%
+  $secondaryButtonBg,
+  $lightness: -10%
 ) !default;
 $secondaryButtonTextHoverColor: $secondaryButtonTextColor !default;
 $secondaryButtonHoverBorderColor: scale-color(
-    $secondaryButtonBg,
-    $lightness: -10%
+  $secondaryButtonBg,
+  $lightness: -10%
 ) !default;
 $secondaryButtonActiveBg: scale-color(
-    $secondaryButtonBg,
-    $lightness: -20%
+  $secondaryButtonBg,
+  $lightness: -20%
 ) !default;
 $secondaryButtonTextActiveColor: $secondaryButtonTextColor !default;
 $secondaryButtonActiveBorderColor: scale-color(
-    $secondaryButtonBg,
-    $lightness: -20%
+  $secondaryButtonBg,
+  $lightness: -20%
 ) !default;
 $secondaryButtonFocusShadow: 0 0 0 0.2rem
-    scale-color($secondaryButtonBg, $lightness: 60%) !default;
+  scale-color($secondaryButtonBg, $lightness: 60%) !default;
 
 $infoButtonBg: #5486f3 !default;
 $infoButtonTextColor: #ffffff !default;
@@ -188,14 +194,14 @@ $infoButtonBorder: 1px solid $infoButtonBg !default;
 $infoButtonHoverBg: scale-color($infoButtonBg, $lightness: -10%) !default;
 $infoButtonTextHoverColor: $infoButtonTextColor !default;
 $infoButtonHoverBorderColor: scale-color(
-    $infoButtonBg,
-    $lightness: -10%
+  $infoButtonBg,
+  $lightness: -10%
 ) !default;
 $infoButtonActiveBg: scale-color($infoButtonBg, $lightness: -20%) !default;
 $infoButtonTextActiveColor: $infoButtonTextColor !default;
 $infoButtonActiveBorderColor: scale-color(
-    $infoButtonBg,
-    $lightness: -20%
+  $infoButtonBg,
+  $lightness: -20%
 ) !default;
 $infoButtonFocusShadow: 0 0 0 0.2rem scale-color($infoButtonBg, $lightness: 60%) !default;
 
@@ -205,20 +211,20 @@ $successButtonBorder: 1px solid $successButtonBg !default;
 $successButtonHoverBg: scale-color($successButtonBg, $lightness: -10%) !default;
 $successButtonTextHoverColor: $successButtonTextColor !default;
 $successButtonHoverBorderColor: scale-color(
-    $successButtonBg,
-    $lightness: -10%
+  $successButtonBg,
+  $lightness: -10%
 ) !default;
 $successButtonActiveBg: scale-color(
-    $successButtonBg,
-    $lightness: -20%
+  $successButtonBg,
+  $lightness: -20%
 ) !default;
 $successButtonTextActiveColor: $successButtonTextColor !default;
 $successButtonActiveBorderColor: scale-color(
-    $successButtonBg,
-    $lightness: -20%
+  $successButtonBg,
+  $lightness: -20%
 ) !default;
 $successButtonFocusShadow: 0 0 0 0.2rem
-    scale-color($successButtonBg, $lightness: 60%) !default;
+  scale-color($successButtonBg, $lightness: 60%) !default;
 
 $warningButtonBg: #ff9f42 !default;
 $warningButtonTextColor: #ffffff !default;
@@ -226,20 +232,20 @@ $warningButtonBorder: 1px solid $warningButtonBg !default;
 $warningButtonHoverBg: scale-color($warningButtonBg, $lightness: -10%) !default;
 $warningButtonTextHoverColor: $warningButtonTextColor !default;
 $warningButtonHoverBorderColor: scale-color(
-    $warningButtonBg,
-    $lightness: -10%
+  $warningButtonBg,
+  $lightness: -10%
 ) !default;
 $warningButtonActiveBg: scale-color(
-    $warningButtonBg,
-    $lightness: -20%
+  $warningButtonBg,
+  $lightness: -20%
 ) !default;
 $warningButtonTextActiveColor: $warningButtonTextColor !default;
 $warningButtonActiveBorderColor: scale-color(
-    $warningButtonBg,
-    $lightness: -20%
+  $warningButtonBg,
+  $lightness: -20%
 ) !default;
 $warningButtonFocusShadow: 0 0 0 0.2rem
-    scale-color($warningButtonBg, $lightness: 60%) !default;
+  scale-color($warningButtonBg, $lightness: 60%) !default;
 
 $helpButtonBg: #3ec9d6 !default;
 $helpButtonTextColor: #ffffff !default;
@@ -247,14 +253,14 @@ $helpButtonBorder: 1px solid $helpButtonBg !default;
 $helpButtonHoverBg: scale-color($helpButtonBg, $lightness: -10%) !default;
 $helpButtonTextHoverColor: $helpButtonTextColor !default;
 $helpButtonHoverBorderColor: scale-color(
-    $helpButtonBg,
-    $lightness: -10%
+  $helpButtonBg,
+  $lightness: -10%
 ) !default;
 $helpButtonActiveBg: scale-color($helpButtonBg, $lightness: -20%) !default;
 $helpButtonTextActiveColor: $helpButtonTextColor !default;
 $helpButtonActiveBorderColor: scale-color(
-    $helpButtonBg,
-    $lightness: -20%
+  $helpButtonBg,
+  $lightness: -20%
 ) !default;
 $helpButtonFocusShadow: 0 0 0 0.2rem scale-color($helpButtonBg, $lightness: 60%) !default;
 
@@ -264,17 +270,17 @@ $dangerButtonBorder: 1px solid $dangerButtonBg !default;
 $dangerButtonHoverBg: scale-color($dangerButtonBg, $lightness: -10%) !default;
 $dangerButtonTextHoverColor: $dangerButtonTextColor !default;
 $dangerButtonHoverBorderColor: scale-color(
-    $dangerButtonBg,
-    $lightness: -10%
+  $dangerButtonBg,
+  $lightness: -10%
 ) !default;
 $dangerButtonActiveBg: scale-color($dangerButtonBg, $lightness: -20%) !default;
 $dangerButtonTextActiveColor: $dangerButtonTextColor !default;
 $dangerButtonActiveBorderColor: scale-color(
-    $dangerButtonBg,
-    $lightness: -20%
+  $dangerButtonBg,
+  $lightness: -20%
 ) !default;
 $dangerButtonFocusShadow: 0 0 0 0.2rem
-    scale-color($dangerButtonBg, $lightness: 60%) !default;
+  scale-color($dangerButtonBg, $lightness: 60%) !default;
 
 $linkButtonColor: $primaryDarkerColor !default;
 $linkButtonHoverColor: $primaryDarkerColor !default;
@@ -361,9 +367,9 @@ $sliderRangeBg: $primaryColor !default;
 $calendarTableMargin: 0.5rem 0 !default;
 $calendarPadding: 0.5rem !default;
 $calendarBg: linear-gradient(
-    90deg,
-    $primaryColor 0%,
-    scale-color($primaryColor, $red: 25%) 100%
+  90deg,
+  $primaryColor 0%,
+  scale-color($primaryColor, $red: 25%) 100%
 ) !default;
 $calendarInlineBg: $calendarBg !default;
 $calendarTextColor: $primaryTextColor !default;
@@ -507,8 +513,10 @@ $cardSubTitleFontWeight: 400 !default;
 $cardSubTitleColor: $shade600 !default;
 $cardContentPadding: 1.25rem 0 !default;
 $cardFooterPadding: 1.25rem 0 0 0 !default;
-$cardShadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
+$cardShadow:
+  0 2px 1px -1px rgba(0, 0, 0, 0.2),
+  0 1px 1px 0 rgba(0, 0, 0, 0.14),
+  0 1px 3px 0 rgba(0, 0, 0, 0.12) !default;
 
 //editor
 $editorToolbarBg: $panelHeaderBg !default;
@@ -901,51 +909,51 @@ $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
 
 :root {
-    font-family: Lato, Helvetica, sans-serif;
-    --font-family: Lato, Helvetica, sans-serif;
-    --surface-a: #{$shade000};
-    --surface-b: #{$shade100};
-    --surface-c: #{$shade200};
-    --surface-d: #{$shade300};
-    --surface-e: #{$shade000};
-    --surface-f: #{$shade000};
-    --text-color: #{$shade700};
-    --text-color-secondary: #{$shade600};
-    --primary-color: #{$primaryColor};
-    --primary-color-text: #{$primaryTextColor};
-    --surface-0: #ffffff;
-    --surface-50: #f1f4f6;
-    --surface-100: #e2e8ee;
-    --surface-200: #c6d1dd;
-    --surface-300: #a9bbcb;
-    --surface-400: #8da4ba;
-    --surface-500: #708da9;
-    --surface-600: #5a7187;
-    --surface-700: #435565;
-    --surface-800: #2d3844;
-    --surface-900: #161c22;
-    --gray-50: #f1f4f6;
-    --gray-100: #e2e8ee;
-    --gray-200: #c6d1dd;
-    --gray-300: #a9bbcb;
-    --gray-400: #8da4ba;
-    --gray-500: #708da9;
-    --gray-600: #5a7187;
-    --gray-700: #435565;
-    --gray-800: #2d3844;
-    --gray-900: #161c22;
-    --content-padding: #{$panelContentPadding};
-    --inline-spacing: #{$inlineSpacing};
-    --border-radius: #{$borderRadius};
-    --surface-ground: #eff3f8;
-    --surface-section: #ffffff;
-    --surface-card: #ffffff;
-    --surface-overlay: #ffffff;
-    --surface-border: #dfe7ef;
-    --surface-hover: #f6f9fc;
-    --maskbg: #{$maskBg};
-    --highlight-bg: #{$highlightBg};
-    --highlight-text-color: #{$highlightTextColor};
-    --focus-ring: #{$focusShadow};
-    color-scheme: light;
+  font-family: Lato, Helvetica, sans-serif;
+  --font-family: Lato, Helvetica, sans-serif;
+  --surface-a: #{$shade000};
+  --surface-b: #{$shade100};
+  --surface-c: #{$shade200};
+  --surface-d: #{$shade300};
+  --surface-e: #{$shade000};
+  --surface-f: #{$shade000};
+  --text-color: #{$shade700};
+  --text-color-secondary: #{$shade600};
+  --primary-color: #{$primaryColor};
+  --primary-color-text: #{$primaryTextColor};
+  --surface-0: #ffffff;
+  --surface-50: #f1f4f6;
+  --surface-100: #e2e8ee;
+  --surface-200: #c6d1dd;
+  --surface-300: #a9bbcb;
+  --surface-400: #8da4ba;
+  --surface-500: #708da9;
+  --surface-600: #5a7187;
+  --surface-700: #435565;
+  --surface-800: #2d3844;
+  --surface-900: #161c22;
+  --gray-50: #f1f4f6;
+  --gray-100: #e2e8ee;
+  --gray-200: #c6d1dd;
+  --gray-300: #a9bbcb;
+  --gray-400: #8da4ba;
+  --gray-500: #708da9;
+  --gray-600: #5a7187;
+  --gray-700: #435565;
+  --gray-800: #2d3844;
+  --gray-900: #161c22;
+  --content-padding: #{$panelContentPadding};
+  --inline-spacing: #{$inlineSpacing};
+  --border-radius: #{$borderRadius};
+  --surface-ground: #eff3f8;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: #dfe7ef;
+  --surface-hover: #f6f9fc;
+  --maskbg: #{$maskBg};
+  --highlight-bg: #{$highlightBg};
+  --highlight-text-color: #{$highlightTextColor};
+  --focus-ring: #{$focusShadow};
+  color-scheme: light;
 }

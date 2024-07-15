@@ -3,11 +3,11 @@ $primaryLightColor: #f9a8d4 !default;
 $primaryLighterColor: #fbcfe8 !default;
 $primaryTextColor: #020617 !default;
 
-$highlightBg:rgba(244, 114, 182, .16) !default;
-$highlightTextColor: rgba(255,255,255,.87) !default;
-$highlightFocusBg: rgba($primaryColor, .24) !default;
+$highlightBg: rgba(244, 114, 182, 0.16) !default;
+$highlightTextColor: rgba(255, 255, 255, 0.87) !default;
+$highlightFocusBg: rgba($primaryColor, 0.24) !default;
 
-@import '../_variables';
-@import './_fonts';
-@import '../../../../theme-base/_components';
-@import '../extensions/_extensions';
+@import "../_variables";
+@import "./_fonts";
+@import "../../../../theme-base/_components";
+@import "../extensions/_extensions";

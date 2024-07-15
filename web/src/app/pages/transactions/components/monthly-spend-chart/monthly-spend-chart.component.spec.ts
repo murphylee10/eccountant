@@ -8,10 +8,9 @@ describe('MonthlySpendChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MonthlySpendChartComponent]
-    })
-    .compileComponents();
-    
+      imports: [MonthlySpendChartComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(MonthlySpendChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

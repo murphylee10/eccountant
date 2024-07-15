@@ -1,19 +1,19 @@
-import { Component, type OnInit } from "@angular/core";
-import { MenuModule } from "primeng/menu";
-import { AvatarModule } from "primeng/avatar";
-import { RippleModule } from "primeng/ripple";
-import { CommonModule } from "@angular/common";
-import type { MenuItem } from "primeng/api";
+import { Component, type OnInit } from '@angular/core';
+import { MenuModule } from 'primeng/menu';
+import { AvatarModule } from 'primeng/avatar';
+import { RippleModule } from 'primeng/ripple';
+import { CommonModule } from '@angular/common';
+import type { MenuItem } from 'primeng/api';
 
 @Component({
-	selector: "layout-sidebar",
-	standalone: true,
-	imports: [CommonModule, MenuModule, AvatarModule, RippleModule],
-	templateUrl: "./sidebar.component.html",
-	styles: "",
+  selector: 'layout-sidebar',
+  standalone: true,
+  imports: [CommonModule, MenuModule, AvatarModule, RippleModule],
+  templateUrl: './sidebar.component.html',
+  styles: '',
 })
 export class SidebarComponent implements OnInit {
-	items: MenuItem[] = [];
+  items: MenuItem[] = [];
 
 	ngOnInit() {
 		this.items = [
