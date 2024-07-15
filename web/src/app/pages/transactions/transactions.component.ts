@@ -14,8 +14,9 @@ import { SpendingsChartComponent } from './components/spending-chart/spendings-c
 import { ApiService } from '@services/api.service';
 import { PlaidTokenService } from '@services/plaid-token.service';
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
-import { SignalService } from '@services/signal.service';
-import { CategoryDisplayPipe } from 'src/app/utils/category-display.pipe';
+import { SignalService } from "@services/signal.service";
+import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
+import ollama from 'ollama'
 
 @Component({
   selector: 'app-transactions',
@@ -106,19 +107,98 @@ export class TransactionsComponent implements OnInit {
     this.updateSelectedTimeline();
   }
 
-  monthSelection(event: Event, label: string) {
-    // On click handler for month selection.
-    event.preventDefault();
-    this.selectedYear = parseInt(label.split('-')[0]);
-    this.selectedMonth = parseInt(label.split('-')[1]);
-    this.updateSelectedTimeline();
-    this.fetchTransactionsByDateRange();
-  }
 
-  async fetchTransactionsByDateRange() {
-    if (this.selectedYear && this.selectedMonth) {
-      const startDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, '0')}-01`;
-      const endDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, '0')}-${new Date(this.selectedYear, this.selectedMonth, 0).getDate()}`;
+	async testOllama() {
+    const question = "How much did I spend on food and drink in June?";
+    const LLM_MODEL = 'qwen:110b';
+    // const LLM_MODEL = 'qwen';
+
+		const response = await ollama.chat({
+			model: LLM_MODEL,
+			messages: [{ role: 'user', content: `
+model Transaction {
+  category: is type String and is one of 'Entertainment', 'Food and Drink', 'General Merchandise', 'Transportation', 'Travel'.
+  date: is type String in the format 'YYYY-MM-DD'.
+  name: is type String is the name of the transaction.
+  amount: is type Float.
+}
+
+Task: convert into an SQL query based on the relation(s) defined above.
+"${question}"
+
+Requirements:
+- Respond with only the SQL query.
+- All relations names in double quotes.
+- Do not use any non-postgreSQL functions.
+- Compare dates using string comparison i.e., >=, < ,etc. and not with BETWEEN.
+- If no date is specified, use 2024.
+- If no month is specified, use July.
+				 ` }],
+		  })
+		  const content = response.message.content;
+		  console.log(content)
+		  var query = content;
+		  if (content.includes('```')) {
+			const lines = content.split('\n');
+			const idx_begin = lines.findIndex(line => line.includes('```'));
+			const idx_end = lines.findIndex(line => line.includes('```'), idx_begin + 1);
+			query = lines.slice(idx_begin + 1, idx_end).join('\n');
+		  }
+		  console.log(query)
+
+
+    // const query = `SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'groceries' AND strftime('%m', t.date) = '06';`
+		  // const query = "SELECT * FROM Transaction;"
+		// console.log(query)
+
+    // SELECT SUM(t.amount) AS total_spent
+    // FROM "Transaction" t
+    // JOIN "Account" acc ON t."account_id" = acc.id
+    // WHERE t.category = 'groceries'
+    // AND strftime('%m', t.date) = '06'
+    
+
+			// const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`
+      // const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`;
+
+		  const res = await this.apiService.ask(query);
+      const val = res[0];
+      const joined = JSON.stringify(res);
+			console.log(joined)
+
+		const postres = await ollama.chat({
+			model: LLM_MODEL,
+			messages: [{ role: 'user', content: `
+The user asked the question below:
+"${question}"
+
+You previously generated an SQL query that resulted in the following result:
+${joined}
+
+Write a concise human-readable response to the user's question.
+				 ` }],
+		  })
+		  const cc = postres.message.content;
+		  console.log(cc)
+
+	}
+
+	monthSelection(event: Event, label: string) {
+		// On click handler for month selection.
+		event.preventDefault();
+		// this.selectedYear = parseInt(label.split("-")[0]);
+		// this.selectedMonth = parseInt(label.split("-")[1]);
+		// this.updateSelectedTimeline();
+		// this.fetchTransactionsByDateRange();
+		this.testOllama();
+
+	}
+
+
+	async fetchTransactionsByDateRange() {
+		if (this.selectedYear && this.selectedMonth) {
+			const startDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-01`;
+			const endDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-${new Date(this.selectedYear, this.selectedMonth, 0).getDate()}`;
 
       this.transactions = await this.apiService.getTransactionsByDateRange(
         startDate,

@@ -91,7 +91,12 @@ export class ApiService {
     );
   }
 
-  fireWebhook() {
-    return this.post<any>('/debug/generate_webhook', {});
-  }
+	fireWebhook() {
+		return this.post<any>("/debug/generate_webhook", {});
+	}
+
+	ask(query: String): Promise<any> {
+    return this.post<any>(`${this.transactionsUrl}/ask`, { query });
+	}
+
 }

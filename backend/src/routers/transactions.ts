@@ -45,6 +45,52 @@ transactionsRouter.get(
   },
 );
 
+
+
+transactionsRouter.post(
+  "/ask",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth?.payload.sub as string;
+      const { query } = req.body;
+      console.log("query", query);
+
+      const transactions = await db.runRawQuery(
+        userId,
+        query as string,
+      );
+      res.json(transactions);
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
+  }
+);
+
+
+transactionsRouter.get(
+  "/ask",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.auth?.payload.sub as string;
+      const { query } = req.query;
+      console.log("query", query);
+
+      const result = await db.runRawQuery(
+        userId,
+        query as string,
+      );
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
+  }
+);
+
+
+
 transactionsRouter.get(
   "/first-transaction",
   requireAuth,
