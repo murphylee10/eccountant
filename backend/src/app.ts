@@ -23,7 +23,7 @@ type ExtendedExpress = Express & WithWebsocketMethod;
 const app = express() as ExtendedExpress;
 const PORT = process.env.PORT || 3000;
 
-// Setup realtime events with websockets - test
+// Setup realtime events with websockets
 // @ts-ignore
 expressWs(app);
 const dispatcher = EventDispatcher.getInstance(app);
