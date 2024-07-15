@@ -28,6 +28,7 @@ services:
   db:
     image: postgres:13
     container_name: postgres
+    restart: always
     environment:
       POSTGRES_USER: eccountant
       POSTGRES_PASSWORD: eccountant
@@ -59,6 +60,18 @@ services:
     environment:
       - VIRTUAL_HOST=api.eccountant.live
       - LETSENCRYPT_HOST=api.eccountant.live
+    command: ["node", "dist/app.js"]
+
+  webhook:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
+    container_name: webhook
+    restart: always
+    expose:
+      - 8001
+    environment:
+      - VIRTUAL_HOST=webhook.eccountant.live
+      - LETSENCRYPT_HOST=webhook.eccountant.live
+    command: ["node", "dist/webhookServer.js"]
 
 volumes:
   postgres_data:

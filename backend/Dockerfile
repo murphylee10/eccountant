@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 3000
 EXPOSE 8001
 
-CMD ["npx", "concurrently", "\"node dist/app.js\"", "\"node dist/webhookServer.js\""]
+# CMD ["npx", "concurrently", "\"node dist/app.js\"", "\"node dist/webhookServer.js\""]
