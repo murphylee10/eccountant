@@ -41,6 +41,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Ensure environment.ts exists
+        run: |
+          if [ ! -f src/environments/environment.ts ]; then
+            echo "export const environment = {};" > src/environments/environment.ts
+          fi
+
       - name: Create environment.prod.ts
         run: |
           echo "export const environment = {" > src/environments/environment.prod.ts
