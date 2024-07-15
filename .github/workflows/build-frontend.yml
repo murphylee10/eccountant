@@ -45,7 +45,9 @@ jobs:
           echo "export default environment;" >> src/environments/environment.prod.ts
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: |
+          cd ..
+          docker build -t $IMAGE_NAME -f web/Dockerfile .
 
       - name: Log into GitHub Container Registry
         # TODO: Create a Personal Access Tokens (PAT) with `read:packages` and `write:packages` scopes and save it as an Actions secret `CR_PAT`
