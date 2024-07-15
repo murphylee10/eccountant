@@ -138,7 +138,7 @@ jobs:
           script_stop: true
           script: |
             cd eccountant || exit 1
-            sudo docker-compose -f docker-compose.prod.yml pull || exit 1
-            sudo docker-compose -f docker-compose.prod.yml up -d || exit 1
+            sudo docker compose -f docker-compose.prod.yml pull || exit 1
+            sudo docker compose -f docker-compose.prod.yml up -d || exit 1
             # Run Prisma migrations
-            sudo docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy || exit 1
+            sudo docker compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy || exit 1
