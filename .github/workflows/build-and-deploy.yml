@@ -65,7 +65,10 @@ jobs:
 
       - name: Build frontend image
         # if: env.WEB_CHANGED == 'true'
-        run: docker build -t $FRONTEND_IMAGE_NAME -f web/Dockerfile .
+        run: |
+          echo "Contents of environment.prod.ts file:"
+          cat web/src/environments/environment.prod.ts
+          docker build -t $FRONTEND_IMAGE_NAME -f web/Dockerfile .
 
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
