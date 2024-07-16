@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Set environment variables for paths
+      # - name: Set environment variables for paths 
       #   id: vars
       #   run: |
       #     echo "WEB_CHANGED=false" >> $GITHUB_ENV
