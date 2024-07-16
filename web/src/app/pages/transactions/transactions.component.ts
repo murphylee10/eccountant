@@ -16,7 +16,7 @@ import { PlaidTokenService } from '@services/plaid-token.service';
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { SignalService } from "@services/signal.service";
 import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
-import ollama from 'ollama'
+import ollama, { ChatResponse } from 'ollama'
 
 @Component({
   selector: 'app-transactions',
@@ -107,22 +107,8 @@ export class TransactionsComponent implements OnInit {
     this.updateSelectedTimeline();
   }
 
-
-	async testOllama() {
-    const question = "How much did I spend this month?";
-    // const question = "How much did I spend last month?";
-    // const question = "How much did I spend on groceries in June?";
-    // const question = "How much did I spend between april 24th and june 29?";
-    // const question = "Which month did I spend the most and how much?";
-    // const question = "How much did I spend in august 2022?";
-    // const question = "How much did I spend in July?";
-    // const question = "How much did I spend on food and drink in June?";
-    // const question = "How much did I spend on food in June?";
-    // const LLM_MODEL = 'llama3:8b';
-    const LLM_MODEL = 'qwen2:72b';
-    // const LLM_MODEL = 'qwen';
-
-		const response = await ollama.chat({
+  async generateQuery(question: string, LLM_MODEL: string) {
+    return await ollama.chat({
 			model: LLM_MODEL,
 			messages: [{ role: 'user', content: `
 model Transaction {
@@ -150,6 +136,9 @@ Requirements:
       // - The date is type string, so compare dates using string comparison i.e., >=, < ,etc. otherwise you need to convert to a date object before comparing.
       // - You must compare dates using string comparison.
 
+  }
+
+    cleanResponse(response: ChatResponse) {
 		  const content = response.message.content;
 		  console.log(content)
 		  var query = content;
@@ -159,30 +148,6 @@ Requirements:
 			const idx_end = lines.findIndex(line => line.includes('```'), idx_begin + 1);
 			query = lines.slice(idx_begin + 1, idx_end).join('\n');
 		  }
-
-
-
-
-    // const query = `SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'groceries' AND strftime('%m', t.date) = '06';`
-		  // const query = "SELECT * FROM Transaction;"
-      // const query = `   SELECT    SUM(amount) 
-      
-      // FROM Transaction WHERE date LIKE '2024-07-%'`
-      // const query = `SELECT SUM(amount) FROM "Transaction" WHERE date LIKE '2024-07-%'`
-		// console.log(query)
-
-    // SELECT SUM(t.amount) AS total_spent
-    // FROM "Transaction" t
-    // JOIN "Account" acc ON t."account_id" = acc.id
-    // WHERE t.category = 'groceries'
-    // AND strftime('%m', t.date) = '06'
-    
-
-			// const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`
-      // const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`;
-      // const query = `SELECT EXTRACT(MONTH FROM date) AS month, SUM(amount) AS total_spent FROM "Transaction" WHERE category NOT IN ('Income', 'Transfer In', 'Loan Payments') AND date >= '2024-01-01' AND date < '2025-01-01' GROUP BY EXTRACT(MONTH FROM date) ORDER BY total_spent DESC LIMIT 1;`
-
-      // const query = `SELECT EXTRACT(MONTH FROM date) AS month, SUM(amount) AS total_spent FROM "Transaction" WHERE date >= '2024-01-01' GROUP BY EXTRACT(MONTH FROM date);`
 
       const TABLES = new Set([
         'User',
@@ -200,23 +165,47 @@ Requirements:
         }
       }
       const formattedQuery = queryParts.join(' ');
-      console.log(formattedQuery);
+      return formattedQuery;
+    }
 
-		  const res = await this.apiService.ask(formattedQuery);
-      const joined = JSON.stringify(res);
-			console.log(joined)
+    async formulateResponse(LLM_MODEL: string, question: string, res: string) {
+      const postres = await ollama.chat({
+        model: LLM_MODEL,
+        messages: [{ role: 'user', content: `
+  Question: "${question}".
+  Answer: "${res}".
+  Task: say the answer in one sentence.
+           ` }],
+        })
+        const cc = postres.message.content;
+        return cc;
+    }
 
-		const postres = await ollama.chat({
-			model: LLM_MODEL,
-			messages: [{ role: 'user', content: `
-Question: "${question}".
-Answer: "${joined}".
-Task: say the answer in one sentence.
-				 ` }],
-		  })
-		  const cc = postres.message.content;
-		  console.log(cc)
+	async testOllama() {
+    const question = "How much did I spend this month?";
+    // const question = "How much did I spend last month?";
+    // const question = "How much did I spend on groceries in June?";
+    // const question = "How much did I spend between april 24th and june 29?";
+    // const question = "Which month did I spend the most and how much?";
+    // const question = "How much did I spend in august 2022?";
+    // const question = "How much did I spend in July?";
+    // const question = "How much did I spend on food and drink in June?";
+    // const question = "How much did I spend on food in June?";
 
+    const LLM_MODEL = 'qwen2:72b';
+    // const LLM_MODEL = 'qwen';
+    // const LLM_MODEL = 'llama3:8b';
+
+    console.log(question);
+		const response = await this.generateQuery(question, LLM_MODEL);
+    const formattedQuery = this.cleanResponse(response);
+    console.log(formattedQuery);
+
+    const res = JSON.stringify(await this.apiService.ask(formattedQuery));
+    console.log(res);
+
+    const cc = await this.formulateResponse(LLM_MODEL, question, res);
+    console.log(cc)
 	}
 
 	monthSelection(event: Event, label: string) {
