@@ -15,7 +15,7 @@
 		/* Source Map and Output Directory */
 		"sourceMap": true /* Create source map files for emitted JavaScript files */,
 		"outDir": "./dist" /* Specify an output folder for all emitted files */,
-		"rootDir": "./src" /* Specify the root folder within your source files */,
+		// "rootDir": "./src" /* Specify the root folder within your source files */,
 
 		/* Additional Options */
 		"strictPropertyInitialization": false /* Disable strict checking of property initialization in classes */,
@@ -28,7 +28,11 @@
 			"@common/*": ["../common/lib/*"]
 		}
 	},
-	"include": ["src/**/*"],
-	"references": [{ "path": "../common" }],
-	"exclude": ["node_modules", "dist"]
+	"include": ["src/**/*", "../common/lib/*"],
+	// "references": [{ "path": "../common" }],
+	"exclude": ["node_modules", "dist"],
+	"tsc-alias": {
+		"resolveFullPaths": true,
+		"resolveFullExtension": ".js"
+	}
 }

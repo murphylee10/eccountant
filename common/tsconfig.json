@@ -1,9 +1,24 @@
 {
   "compilerOptions": {
-    "declaration": true,
+    "target": "es2016",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./lib",
-    "composite": true // This is required for project references
+    "baseUrl": "./",
+    "declaration": true,
+    "composite": true
   },
-  "include": ["lib"]
+  "include": ["lib"],
+  "exclude": ["node_modules", "dist"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "resolveFullExtension": ".js"
+  }
 }
