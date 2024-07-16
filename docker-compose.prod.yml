@@ -52,7 +52,7 @@ services:
       - LETSENCRYPT_HOST=eccountant.live
 
   backend:
-    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend-main
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
     container_name: backend
     restart: always
     expose:
@@ -63,7 +63,7 @@ services:
     command: ["node", "dist/backend/src/app.js"]
 
   webhook:
-    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend-main
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
     container_name: webhook
     restart: always
     expose:
