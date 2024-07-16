@@ -53,6 +53,7 @@ jobs:
         # if: env.WEB_CHANGED == 'true'
         working-directory: web
         run: |
+          echo "${{ secrets.VM_HOST }}"
           echo "export const environment = {" > src/environments/environment.prod.ts
           echo "  production: true," >> src/environments/environment.prod.ts
           echo "  auth0_audience: '${{ secrets.AUTH0_AUDIENCE }}'," >> src/environments/environment.prod.ts
