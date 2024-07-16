@@ -60,7 +60,7 @@ services:
     environment:
       - VIRTUAL_HOST=api.eccountant.live
       - LETSENCRYPT_HOST=api.eccountant.live
-    command: ["node", "backend/dist/backend/src/app.js"]
+    command: ["node", "dist/backend/src/app.js"]
 
   webhook:
     image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
@@ -71,7 +71,7 @@ services:
     environment:
       - VIRTUAL_HOST=webhook.eccountant.live
       - LETSENCRYPT_HOST=webhook.eccountant.live
-    command: ["node", "backend/dist/backend/src/webhookServer.js"]
+    command: ["node", "dist/backend/src/webhookServer.js"]
 
 volumes:
   postgres_data:
