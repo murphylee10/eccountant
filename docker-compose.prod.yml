@@ -61,15 +61,15 @@ services:
       - VIRTUAL_HOST=api.eccountant.live
       - LETSENCRYPT_HOST=api.eccountant.live
 
-  webhook:
-    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend-webhook
-    container_name: webhook
-    restart: always
-    expose:
-      - 8001
-    environment:
-      - VIRTUAL_HOST=webhook.eccountant.live
-      - LETSENCRYPT_HOST=webhook.eccountant.live
+  # webhook:
+  #   image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend-webhook
+  #   container_name: webhook
+  #   restart: always
+  #   expose:
+  #     - 8001
+  #   environment:
+  #     - VIRTUAL_HOST=webhook.eccountant.live
+  #     - LETSENCRYPT_HOST=webhook.eccountant.live
 
 volumes:
   postgres_data:
