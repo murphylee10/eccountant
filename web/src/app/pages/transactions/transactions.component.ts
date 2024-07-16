@@ -109,10 +109,17 @@ export class TransactionsComponent implements OnInit {
 
 
 	async testOllama() {
-    const question = "How much did I spend in July?";
+    const question = "How much did I spend this month?";
+    // const question = "How much did I spend last month?";
+    // const question = "How much did I spend on groceries in June?";
+    // const question = "How much did I spend between april 24th and june 29?";
+    // const question = "Which month did I spend the most and how much?";
+    // const question = "How much did I spend in august 2022?";
+    // const question = "How much did I spend in July?";
     // const question = "How much did I spend on food and drink in June?";
+    // const question = "How much did I spend on food in June?";
     // const LLM_MODEL = 'llama3:8b';
-    const LLM_MODEL = 'qwen:110b';
+    const LLM_MODEL = 'qwen2:72b';
     // const LLM_MODEL = 'qwen';
 
 		const response = await ollama.chat({
@@ -125,19 +132,24 @@ model Transaction {
   amount: is type Float.
 }
 
-Task: convert into an SQL query based on the relation(s) defined above.
-"${question}"
+Question: "${question}".
+Task: understand the question is asking and write a postgreSQL query to retrieve the information.
 
 Requirements:
-- Respond with only the SQL query.
-- Prioritize making the query simple and efficient.
-- Do not include any formatting.
-- All relations names in double quotes.
-- Do not use any non-postgreSQL functions.
-- The current date at the time of writing is 2024-07-15. Therefore, if the question does not specify a year, use 2024 and if the question does not specify a month, use July, otherwise use the year or month that is specified.
-- The date is type string, so compare dates using string comparison i.e., >=, < ,etc. otherwise you need to convert to a date object before comparing.
+- Respond with only the postgreSQL query.
+- Do not include formatting.
+- The current year is 2024.
+- The current month is July.
+- The date column is type String. Any date operation must be done taking this into account.
 				 ` }],
 		  })
+      // - The current date at the time of writing is 2024-07-15. Therefore, if the question does not specify a year, use 2024 and if the question does not specify a month, use July, otherwise use the year or month that is specified.
+      // - Do not use any non-postgreSQL functions.
+      // - The query should be simple and efficient.
+      // - All relations names in double quotes but do not escape the quotes.
+      // - The date is type string, so compare dates using string comparison i.e., >=, < ,etc. otherwise you need to convert to a date object before comparing.
+      // - You must compare dates using string comparison.
+
 		  const content = response.message.content;
 		  console.log(content)
 		  var query = content;
@@ -147,11 +159,16 @@ Requirements:
 			const idx_end = lines.findIndex(line => line.includes('```'), idx_begin + 1);
 			query = lines.slice(idx_begin + 1, idx_end).join('\n');
 		  }
-		  console.log(query)
+
+
 
 
     // const query = `SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'groceries' AND strftime('%m', t.date) = '06';`
 		  // const query = "SELECT * FROM Transaction;"
+      // const query = `   SELECT    SUM(amount) 
+      
+      // FROM Transaction WHERE date LIKE '2024-07-%'`
+      // const query = `SELECT SUM(amount) FROM "Transaction" WHERE date LIKE '2024-07-%'`
 		// console.log(query)
 
     // SELECT SUM(t.amount) AS total_spent
@@ -163,22 +180,38 @@ Requirements:
 
 			// const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`
       // const query = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`;
+      // const query = `SELECT EXTRACT(MONTH FROM date) AS month, SUM(amount) AS total_spent FROM "Transaction" WHERE category NOT IN ('Income', 'Transfer In', 'Loan Payments') AND date >= '2024-01-01' AND date < '2025-01-01' GROUP BY EXTRACT(MONTH FROM date) ORDER BY total_spent DESC LIMIT 1;`
 
-		  const res = await this.apiService.ask(query);
-      const val = res[0];
+      // const query = `SELECT EXTRACT(MONTH FROM date) AS month, SUM(amount) AS total_spent FROM "Transaction" WHERE date >= '2024-01-01' GROUP BY EXTRACT(MONTH FROM date);`
+
+      const TABLES = new Set([
+        'User',
+        'Item',
+        'Account',
+        'Transaction',
+      ]);
+      const queryParts = query.trim().split(/\s+/);
+      for (let i=1; i<queryParts.length; i++) {
+        if (queryParts[i-1].toUpperCase() === 'FROM') {
+          const clean = queryParts[i].replace(`"`, '');
+          if (TABLES.has(clean)) {
+            queryParts[i] = `"${clean}"`;
+          }
+        }
+      }
+      const formattedQuery = queryParts.join(' ');
+      console.log(formattedQuery);
+
+		  const res = await this.apiService.ask(formattedQuery);
       const joined = JSON.stringify(res);
 			console.log(joined)
 
 		const postres = await ollama.chat({
 			model: LLM_MODEL,
 			messages: [{ role: 'user', content: `
-The user asked the question below:
-"${question}"
-
-You previously generated an SQL query that resulted in the following result:
-${joined}
-
-Write a concise human-readable response to the user's question.
+Question: "${question}".
+Answer: "${joined}".
+Task: say the answer in one sentence.
 				 ` }],
 		  })
 		  const cc = postres.message.content;
