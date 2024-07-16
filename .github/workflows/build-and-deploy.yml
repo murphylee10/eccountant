@@ -103,7 +103,10 @@ jobs:
 
       - name: Build backend main server image
         # if: env.BACKEND_CHANGED == 'true'
-        run: docker build -t $BACKEND_MAIN_IMAGE_NAME -f backend/Dockerfile.main .
+        run: |
+          echo "Contents of .env file:"
+          cat backend/.env
+          docker build -t $BACKEND_MAIN_IMAGE_NAME -f backend/Dockerfile.main .
 
       - name: Push backend main server image to GitHub Container Registry
         # if: env.BACKEND_CHANGED == 'true'
