@@ -24,7 +24,6 @@ RUN npm run build
 
 # Serve the static files with NGINX
 FROM nginx:1.21.6-alpine
-RUN ls /app/web/dist/web/broswer
 COPY --from=build /app/web/dist/web/browser /usr/share/nginx/html
 RUN ls /usr/share/nginx/html
 EXPOSE 80
