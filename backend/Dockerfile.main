@@ -27,4 +27,4 @@ RUN npm run build
 # Expose necessary ports
 EXPOSE 3000
 
-CMD ["node", "dist/backend/src/app.js"]
+# CMD ["node", "dist/backend/src/app.js"]
