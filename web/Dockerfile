@@ -20,7 +20,7 @@ COPY web/ ./
 COPY common ../common
 
 # Build the Angular app
-RUN npm run build && ls /app/web/dist/web
+RUN npm run build && ls /app/web/dist/web/browser
 
 # Serve the static files with NGINX
 FROM nginx:1.21.6-alpine
