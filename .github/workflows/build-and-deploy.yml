@@ -17,31 +17,14 @@ env:
   BACKEND_WEBHOOK_IMAGE_NAME: eccountant-backend-webhook
 
 jobs:
-  deploy:
+  build-and-push-frontend:
     runs-on: ubuntu-latest
+    environment: web  # Specify the environment for frontend
 
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Set environment variables for paths 
-      #   id: vars
-      #   run: |
-      #     echo "WEB_CHANGED=false" >> $GITHUB_ENV
-      #     echo "BACKEND_CHANGED=false" >> $GITHUB_ENV
-      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^web/'; then
-      #       echo "WEB_CHANGED=true" >> $GITHUB_ENV
-      #     fi
-      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^backend/'; then
-      #       echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
-      #     fi
-      #     if git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep -q '^common/'; then
-      #       echo "WEB_CHANGED=true" >> $GITHUB_ENV
-      #       echo "BACKEND_CHANGED=true" >> $GITHUB_ENV
-      #     fi
-
-      # Frontend build and push
       - name: Ensure environment.ts exists
-        # if: env.WEB_CHANGED == 'true'
         working-directory: web
         run: |
           if [ ! -f src/environments/environment.ts ]; then
@@ -50,10 +33,8 @@ jobs:
           fi
 
       - name: Create environment.prod.ts
-        # if: env.WEB_CHANGED == 'true'
         working-directory: web
         run: |
-          echo "${{ secrets.VM_HOST }}"
           echo "export const environment = {" > src/environments/environment.prod.ts
           echo "  production: true," >> src/environments/environment.prod.ts
           echo "  auth0_audience: '${{ secrets.AUTH0_AUDIENCE }}'," >> src/environments/environment.prod.ts
@@ -65,17 +46,13 @@ jobs:
           echo "export default environment;" >> src/environments/environment.prod.ts
 
       - name: Build frontend image
-        # if: env.WEB_CHANGED == 'true'
         run: |
-          echo "Contents of environment.prod.ts file:"
-          cat web/src/environments/environment.prod.ts
           docker build -t $FRONTEND_IMAGE_NAME -f web/Dockerfile .
 
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push frontend image to GitHub Container Registry
-        if: env.WEB_CHANGED == 'true'
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$FRONTEND_IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -87,9 +64,14 @@ jobs:
           docker tag $FRONTEND_IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-      # Backend build and push
+  build-and-push-backend:
+    runs-on: ubuntu-latest
+    environment: backend  # Specify the environment for backend
+
+    steps:
+      - uses: actions/checkout@v2
+
       - name: Create .env file
-        # if: env.BACKEND_CHANGED == 'true'
         working-directory: backend
         run: |
           echo "PORT=${{ secrets.PORT }}" > .env
@@ -106,14 +88,10 @@ jobs:
           echo "AUTH0_ISSUER_BASE_URL=${{ secrets.AUTH0_ISSUER_BASE_URL }}" >> .env
 
       - name: Build backend main server image
-        # if: env.BACKEND_CHANGED == 'true'
         run: |
-          echo "Contents of .env file:"
-          cat backend/.env
           docker build -t $BACKEND_MAIN_IMAGE_NAME -f backend/Dockerfile.main .
 
       - name: Push backend main server image to GitHub Container Registry
-        # if: env.BACKEND_CHANGED == 'true'
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$BACKEND_MAIN_IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -126,11 +104,9 @@ jobs:
           docker push $IMAGE_ID:$VERSION
 
       - name: Build backend webhook server image
-        # if: env.BACKEND_CHANGED == 'true'
         run: docker build -t $BACKEND_WEBHOOK_IMAGE_NAME -f backend/Dockerfile.webhook .
 
       - name: Push backend webhook server image to GitHub Container Registry
-        # if: env.BACKEND_CHANGED == 'true'
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$BACKEND_WEBHOOK_IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -142,7 +118,12 @@ jobs:
           docker tag $BACKEND_WEBHOOK_IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-      # Deploy to VM
+  deploy-to-vm:
+    runs-on: ubuntu-latest
+
+    needs: [build-and-push-frontend, build-and-push-backend]  # Ensure this job runs after the build jobs
+
+    steps:
       - name: Copy Docker Compose file to VM
         uses: appleboy/scp-action@master
         with:
