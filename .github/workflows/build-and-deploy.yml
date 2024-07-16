@@ -127,8 +127,7 @@ jobs:
     needs: [build-and-push-frontend, build-and-push-backend]  # Ensure this job runs after the build jobs
 
     steps:
-      - name: Verify docker-compose.prod.yml exists
-        run: ls -la
+      - uses: actions/checkout@v2
 
       - name: Copy Docker Compose file to VM
         uses: appleboy/scp-action@master
@@ -139,7 +138,6 @@ jobs:
           port: 22
           source: "docker-compose.prod.yml"
           target: "eccountant"
-          debug: true
 
       - name: Deploy to VM
         uses: appleboy/ssh-action@master
