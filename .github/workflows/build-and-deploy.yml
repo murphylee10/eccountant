@@ -91,6 +91,9 @@ jobs:
         run: |
           docker build -t $BACKEND_MAIN_IMAGE_NAME -f backend/Dockerfile.main .
 
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Push backend main server image to GitHub Container Registry
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$BACKEND_MAIN_IMAGE_NAME
