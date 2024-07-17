@@ -326,24 +326,11 @@ class Database {
     }
   }
 
-
 	/* LLM Interaction */
 	async runRawQuery(
-		userId: string,
 		query: string) {
 		try {
-      const qq = `SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`;
-			// const result = await this.prisma.$queryRaw`SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2024-06-01' AND date <= '2024-06-31';`
-        //  const result = await this.prisma.$queryRaw`SELECT SUM(amount) FROM "Transaction" WHERE category = 'Food and Drink' AND date >= '2023-06-01' AND date <= '2023-06-31';`;
-      // const result = await this.prisma.$queryRaw`SELECT * FROM "Account"`;
-		  // const result = await this.prisma.$queryRaw`SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'Food and Drink'  AND date >= '2024-07-01' AND date <= '2024-07-31';`
-      // const result = await this.prisma.$queryRaw`SELECT SUM(t.amount) AS total_spent FROM "Transaction" t JOIN "Account" acc ON t.account_id = acc.id JOIN "Item" i ON acc.item_id = i.id JOIN "User" u ON i.user_id = u.id WHERE t.category = 'Food and Drink' AND t.date >= '2023-06-01' AND t.date <= '2023-06-30';`;
-		  // const result = await this.prisma.$queryRaw`SELECT SUM(t.amount) AS total_spent FROM "Transaction" t INNER JOIN "Account" acc ON t.account_id = acc.id WHERE t.category = 'groceries' AND strftime('%m', t.date) = '06';`
-      // const result = await this.prisma.$queryRaw`SELECT SUM(Transaction.amount) AS total_spent FROM Transaction INNER JOIN Account ON Transaction.account_id = Account.id WHERE Transaction.category = 'groceries' AND EXTRACT(MONTH FROM TIMESTAMP WITH TIME ZONE Transaction.date) = 6;`
-
-      // const result = await this.prisma.$queryRaw`SELECT SUM(amount) FROM "Transaction" WHERE "date" LIKE '20%' AND EXTRACT(MONTH FROM "date") = 7;`
-      const result = await this.prisma.$queryRaw`${Prisma.raw(query)}`;
-			return result;
+			return await this.prisma.$queryRaw`${Prisma.raw(query)}`;
 		} catch (error) {
 			console.error(error);
 			return null;

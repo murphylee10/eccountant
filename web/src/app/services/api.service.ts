@@ -95,6 +95,7 @@ export class ApiService {
 		return this.post<any>("/debug/generate_webhook", {});
 	}
 
+  /* LLM Endpoint */
 	ask(query: String): Promise<any> {
     return this.post<any>(`${this.transactionsUrl}/ask`, { query });
 	}

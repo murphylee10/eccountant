@@ -180,7 +180,7 @@ Requirements:
         return cc;
     }
 
-	async testOllama() {
+	async queryTransactions() {
     const question = "How much did I spend this month?";
     // const question = "How much did I spend last month?";
     // const question = "How much did I spend on groceries in June?";
@@ -223,10 +223,8 @@ Requirements:
 		// this.selectedMonth = parseInt(label.split("-")[1]);
 		// this.updateSelectedTimeline();
 		// this.fetchTransactionsByDateRange();
-		this.testOllama();
-
+		this.queryTransactions();
 	}
-
 
 	async fetchTransactionsByDateRange() {
 		if (this.selectedYear && this.selectedMonth) {
