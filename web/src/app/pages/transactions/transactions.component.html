@@ -1,3 +1,12 @@
+<div class="card flex justify-content-center">
+  <p-floatLabel>
+      <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
+      <label for="queryInput">🔍 Query Transactions</label>
+  </p-floatLabel>
+</div>
+
+<div *ngIf="answer">{{ answer }}</div>
+
 <div class="mb-10 flex gap-x-2">
   <div *ngIf="months.length > 0">
     <p-timeline [value]="months" layout="horizontal" align="alternate">

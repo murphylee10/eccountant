@@ -16,7 +16,10 @@ import { PlaidTokenService } from '@services/plaid-token.service';
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { SignalService } from "@services/signal.service";
 import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
+
 import ollama, { ChatResponse } from 'ollama'
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-transactions',
@@ -32,6 +35,8 @@ import ollama, { ChatResponse } from 'ollama'
     MonthlySpendChartComponent,
     SpendingsChartComponent,
     CategoryDisplayPipe,
+    InputTextModule,
+    FloatLabelModule,
   ],
   templateUrl: './transactions.component.html',
   styles: '',
@@ -44,6 +49,8 @@ export class TransactionsComponent implements OnInit {
   months: any[] = [];
   selectedYear: number | null = null;
   selectedMonth: number | null = null;
+  query: string | undefined;
+  answer: string | undefined;
 
   constructor(
     private apiService: ApiService,
@@ -181,7 +188,11 @@ Requirements:
     }
 
 	async queryTransactions() {
-    const question = "How much did I spend this month?";
+    const question = this.query;
+    if (!question) {
+      return;
+    }
+    // const question = "How much did I spend this month?";
     // const question = "How much did I spend last month?";
     // const question = "How much did I spend on groceries in June?";
     // const question = "How much did I spend between april 24th and june 29?";
@@ -214,16 +225,16 @@ Requirements:
 
     const cc = await this.formulateResponse(LLM_MODEL, question, res);
     console.log(cc)
+    this.answer = cc;
 	}
 
 	monthSelection(event: Event, label: string) {
 		// On click handler for month selection.
 		event.preventDefault();
-		// this.selectedYear = parseInt(label.split("-")[0]);
-		// this.selectedMonth = parseInt(label.split("-")[1]);
-		// this.updateSelectedTimeline();
-		// this.fetchTransactionsByDateRange();
-		this.queryTransactions();
+		this.selectedYear = parseInt(label.split("-")[0]);
+		this.selectedMonth = parseInt(label.split("-")[1]);
+		this.updateSelectedTimeline();
+		this.fetchTransactionsByDateRange();
 	}
 
 	async fetchTransactionsByDateRange() {
