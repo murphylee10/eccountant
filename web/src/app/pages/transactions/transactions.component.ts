@@ -140,13 +140,12 @@ Requirements:
 
     cleanResponse(response: ChatResponse) {
 		  const content = response.message.content;
-		  console.log(content)
 		  var query = content;
 		  if (content.includes('```')) {
-			const lines = content.split('\n');
-			const idx_begin = lines.findIndex(line => line.includes('```'));
-			const idx_end = lines.findIndex(line => line.includes('```'), idx_begin + 1);
-			query = lines.slice(idx_begin + 1, idx_end).join('\n');
+        const lines = content.split('\n');
+        const idx_begin = lines.findIndex(line => line.includes('```'));
+        const idx_end = lines.findIndex(line => line.includes('```'), idx_begin + 1);
+        query = lines.slice(idx_begin + 1, idx_end).join('\n');
 		  }
 
       const TABLES = new Set([
@@ -192,14 +191,21 @@ Requirements:
     // const question = "How much did I spend on food and drink in June?";
     // const question = "How much did I spend on food in June?";
 
-    const LLM_MODEL = 'qwen2:72b';
+    const LLM_MODEL = 'codestral:22b'
+    // const LLM_MODEL = 'qwen2:72b';
+    // const LLM_MODEL = 'mistral:7b-instruct'
+    // const LLM_MODEL = 'codellama:13b-instruct'
+    // const LLM_MODEL = 'phi3:14b-instruct'
+    // const LLM_MODEL = 'phi3:14b-instruct'
+    // const LLM_MODEL = 'deepseek-coder-v2:16b';
     // const LLM_MODEL = 'qwen';
     // const LLM_MODEL = 'llama3:8b';
 
     console.log(question);
 		const response = await this.generateQuery(question, LLM_MODEL);
+    console.log("response:", response.message.content);
     const formattedQuery = this.cleanResponse(response);
-    console.log(formattedQuery);
+    console.log("formatted:", formattedQuery);
 
     const res = JSON.stringify(await this.apiService.ask(formattedQuery));
     console.log(res);
