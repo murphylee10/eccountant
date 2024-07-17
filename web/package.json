@@ -22,6 +22,7 @@
     "@auth0/auth0-angular": "^2.2.3",
     "apexcharts": "^3.49.2",
     "ng-apexcharts": "^1.11.0",
+    "ollama": "^0.5.2",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.2",
     "rxjs": "~7.8.0",

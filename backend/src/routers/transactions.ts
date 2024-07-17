@@ -72,6 +72,23 @@ transactionsRouter.get(
 	},
 );
 
+transactionsRouter.post(
+  "/ask",
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { query } = req.body;
+      const transactions = await db.runRawQuery(
+        query as string,
+      );
+      res.json(transactions);
+    } catch (error) {
+      console.log(`Running into an error!`);
+      next(error);
+    }
+  }
+);
+
 transactionsRouter.get(
 	"/last-transaction",
 	requireAuth,

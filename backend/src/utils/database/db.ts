@@ -368,9 +368,20 @@ class Database {
     }
   }
 
-  async disconnect() {
-    await this.prisma.$disconnect();
-  }
+	/* LLM Interaction */
+	async runRawQuery(
+		query: string) {
+		try {
+			return await this.prisma.$queryRaw`${Prisma.raw(query)}`;
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	}
+
+	async disconnect() {
+		await this.prisma.$disconnect();
+	}
 }
 
 export const db = new Database();
