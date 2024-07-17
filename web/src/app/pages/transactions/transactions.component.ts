@@ -186,6 +186,8 @@ Requirements:
     // const question = "How much did I spend on groceries in June?";
     // const question = "How much did I spend between april 24th and june 29?";
     // const question = "Which month did I spend the most and how much?";
+    // const question = "How much have I spent on KFC?";
+    // const question = "How much have I spent on KFC all time?";
     // const question = "How much did I spend in august 2022?";
     // const question = "How much did I spend in July?";
     // const question = "How much did I spend on food and drink in June?";
