@@ -53,14 +53,12 @@ export class TransactionsComponent implements OnInit {
 	yearToMonthsMap = new Map<number, { label: string; value: number }[]>();
 	years: any[] = [];
 	months: any[] = [];
-	selectedYear: number | null = null;
+	selectedYear: number = new Date().getFullYear();
 	selectedMonth: number | null = null;
 	query: string | undefined;
 	answer: string | undefined;
 	dropdownYears: any[] = [];
 	dropdownMonths: any[] = [];
-	dropdownSelectedYear: number = new Date().getFullYear();
-	dropdownSelectedMonth: number | null = null;
 	modes = [
 		{ label: "Monthly", value: "monthly" },
 		{ label: "Timeline", value: "timeline" },
@@ -80,19 +78,19 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	updateSelectedTimeline() {
-		// Adds marker to selected year-month and removes marker from others.
-		const MARKER = " (Selected)";
 		this.months = this.months.map((month) => {
 			const [year, monthNumber] = month.split("-");
 			const label = `${year}-${monthNumber}`;
-			if (
-				Number.parseInt(year) === this.selectedYear &&
-				Number.parseInt(monthNumber) === this.selectedMonth
-			) {
-				return `${label}${MARKER}`;
-			}
-			return label.replace(MARKER, "");
+			return label;
 		});
+	}
+
+	isSelected(label: string): boolean {
+		const [year, month] = label.split("-");
+		return (
+			Number.parseInt(year) === this.selectedYear &&
+			Number.parseInt(month) === this.selectedMonth
+		);
 	}
 
 	async initTransactionRange() {
@@ -161,12 +159,10 @@ export class TransactionsComponent implements OnInit {
 
 			this.yearToMonthsMap.set(year, months.slice(startMonth, endMonth + 1));
 		}
-		this.dropdownSelectedYear = lastYear;
-		this.dropdownSelectedMonth = lastMonth;
 	}
 
 	async fetchTransactionsForPastYear() {
-		const selectedYear = this.dropdownSelectedYear as number;
+		const selectedYear = this.selectedYear as number;
 		const transactions =
 			await this.apiService.getTransactionsByYear(selectedYear);
 
@@ -333,23 +329,26 @@ Requirements:
 	}
 
 	async fetchTransactionsByDateRange() {
-		if (this.selectedYear && this.selectedMonth) {
-			const startDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-01`;
-			const endDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-${new Date(this.selectedYear, this.selectedMonth, 0).getDate()}`;
-
-			this.transactions = await this.apiService.getTransactionsByDateRange(
-				startDate,
-				endDate,
-			);
-			this.updateCategoryData();
-			// this.updateMonthlySpendData();
-
-			// this.plaidTransactionsService.getTransactionsByDateRange(startDate, endDate).subscribe((transactions) => {
-			//   this.transactions = transactions;
-			//   this.updateCategoryData();
-			//   this.updateMonthlySpendData();
-			// });
+		let startDate = "";
+		let endDate = "";
+		if (this.selectedMode === "monthly" || this.selectedMode === "timeline") {
+			if (!(this.selectedYear && this.selectedMonth)) {
+				return;
+			}
+			startDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-01`;
+			endDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-${new Date(this.selectedYear, this.selectedMonth, 0).getDate()}`;
 		}
+		if (!(startDate && endDate)) {
+			return;
+		}
+
+		this.transactions = await this.apiService.getTransactionsByDateRange(
+			startDate,
+			endDate,
+		);
+		// this.updateSelectedTimeline();
+		console.log("Transactions:", this.transactions);
+		this.updateCategoryData();
 	}
 
 	updateCategoryData() {
