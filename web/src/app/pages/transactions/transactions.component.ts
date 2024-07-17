@@ -50,6 +50,19 @@ import { bankLogos } from "src/app/models/bank-logos-map";
 })
 export class TransactionsComponent implements OnInit {
 	transactions: PlaidTransaction[] = [];
+	filteredTransactions: PlaidTransaction[] = [];
+	searchQuery = "";
+	selectedCriteria = "";
+	minAmount: number | null = null;
+	maxAmount: number | null = null;
+	searchCriteria = [
+		{ label: "Merchant", value: "name" },
+		{ label: "Bank", value: "bank_name" },
+		{ label: "Account Name", value: "account_name" },
+		{ label: "Amount", value: "amount" },
+		{ label: "Date", value: "date" },
+		{ label: "Category", value: "category" },
+	];
 	// test comment
 	// categoryData: { [key: string]: number } = {};
 	// monthlySpendData: { [key: string]: number } = {};
@@ -272,6 +285,36 @@ Requirements:
 		return formattedQuery;
 	}
 
+	filterTransactions() {
+		const query = this.searchQuery.toLowerCase();
+		const criteria = this.selectedCriteria;
+
+		this.filteredTransactions = this.transactions.filter((transaction) => {
+			switch (criteria) {
+				case "name":
+					return transaction.name.toLowerCase().includes(query);
+				case "bank_name":
+					return transaction.account.item.bank_name
+						.toLowerCase()
+						.includes(query);
+				case "account_name":
+					return transaction.account.name.toLowerCase().includes(query);
+				case "date":
+					return transaction.date.includes(query);
+				case "category":
+					return transaction.category.toLowerCase().includes(query);
+				case "amount": {
+					const amount = transaction.amount;
+					const min = this.minAmount != null ? this.minAmount : -Infinity;
+					const max = this.maxAmount != null ? this.maxAmount : Infinity;
+					return amount >= min && amount <= max;
+				}
+				default:
+					return true;
+			}
+		});
+	}
+
 	async formulateResponse(LLM_MODEL: string, question: string, res: string) {
 		const postres = await ollama.chat({
 			model: LLM_MODEL,
@@ -369,6 +412,7 @@ Requirements:
 			startDate,
 			endDate,
 		);
+		this.filteredTransactions = this.transactions; // Initialize filtered transactions
 		this.isLoading = false; // Stop loading spinner
 		console.log("Transactions:", this.transactions);
 		this.updateCategoryData();

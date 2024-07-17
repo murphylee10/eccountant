@@ -5,7 +5,9 @@ import type { SelectItem } from "primeng/api";
 import { DropdownModule } from "primeng/dropdown";
 import { FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { Router } from "@angular/router";
+import type { PlaidTransaction } from "src/app/models/transaction.model"; // Make sure to import the model
 
 @Component({
 	selector: "app-dashboard",
@@ -18,6 +20,7 @@ export class DashboardComponent implements OnInit {
 	banks: SelectItem[] = [];
 	selectedBankId = "";
 	accounts: any[] = [];
+	recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
 
 	constructor(
 		private apiService: ApiService,
@@ -26,6 +29,7 @@ export class DashboardComponent implements OnInit {
 
 	async ngOnInit() {
 		await this.loadBanks();
+		await this.loadRecentTransactions(); // Load recent transactions on init
 	}
 
 	async loadBanks() {
@@ -44,13 +48,25 @@ export class DashboardComponent implements OnInit {
 		this.accounts = await this.apiService.getAccounts(bankId);
 	}
 
+	async loadRecentTransactions() {
+		this.recentTransactions = await this.apiService.getRecentTransactions();
+	}
+
 	onBankChange(event: any) {
-		// console.log("switched to bank", event.value);
 		this.loadAccounts(event.value);
 	}
 
 	navigateToAccounts(event: Event) {
 		event.preventDefault();
 		this.router.navigate(["/user/accounts"]);
+	}
+
+	navigateToTransactions(event: Event) {
+		event.preventDefault();
+		this.router.navigate(["/user/transactions"]);
+	}
+
+	getFormattedAmount(amount: number): string {
+		return `$${Math.abs(amount).toFixed(2)}`;
 	}
 }

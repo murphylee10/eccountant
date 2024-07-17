@@ -87,48 +87,92 @@
   </div>
 </div>
 
-<p-table [value]="transactions" [scrollable]="true" scrollHeight="500px" styleClass="p-datatable-sm">
-  <ng-template pTemplate="header">
-    <tr>
-      <th>Bank</th>
-      <th>Account Name</th>
-      <th>Date</th>
-      <th>Merchant</th>
-      <th>Amount</th>
-      <th>Category</th>
-      <th>Verified</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-transaction>
-    <tr>
-      <td class="h-12">
-        <img [src]="getBankLogo(transaction.account.item.bank_name)" alt="{{ transaction.account.item.bank_name }}" class="w-8 h-8 rounded-full">
-      </td>
-      <td class="h-12">{{ transaction.account.name }}</td>
-      <td>{{ transaction.date }}</td>
-      <td>{{ transaction.name }}</td>
-      <td>
-        <span
-          [ngClass]="{
-            'text-red-500': transaction.amount > 0,
-            'text-green-500': transaction.amount < 0
-          }"
-        >
-          <i *ngIf="transaction.amount >= 0"
-            class="pi pi-arrow-down"
-          ></i>
-          <i *ngIf="transaction.amount < 0"
-            class="pi pi-arrow-up"
-          ></i>
+<div class="transactions-section bg-white p-4 rounded shadow-lg">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-bold">Transactions</h2>
+    <div class="flex gap-x-2">
+      <p-dropdown
+        [options]="searchCriteria"
+        [(ngModel)]="selectedCriteria"
+        placeholder="Select Criteria"
+        class="p-dropdown-sm"
+      ></p-dropdown>
+      <input
+        pInputText
+        id="searchInput"
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        (input)="filterTransactions()"
+        class="p-inputtext-sm"
+        *ngIf="selectedCriteria !== 'amount'"
+      />
+      <div *ngIf="selectedCriteria === 'amount'" class="flex gap-x-2">
+        <input
+          pInputText
+          id="minAmountInput"
+          placeholder="Min Amount"
+          [(ngModel)]="minAmount"
+          (input)="filterTransactions()"
+          class="p-inputtext-sm"
+        />
+        <input
+          pInputText
+          id="maxAmountInput"
+          placeholder="Max Amount"
+          [(ngModel)]="maxAmount"
+          (input)="filterTransactions()"
+          class="p-inputtext-sm"
+        />
+      </div>
+    </div>
+  </div>
 
-          {{ getFormattedAmount(transaction.amount) }}
-        </span>
-      </td>
-      <td>{{ transaction.category | categoryDisplay }}</td>
-      <td class="ml-auto mr-0">
-        <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+  <p-table
+    [value]="filteredTransactions"
+    [scrollable]="true"
+    scrollHeight="500px"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Bank</th>
+        <th>Account Name</th>
+        <th>Date</th>
+        <th>Merchant</th>
+        <th>Amount</th>
+        <th>Category</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-transaction>
+      <tr>
+        <td class="h-12">
+          <img
+            [src]="getBankLogo(transaction.account.item.bank_name)"
+            alt="{{ transaction.account.item.bank_name }}"
+            class="w-8 h-8 rounded-full"
+          />
+        </td>
+        <td class="h-12">{{ transaction.account.name }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.name }}</td>
+        <td>
+          <span
+            [ngClass]="{
+              'text-red-500': transaction.amount > 0,
+              'text-green-500': transaction.amount < 0
+            }"
+          >
+            <i *ngIf="transaction.amount >= 0" class="pi pi-arrow-down"></i>
+            <i *ngIf="transaction.amount < 0" class="pi pi-arrow-up"></i>
+            {{ getFormattedAmount(transaction.amount) }}
+          </span>
+        </td>
+        <td>{{ transaction.category | categoryDisplay }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+
+
 

@@ -92,6 +92,10 @@ export class ApiService {
 		);
 	}
 
+	getRecentTransactions(): Promise<PlaidTransaction[]> {
+		return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/recent`);
+	}
+
 	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
 		return this.get<{ id: string; bank_name: string }[]>(
 			`${this.banksUrl}/list`,
