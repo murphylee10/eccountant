@@ -1,13 +1,36 @@
-<div class="card flex justify-content-center">
-  <p-floatLabel>
-      <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
-      <label for="queryInput">🔍 Query Transactions</label>
-  </p-floatLabel>
+<div class="w-full flex justify-between mb-4">
+  <div class="card flex justify-content-center">
+    <p-floatLabel>
+        <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
+        <label for="queryInput">🔍 Query Transactions</label>
+    </p-floatLabel>
+  </div>
+  <p-dropdown
+    [options]="modes"
+    [(ngModel)]="selectedMode"
+    placeholder="Select a Mode"
+  ></p-dropdown>
 </div>
 
 <div *ngIf="answer">{{ answer }}</div>
 
-<div class="mb-10 flex gap-x-2">
+
+<div *ngIf="selectedMode === 'monthly'" class="mb-10 flex gap-x-2">
+  <p-dropdown
+    [options]="dropdownYears"
+    [(ngModel)]="dropdownSelectedYear"
+    (ngModelChange)="fetchTransactionsByDateRange()"
+    placeholder="Select a year"
+  ></p-dropdown>
+  <p-dropdown
+    [options]="dropdownMonths"
+    [(ngModel)]="dropdownSelectedMonth"
+    (ngModelChange)="fetchTransactionsByDateRange()"
+    placeholder="Select a month"
+  ></p-dropdown>
+</div>
+
+<div *ngIf="selectedMode === 'timeline'" class="mb-10 flex gap-x-2">
   <div *ngIf="months.length > 0">
     <p-timeline [value]="months" layout="horizontal" align="alternate">
       <ng-template pTemplate="content" let-label>
@@ -23,7 +46,7 @@
   <div *ngIf="months.length === 0">Loading timeline...</div>
 </div>
 
-<div class="mb-10 flex gap-x-4">
+<div class="mb-10 flex gap-x-4 w-full justify-between px-10">
   <div>
     <h2>Distribution</h2>
     <transactions-distribution-chart></transactions-distribution-chart>
@@ -31,6 +54,10 @@
   <div>
     <h2>Spendings</h2>
     <transactions-spendings-chart></transactions-spendings-chart>
+  </div>
+  <div>
+    <h2>Annual</h2>
+    <transactions-annual-spendings-chart></transactions-annual-spendings-chart>
   </div>
 </div>
 

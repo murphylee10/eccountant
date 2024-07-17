@@ -47,8 +47,11 @@ export class DistributionChartComponent {
 		return {
 			series: series,
 			chart: {
-				width: 500,
+				width: 400,
 				type: "donut",
+				// sparkline: {
+				// 	enabled: true,
+				// },
 			},
 			labels: categories,
 			colors: SHARED_COLORS.slice(0, categories.length),

@@ -17,7 +17,7 @@ import {
 	ApexDataLabels,
 	NgApexchartsModule,
 } from "ng-apexcharts";
-import { SHARED_COLORS } from "../../pages/transactions/components/shared-colors";
+import { SHARED_COLORS } from "@pages/transactions/components/shared-colors";
 
 export type ChartOptions = {
 	series: ApexAxisChartSeries;
@@ -55,9 +55,10 @@ export class SpendingsChartComponent {
 					data: series,
 				},
 			],
+
 			chart: {
 				height: 350,
-				width: 500,
+				width: 450,
 				type: "bar",
 			},
 			xaxis: {
