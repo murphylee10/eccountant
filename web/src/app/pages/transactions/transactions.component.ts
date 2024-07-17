@@ -16,12 +16,14 @@ import { PlaidTokenService } from "@services/plaid-token.service";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { SignalService } from "@services/signal.service";
 import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 import ollama, { ChatResponse } from "ollama";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { DropdownModule } from "primeng/dropdown";
 import { AnnualSpendingsChartComponent } from "@components/annual-spendings-chart/annual-spendings-chart.component";
+import { bankLogos } from "src/app/models/bank-logos-map";
 
 @Component({
 	selector: "app-transactions",
@@ -41,6 +43,7 @@ import { AnnualSpendingsChartComponent } from "@components/annual-spendings-char
 		InputTextModule,
 		FloatLabelModule,
 		DropdownModule,
+		ProgressSpinnerModule,
 	],
 	templateUrl: "./transactions.component.html",
 	styles: "",
@@ -65,6 +68,7 @@ export class TransactionsComponent implements OnInit {
 		{ label: "Custom Range", value: "customRange" },
 	];
 	selectedMode = "monthly";
+	isLoading = false;
 
 	constructor(
 		private apiService: ApiService,
@@ -91,6 +95,10 @@ export class TransactionsComponent implements OnInit {
 			Number.parseInt(year) === this.selectedYear &&
 			Number.parseInt(month) === this.selectedMonth
 		);
+	}
+
+	getBankLogo(bankName: string): string {
+		return bankLogos[bankName] || "assets/images/default-bank.png";
 	}
 
 	async initTransactionRange() {
@@ -130,6 +138,10 @@ export class TransactionsComponent implements OnInit {
 		this.selectedMonth = lastMonth;
 		this.selectedYear = lastYear;
 		this.updateSelectedTimeline();
+	}
+
+	getFormattedAmount(amount: number): string {
+		return `$${Math.abs(amount).toFixed(2)}`;
 	}
 
 	buildYearToMonthsMap(
@@ -329,16 +341,27 @@ Requirements:
 	}
 
 	async fetchTransactionsByDateRange() {
+		this.isLoading = true; // Start loading spinner
 		let startDate = "";
 		let endDate = "";
 		if (this.selectedMode === "monthly" || this.selectedMode === "timeline") {
 			if (!(this.selectedYear && this.selectedMonth)) {
+				this.isLoading = false;
 				return;
 			}
-			startDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-01`;
-			endDate = `${this.selectedYear}-${this.selectedMonth.toString().padStart(2, "0")}-${new Date(this.selectedYear, this.selectedMonth, 0).getDate()}`;
+			startDate = `${this.selectedYear}-${this.selectedMonth
+				.toString()
+				.padStart(2, "0")}-01`;
+			endDate = `${this.selectedYear}-${this.selectedMonth
+				.toString()
+				.padStart(2, "0")}-${new Date(
+				this.selectedYear,
+				this.selectedMonth,
+				0,
+			).getDate()}`;
 		}
 		if (!(startDate && endDate)) {
+			this.isLoading = false;
 			return;
 		}
 
@@ -346,7 +369,7 @@ Requirements:
 			startDate,
 			endDate,
 		);
-		// this.updateSelectedTimeline();
+		this.isLoading = false; // Stop loading spinner
 		console.log("Transactions:", this.transactions);
 		this.updateCategoryData();
 	}

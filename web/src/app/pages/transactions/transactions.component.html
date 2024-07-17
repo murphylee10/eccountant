@@ -68,7 +68,11 @@
   <div *ngIf="months.length === 0">Loading timeline...</div>
 </div>
 
-<div class="mb-10 flex gap-x-4 w-full justify-between px-10">
+<div *ngIf="isLoading" class="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!isLoading" class="mb-10 flex gap-x-4 w-full justify-between px-10">
   <div>
     <h2>Distribution</h2>
     <transactions-distribution-chart></transactions-distribution-chart>
@@ -83,19 +87,13 @@
   </div>
 </div>
 
-<!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
-<p-table
-  [value]="transactions"
-  [scrollable]="true"
-  scrollHeight="500px"
-  styleClass="p-datatable-sm"
->
+<p-table [value]="transactions" [scrollable]="true" scrollHeight="500px" styleClass="p-datatable-sm">
   <ng-template pTemplate="header">
     <tr>
-      <!-- <th>User</th> -->
+      <th>Bank</th>
       <th>Account Name</th>
       <th>Date</th>
-      <th>Name</th>
+      <th>Merchant</th>
       <th>Amount</th>
       <th>Category</th>
       <th>Verified</th>
@@ -103,15 +101,34 @@
   </ng-template>
   <ng-template pTemplate="body" let-transaction>
     <tr>
-      <!-- <td>{{ transaction.user_id }}</td> -->
-      <td>{{ transaction.account.name }}</td>
+      <td class="h-12">
+        <img [src]="getBankLogo(transaction.account.item.bank_name)" alt="{{ transaction.account.item.bank_name }}" class="w-8 h-8 rounded-full">
+      </td>
+      <td class="h-12">{{ transaction.account.name }}</td>
       <td>{{ transaction.date }}</td>
       <td>{{ transaction.name }}</td>
-      <td>{{ transaction.amount | currency: transaction.currency_code }}</td>
+      <td>
+        <span
+          [ngClass]="{
+            'text-red-500': transaction.amount > 0,
+            'text-green-500': transaction.amount < 0
+          }"
+        >
+          <i *ngIf="transaction.amount >= 0"
+            class="pi pi-arrow-down"
+          ></i>
+          <i *ngIf="transaction.amount < 0"
+            class="pi pi-arrow-up"
+          ></i>
+
+          {{ getFormattedAmount(transaction.amount) }}
+        </span>
+      </td>
       <td>{{ transaction.category | categoryDisplay }}</td>
-      <td class="flex justify-center">
-        <i [class]="getVerificationIcon(transaction)"></i>
+      <td class="ml-auto mr-0">
+        <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
       </td>
     </tr>
   </ng-template>
 </p-table>
+
