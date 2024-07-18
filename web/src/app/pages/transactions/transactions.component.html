@@ -1,4 +1,4 @@
-<div class="w-full flex justify-between mb-4">
+<!-- <div class="w-full flex justify-between mb-4">
   <div class="card flex justify-content-center">
     <p-floatLabel>
         <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
@@ -12,8 +12,7 @@
   ></p-dropdown>
 </div>
 
-<div *ngIf="answer">{{ answer }}</div>
-
+<div *ngIf="answer">{{ answer }}</div> -->
 
 <div *ngIf="selectedMode === 'monthly'" class="mb-10 flex gap-x-2">
   <p-dropdown
@@ -131,7 +130,7 @@
     [value]="filteredTransactions"
     [scrollable]="true"
     scrollHeight="500px"
-    styleClass="p-datatable-sm"
+    styleClass="p-datatable-sm custom-scrollbar"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -141,6 +140,7 @@
         <th>Merchant</th>
         <th>Amount</th>
         <th>Category</th>
+        <th>Verified</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-transaction>
@@ -168,10 +168,20 @@
           </span>
         </td>
         <td>{{ transaction.category | categoryDisplay }}</td>
+        <td class="ml-auto mr-0">
+        <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
+      </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
+
+<button
+  pButton
+  icon="pi pi-comments"
+  class="p-button-rounded p-button-lg p-button-info fixed bottom-5 right-5 z-50"
+  (click)="showChatModal()"
+></button>
 
 
 

@@ -30,7 +30,7 @@
           See all accounts
           <i class="pi pi-angle-right ml-2"></i>
         </a>
-      </div>
+      </div> 
     </div>
 
     <!-- Recent Transactions Section -->
@@ -48,12 +48,8 @@
                 'text-red-500': transaction.amount > 0,
                 'text-green-500': transaction.amount < 0
               }">
-                <i *ngIf="transaction.amount >= 0"
-            class="pi pi-arrow-down"
-          ></i>
-          <i *ngIf="transaction.amount < 0"
-            class="pi pi-arrow-up"
-          ></i>
+                <i *ngIf="transaction.amount >= 0" class="pi pi-arrow-down"></i>
+                <i *ngIf="transaction.amount < 0" class="pi pi-arrow-up"></i>
                 {{ getFormattedAmount(transaction.amount) }}
               </p>
             </div>
@@ -68,6 +64,18 @@
           <i class="pi pi-angle-right ml-2"></i>
         </a>
       </div>
+    </div>
+
+    <!-- Distribution of Spend This Month Section -->
+    <div class="distribution-section p-4 border-1 border-solid border-gray-300 rounded-lg">
+      <h3 class="text-lg font-bold mb-4">Distribution of Spend This Month</h3>
+      <transactions-distribution-chart></transactions-distribution-chart>
+    </div>
+
+    <!-- Annual Spend Chart Section -->
+    <div class="annual-spend-section p-4 border-1 border-solid border-gray-300 rounded-lg">
+      <h3 class="text-lg font-bold mb-4">Annual Spend Chart</h3>
+      <transactions-annual-spendings-chart [year]="currentYear"></transactions-annual-spendings-chart>
     </div>
   </div>
 </div>
