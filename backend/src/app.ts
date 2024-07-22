@@ -17,6 +17,7 @@ import expressWs, {
 	Application as ExpressWsApplication,
 	type WithWebsocketMethod,
 } from "express-ws";
+import MistralClient from '@mistralai/mistralai'
 
 type ExtendedExpress = Express & WithWebsocketMethod;
 
@@ -66,6 +67,20 @@ app.get("/api/example/event", (req, res) => {
     return res.json({ success: false });
   }
   return res.json({ success: true });
+});
+
+// Chat endpoint.
+const mistralClient = new MistralClient(process.env.MISTRAL_API_KEY);
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { model, messages } = req.body;
+    mistralClient.chat({ model, messages }).then((chatResponse) => {
+      res.json(chatResponse.choices[0].message.content);
+    })
+  } catch (error) {
+    console.error('Error in chat request:', error);
+    res.status(500).json({ error: 'Failed to process chat request' });
+  }
 });
 
 // Error handling
