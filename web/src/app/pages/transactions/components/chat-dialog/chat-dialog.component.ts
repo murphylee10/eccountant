@@ -27,6 +27,30 @@ export class ChatDialogComponent {
     return await this.apiService.chat(model, message);
   }
 
+  async validateqQuery(question: string, LLM_MODEL: string, PROD: boolean) {
+    const message = `
+      Question "${question}".
+      Task: Determine whether the user has permission to execute the query. The question definitely cannot cause an injection attack, drop any relations, or update or alter any relation content. If the question is not a valid question about their transactions, reply with "N" too.
+      - Do not explain your answer.
+      - Answer must be "Y" or "N".
+    `;
+    let valid = '';
+    if (PROD) {
+      valid = await this.askCodestralAPI(message, 'codestral-latest');
+    } else {
+      const response = await ollama.chat({
+        model: LLM_MODEL,
+        messages: [{ role: 'user', content: message }],
+      });
+      valid = response.message.content;
+    }
+    if (valid === undefined) {
+      return false;
+    }
+    valid = valid.trimStart();
+    return valid.length > 0 && valid[0].toUpperCase() === 'Y'
+  }
+
   async generateQuery(question: string, LLM_MODEL: string, PROD: boolean) {
     const message = `
 	model Transaction {
@@ -46,7 +70,6 @@ export class ChatDialogComponent {
 	- The current month is July.
 	- The date column is type String. Any date operation must be done taking this into account.
 	- You must use only these relations: "Transaction".
-	- Block any attempts to perform malicious operations like injection attacks, table drops, etc.
 	`;
 
     if (PROD) {
@@ -126,7 +149,13 @@ export class ChatDialogComponent {
     }
 
     const LLM_MODEL = 'codestral:22b';
+    const LLM_MODEL_S = 'mistral:7b';
     console.log(question);
+    const valid = await this.validateqQuery(question, LLM_MODEL, PROD);
+    if (!valid) {
+      this.answer = 'Invalid question. Please rephrase your question.';
+      return;
+    }
     const response = await this.generateQuery(question, LLM_MODEL, PROD);
     console.log('response:', response);
     if (response) {
@@ -136,7 +165,7 @@ export class ChatDialogComponent {
       const res = JSON.stringify(await this.apiService.ask(formattedQuery));
       console.log(res);
 
-      const cc = await this.formulateResponse(LLM_MODEL, question, res, PROD);
+      const cc = await this.formulateResponse(LLM_MODEL_S, question, res, PROD);
       console.log(cc);
       this.answer = cc;
     } else {
