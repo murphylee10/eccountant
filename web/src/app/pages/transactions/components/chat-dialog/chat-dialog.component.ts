@@ -23,8 +23,7 @@ export class ChatDialogComponent {
     private apiService: ApiService,
   ) {}
 
-  async askCodestralAPI(message: string) {
-    const model = 'codestral-latest';
+  async askCodestralAPI(message: string, model: string = 'codestral-latest') {
     return await this.apiService.chat(model, message);
   }
 
@@ -50,7 +49,7 @@ export class ChatDialogComponent {
 	`;
 
     if (PROD) {
-      return await this.askCodestralAPI(message);
+      return await this.askCodestralAPI(message, 'codestral-latest');
     }
     const response = await ollama.chat({
       model: LLM_MODEL,
@@ -109,7 +108,7 @@ export class ChatDialogComponent {
 	Task: say the answer in one sentence.
 	`;
     if (PROD) {
-      return await this.askCodestralAPI(message);
+      return await this.askCodestralAPI(message, 'open-mistral-7b');
     }
     const postres = await ollama.chat({
       model: LLM_MODEL,
