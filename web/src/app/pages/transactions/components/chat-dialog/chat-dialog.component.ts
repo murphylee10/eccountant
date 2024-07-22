@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
-// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from "@services/api.service";
-// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { DynamicDialogRef } from "primeng/dynamicdialog";
-import ollama, { type ChatResponse } from "ollama";
+import ollama from "ollama";
 import { FormsModule } from "@angular/forms";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { CommonModule } from "@angular/common";
@@ -50,13 +48,7 @@ export class ChatDialogComponent {
 	- The date column is type String. Any date operation must be done taking this into account.
 	- You must use only these relations: "Transaction".
 	`;
-		  // - The current date at the time of writing is 2024-07-15. Therefore, if the question does not specify a year, use 2024 and if the question does not specify a month, use July, otherwise use the year or month that is specified.
-		  // - Do not use any non-postgreSQL functions.
-		  // - The query should be simple and efficient.
-		  // - All relations names in double quotes but do not escape the quotes.
-		  // - The date is type string, so compare dates using string comparison i.e., >=, < ,etc. otherwise you need to convert to a date object before comparing.
-		  // - You must compare dates using string comparison.
-	
+
 		if (PROD) {
 		  return await this.askCodestralAPI(message);
 		}
@@ -129,35 +121,10 @@ export class ChatDialogComponent {
 		if (!question) {
 		  return;
 		}
-		// const question = "How much did I spend this month?";
-		// const question = "How much did I spend last month?";
-		// const question = "How much did I spend on groceries in June?";
-		// const question = "How much did I spend between april 24th and june 29?";
-		// const question = "Which month did I spend the most and how much?";
-		// const question = "How much have I spent on KFC?";
-		// const question = "How much have I spent on KFC all time?";
-		// const question = "How much did I spend in august 2022?";
-		// const question = "How much did I spend in July?";
-		// const question = "How much did I spend on food and drink in June?";
-		// const question = "How much did I spend on food in June?";
 	
 		const LLM_MODEL = 'codestral:22b'
-		// const LLM_MODEL = 'qwen2:72b';
-		// const LLM_MODEL = 'mistral:7b-instruct'
-		// const LLM_MODEL = 'codellama:13b-instruct'
-		// const LLM_MODEL = 'phi3:14b-instruct'
-		// const LLM_MODEL = 'phi3:14b-instruct'
-		// const LLM_MODEL = 'deepseek-coder-v2:16b';
-		// const LLM_MODEL = 'qwen';
-		// const LLM_MODEL = 'llama3:8b';
-	
 		console.log(question);
 			const response = await this.generateQuery(question, LLM_MODEL, PROD);
-	//     const response = `
-	// SELECT SUM(amount)
-	// FROM transaction
-	// WHERE EXTRACT(MONTH FROM CAST(date AS DATE)) = 6 AND EXTRACT(YEAR FROM CAST(date AS DATE)) = 2024;
-	//     `;
 		console.log("response:", response);
 		if (response) {
 		  const formattedQuery = this.cleanResponse(response);
