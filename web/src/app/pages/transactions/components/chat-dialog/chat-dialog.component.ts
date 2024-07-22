@@ -146,7 +146,7 @@ export class ChatDialogComponent {
   }
 
   async queryTransactions() {
-    const PROD = false;
+    const PROD = true;
     const question = this.query;
     if (!question) {
       return;
