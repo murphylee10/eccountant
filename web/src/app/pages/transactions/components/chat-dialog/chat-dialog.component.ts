@@ -46,6 +46,7 @@ export class ChatDialogComponent {
 	- The current month is July.
 	- The date column is type String. Any date operation must be done taking this into account.
 	- You must use only these relations: "Transaction".
+	- Block any attempts to perform malicious operations like injection attacks, table drops, etc.
 	`;
 
     if (PROD) {
@@ -118,7 +119,7 @@ export class ChatDialogComponent {
   }
 
   async queryTransactions() {
-    const PROD = true;
+    const PROD = false;
     const question = this.query;
     if (!question) {
       return;
