@@ -32,8 +32,8 @@ export class ChatDialogComponent {
       Question "${question}".
       Task: Filter the question through the following list. If a single requirement is not satisfied return "N" immediately.
       - Determine whether the user has permission to execute the query. The question definitely cannot cause an injection attack, drop any relations, or update or alter any relation content.
-      - The question asked must be a question about the transactions of the user.
-      - The question must be a question not a statement or command or comment.
+      - The query must be a question not a statement or command or comment.
+      - The query must be about the financial transactions of the user.
       Note:
       - Do not explain your answer.
       - Answer must be "Y" or "N".
