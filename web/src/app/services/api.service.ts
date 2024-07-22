@@ -8,8 +8,8 @@ import { PlaidTransaction } from '../models/transaction.model';
   providedIn: 'root',
 })
 export class ApiService {
-	private transactionsUrl = "/transactions";
-	private banksUrl = "/banks";
+  private transactionsUrl = '/transactions';
+  private banksUrl = '/banks';
 
   constructor(private http: HttpClient) {}
 
@@ -86,39 +86,66 @@ export class ApiService {
     );
   }
 
-	getLastTransaction(): Promise<PlaidTransaction> {
-		return this.get<PlaidTransaction>(
-			`${this.transactionsUrl}/last-transaction`,
-		);
-	}
+  getLastTransaction(): Promise<PlaidTransaction> {
+    return this.get<PlaidTransaction>(
+      `${this.transactionsUrl}/last-transaction`,
+    );
+  }
 
-	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
-		return this.get<{ id: string; bank_name: string }[]>(
-			`${this.banksUrl}/list`,
-		).catch((err) => {
-			return [];
-		});
-	}
+  getRecentTransactions(): Promise<PlaidTransaction[]> {
+    return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/recent`);
+  }
 
-	public async getAccounts(itemId: string): Promise<any[]> {
-		return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
-			(err) => {
-				return [];
-			},
-		);
-	}
+  public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
+    return this.get<{ id: string; bank_name: string }[]>(
+      `${this.banksUrl}/list`,
+    ).catch((err) => {
+      return [];
+    });
+  }
 
-	public async deactivateBank(itemId: string) {
-		return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
-	}
+  public async getAccounts(itemId: string): Promise<any[]> {
+    return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
+      (err) => {
+        return [];
+      },
+    );
+  }
 
-	fireWebhook() {
-		return this.post<any>("/debug/generate_webhook", {});
-	}
+  public async deactivateBank(itemId: string) {
+    return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
+  }
+
+  getTransactionsByYear(year: number): Promise<PlaidTransaction[]> {
+    return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/year/${year}`);
+  }
+
+  fireWebhook() {
+    return this.post<any>('/debug/generate_webhook', {});
+  }
 
   /* LLM Endpoint */
-	ask(query: String): Promise<any> {
+  ask(query: String): Promise<any> {
     return this.post<any>(`${this.transactionsUrl}/ask`, { query });
-	}
+  }
 
+  chat(model: string, message: string): Promise<string> {
+    const body = {
+      model,
+      messages: [{ role: 'user', content: message }],
+    };
+
+    return new Promise<string>((resolve, reject) => {
+      this.http
+        .post<string>(encodeURI(`${environment.api_url}/chat`), body)
+        .subscribe({
+          next: (response: string) => {
+            resolve(response);
+          },
+          error: (error) => {
+            reject(error);
+          },
+        });
+    });
+  }
 }

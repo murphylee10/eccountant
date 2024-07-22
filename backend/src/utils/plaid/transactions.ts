@@ -2,12 +2,12 @@ import { db } from "@/utils/database/db";
 import { plaidClient } from "./client";
 import type { RemovedTransaction, Transaction } from "plaid";
 import {
-	type SyncedTransactionData,
-	SimpleTransaction,
+  type SyncedTransactionData,
+  SimpleTransaction,
 } from "../types/transactions";
 
 export const syncTransactions = async (itemId: string) => {
-	// Step 1: Retrieve our access token and cursor from the database
+  // Step 1: Retrieve our access token and cursor from the database
 
   const itemInfo = await db.getItemInfo(itemId);
   if (!itemInfo) {
@@ -74,40 +74,41 @@ export const syncTransactions = async (itemId: string) => {
 };
 
 export const fetchNewSyncData = async (
-	accessToken: string,
-	initialCursor: string | undefined,
-	retriesLeft = 3,
+  accessToken: string,
+  initialCursor: string | undefined,
+  retriesLeft = 3,
 ): Promise<SyncedTransactionData> => {
-	const allData = {
-		added: [] as Transaction[],
-		removed: [] as RemovedTransaction[],
-		modified: [] as Transaction[],
-		nextCursor: initialCursor,
-	};
-	if (retriesLeft <= 0) {
-		console.error("Too many retries!");
-		// We're just going to return no data and keep our original cursor. We can try again later.
-		return allData;
-	}
-	try {
-		let keepGoing = false;
-		do {
-			const results = await plaidClient.transactionsSync({
-				access_token: accessToken,
-				options: {
-					include_personal_finance_category: true,
-				},
-				cursor: allData.nextCursor,
-			});
-			const newData = results.data;
-			allData.added = allData.added.concat(newData.added);
-			allData.modified = allData.modified.concat(newData.modified);
-			allData.removed = allData.removed.concat(newData.removed);
-			allData.nextCursor = newData.next_cursor;
-			keepGoing = newData.has_more;
-			console.log(
-				`Added: ${newData.added.length} Modified: ${newData.modified.length} Removed: ${newData.removed.length} `,
-			);
+  const allData = {
+    added: [] as Transaction[],
+    removed: [] as RemovedTransaction[],
+    modified: [] as Transaction[],
+    nextCursor: initialCursor,
+  };
+  if (retriesLeft <= 0) {
+    console.error("Too many retries!");
+    // We're just going to return no data and keep our original cursor. We can try again later.
+    return allData;
+  }
+  try {
+    let keepGoing = false;
+    do {
+      const results = await plaidClient.transactionsSync({
+        access_token: accessToken,
+        options: {
+          include_personal_finance_category: true,
+        },
+        cursor: allData.nextCursor,
+      });
+      const newData = results.data;
+      console.log(newData);
+      allData.added = allData.added.concat(newData.added);
+      allData.modified = allData.modified.concat(newData.modified);
+      allData.removed = allData.removed.concat(newData.removed);
+      allData.nextCursor = newData.next_cursor;
+      keepGoing = newData.has_more;
+      console.log(
+        `Added: ${newData.added.length} Modified: ${newData.modified.length} Removed: ${newData.removed.length} `,
+      );
 
       // if (Math.random() < 0.5) {
       //   throw new Error("SIMULATED PLAID SYNC ERROR");

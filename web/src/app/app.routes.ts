@@ -46,5 +46,5 @@ export const routes: Routes = [
     pathMatch: 'full',
     canActivate: [authCallbackGuard],
   },
-  { path: '**', redirectTo: 'user/transactions' },
+  { path: '**', redirectTo: 'user/dashboard' },
 ];

@@ -14,7 +14,6 @@ Team Name: Angular
 | Murphy Lee    | leemurph | 1008897650     | murphy.lee@mail.utoronto.ca     | 416 831 0673        | Murphy Lee      |
 | Vincent Zhang |          |                | vincentz.zhang@mail.utoronto.ca |                     | Vincent Zhang   |
 
-
 ## Project Outline
 
 ### Brief Description

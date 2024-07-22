@@ -1,13 +1,35 @@
-<div class="card flex justify-content-center">
-  <p-floatLabel>
-      <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
-      <label for="queryInput">🔍 Query Transactions</label>
-  </p-floatLabel>
+<!-- <div class="w-full flex justify-between mb-4">
+  <div class="card flex justify-content-center">
+    <p-floatLabel>
+        <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
+        <label for="queryInput">🔍 Query Transactions</label>
+    </p-floatLabel>
+  </div>
+  <p-dropdown
+    [options]="modes"
+    [(ngModel)]="selectedMode"
+    placeholder="Select a Mode"
+  ></p-dropdown>
 </div>
 
-<div *ngIf="answer">{{ answer }}</div>
+<div *ngIf="answer">{{ answer }}</div> -->
 
-<div class="mb-10 flex gap-x-2">
+<div *ngIf="selectedMode === 'monthly'" class="mb-10 flex gap-x-2">
+  <p-dropdown
+    [options]="dropdownYears"
+    [(ngModel)]="selectedYear"
+    (ngModelChange)="fetchTransactionsByDateRange()"
+    placeholder="Select a year"
+  ></p-dropdown>
+  <p-dropdown
+    [options]="dropdownMonths"
+    [(ngModel)]="selectedMonth"
+    (ngModelChange)="fetchTransactionsByDateRange()"
+    placeholder="Select a month"
+  ></p-dropdown>
+</div>
+
+<!-- <div *ngIf="selectedMode === 'timeline'" class="mb-10 flex gap-x-2">
   <div *ngIf="months.length > 0">
     <p-timeline [value]="months" layout="horizontal" align="alternate">
       <ng-template pTemplate="content" let-label>
@@ -21,9 +43,38 @@
     </p-timeline>
   </div>
   <div *ngIf="months.length === 0">Loading timeline...</div>
+</div> -->
+
+<div *ngIf="selectedMode === 'timeline'" class="mb-10 flex gap-x-2">
+  <div *ngIf="months.length > 0">
+    <p-timeline [value]="months" layout="horizontal" align="alternate">
+      <ng-template pTemplate="content" let-label>
+        <div class="p-timeline-item">
+          <a
+            href="#"
+            (click)="monthSelection($event, label)"
+            [ngClass]="{ 'font-bold': isSelected(label) }"
+          >
+            {{ label }}
+          </a>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="opposite">
+        <span>&nbsp;</span>
+      </ng-template>
+    </p-timeline>
+  </div>
+  <div *ngIf="months.length === 0">Loading timeline...</div>
 </div>
 
-<div class="mb-10 flex gap-x-4">
+<div
+  *ngIf="isLoading"
+  class="absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]"
+>
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!isLoading" class="mb-10 flex w-full justify-between gap-x-4 px-10">
   <div>
     <h2>Distribution</h2>
     <transactions-distribution-chart></transactions-distribution-chart>
@@ -32,37 +83,107 @@
     <h2>Spendings</h2>
     <transactions-spendings-chart></transactions-spendings-chart>
   </div>
+  <div>
+    <h2>Annual</h2>
+    <transactions-annual-spendings-chart
+      [year]="selectedYear"
+    ></transactions-annual-spendings-chart>
+  </div>
 </div>
 
-<!-- <transactions-monthly-spend-chart [monthlySpendData]="monthlySpendData"></transactions-monthly-spend-chart> -->
-<p-table
-  [value]="transactions"
-  [scrollable]="true"
-  scrollHeight="500px"
-  styleClass="p-datatable-sm"
->
-  <ng-template pTemplate="header">
-    <tr>
-      <!-- <th>User</th> -->
-      <th>Account Name</th>
-      <th>Date</th>
-      <th>Name</th>
-      <th>Amount</th>
-      <th>Category</th>
-      <th>Verified</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-transaction>
-    <tr>
-      <!-- <td>{{ transaction.user_id }}</td> -->
-      <td>{{ transaction.account.name }}</td>
-      <td>{{ transaction.date }}</td>
-      <td>{{ transaction.name }}</td>
-      <td>{{ transaction.amount | currency: transaction.currency_code }}</td>
-      <td>{{ transaction.category | categoryDisplay }}</td>
-      <td class="flex justify-center">
-        <i [class]="getVerificationIcon(transaction)"></i>
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+<div class="transactions-section rounded bg-white p-4 shadow-lg">
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-lg font-bold">Transactions</h2>
+    <div class="flex gap-x-2">
+      <p-dropdown
+        [options]="searchCriteria"
+        [(ngModel)]="selectedCriteria"
+        placeholder="Select Criteria"
+        class="p-dropdown-sm"
+      ></p-dropdown>
+      <input
+        pInputText
+        id="searchInput"
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        (input)="filterTransactions()"
+        class="p-inputtext-sm"
+        *ngIf="selectedCriteria !== 'amount'"
+      />
+      <div *ngIf="selectedCriteria === 'amount'" class="flex gap-x-2">
+        <input
+          pInputText
+          id="minAmountInput"
+          placeholder="Min Amount"
+          [(ngModel)]="minAmount"
+          (input)="filterTransactions()"
+          class="p-inputtext-sm"
+        />
+        <input
+          pInputText
+          id="maxAmountInput"
+          placeholder="Max Amount"
+          [(ngModel)]="maxAmount"
+          (input)="filterTransactions()"
+          class="p-inputtext-sm"
+        />
+      </div>
+    </div>
+  </div>
+
+  <p-table
+    [value]="filteredTransactions"
+    [scrollable]="true"
+    scrollHeight="500px"
+    styleClass="p-datatable-sm custom-scrollbar"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Bank</th>
+        <th>Account Name</th>
+        <th>Date</th>
+        <th>Merchant</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Verified</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-transaction>
+      <tr>
+        <td class="h-12">
+          <img
+            [src]="getBankLogo(transaction.account.item.bank_name)"
+            alt="{{ transaction.account.item.bank_name }}"
+            class="h-8 w-8 rounded-full"
+          />
+        </td>
+        <td class="h-12">{{ transaction.account.name }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.name }}</td>
+        <td>
+          <span
+            [ngClass]="{
+              'text-red-500': transaction.amount > 0,
+              'text-green-500': transaction.amount < 0,
+            }"
+          >
+            <i *ngIf="transaction.amount >= 0" class="pi pi-arrow-down"></i>
+            <i *ngIf="transaction.amount < 0" class="pi pi-arrow-up"></i>
+            {{ getFormattedAmount(transaction.amount) }}
+          </span>
+        </td>
+        <td>{{ transaction.category | categoryDisplay }}</td>
+        <td class="ml-auto mr-0">
+          <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<button
+  pButton
+  icon="pi pi-comments"
+  class="p-button-rounded p-button-lg p-button-info fixed bottom-5 right-5 z-50"
+  (click)="showChatModal()"
+></button>

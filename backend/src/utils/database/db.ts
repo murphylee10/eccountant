@@ -26,93 +26,126 @@ class Database {
     return newUser;
   }
 
-	/* Transaction interactions */
-	async getRecentTransactions(userId: string, limit: number) {
-		const results = await this.prisma.transaction.findMany({
-			where: {
-				user_id: userId,
-				is_removed: false,
-			},
-			orderBy: {
-				date: "desc",
-			},
-			take: limit,
-			include: {
-				account: {
-					select: {
-						name: true,
-						item: {
-							select: {
-								bank_name: true,
-							},
-						},
-					},
-				},
-			},
-		});
+  /* Transaction interactions */
+  async getRecentTransactions(userId: string, limit: number) {
+    const results = await this.prisma.transaction.findMany({
+      where: {
+        user_id: userId,
+        is_removed: false,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      take: limit,
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-		return results.map((transaction) => ({
-			...transaction,
-			account_name: transaction.account.name,
-			bank_name: transaction.account.item.bank_name,
-		}));
-	}
+    return results.map((transaction) => ({
+      ...transaction,
+      account_name: transaction.account.name,
+      bank_name: transaction.account.item.bank_name,
+    }));
+  }
 
-	async getFirstTransaction(userId: string) {
-		const result = await this.prisma.transaction.findFirst({
-			where: {
-				user_id: userId,
-				is_removed: false,
-			},
-			orderBy: {
-				date: "asc",
-			},
-			include: {
-				account: {
-					select: {
-						name: true,
-						item: {
-							select: {
-								bank_name: true,
-							},
-						},
-					},
-				},
-			},
-		});
+  async getFirstTransaction(userId: string) {
+    const result = await this.prisma.transaction.findFirst({
+      where: {
+        user_id: userId,
+        is_removed: false,
+      },
+      orderBy: {
+        date: "asc",
+      },
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-		return result;
-	}
-	async getLastTransaction(userId: string) {
-		const result = await this.prisma.transaction.findFirst({
-			where: {
-				user_id: userId,
-				is_removed: false,
-			},
-			orderBy: {
-				date: "desc",
-			},
-			include: {
-				account: {
-					select: {
-						name: true,
-						item: {
-							select: {
-								bank_name: true,
-							},
-						},
-					},
-				},
-			},
-		});
-		return result;
-	}
+    return result;
+  }
+  async getLastTransaction(userId: string) {
+    const result = await this.prisma.transaction.findFirst({
+      where: {
+        user_id: userId,
+        is_removed: false,
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return result;
+  }
 
   async getTransactionsByDateRange(
     userId: string,
     startDate: string,
     endDate: string,
   ) {
+    const results = await this.prisma.transaction.findMany({
+      where: {
+        user_id: userId,
+        is_removed: false,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        account: {
+          select: {
+            name: true,
+            item: {
+              select: {
+                bank_name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return results;
+  }
+
+  async getTransactionsByYear(userId: string, year: number) {
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+
     const results = await this.prisma.transaction.findMany({
       where: {
         user_id: userId,
@@ -208,30 +241,30 @@ class Database {
 
   /* Item interactions */
 
-	async getBankNamesForUser(userId: string) {
-		const result = await this.prisma.item.findMany({
-			where: {
-				user_id: userId,
-				is_active: true,
-			},
-			select: {
-				id: true,
-				bank_name: true,
-			},
-		});
-		return result;
-	}
+  async getBankNamesForUser(userId: string) {
+    const result = await this.prisma.item.findMany({
+      where: {
+        user_id: userId,
+        is_active: true,
+      },
+      select: {
+        id: true,
+        bank_name: true,
+      },
+    });
+    return result;
+  }
 
-	async getAccountsWithBank(itemId: string, userId: string) {
-		const result = await db.prisma.item.findUnique({
-			where: {
-				id: itemId,
-				user_id: userId,
-				is_active: true,
-			},
-		});
-		return result;
-	}
+  async getAccountsWithBank(itemId: string, userId: string) {
+    const result = await db.prisma.item.findUnique({
+      where: {
+        id: itemId,
+        user_id: userId,
+        is_active: true,
+      },
+    });
+    return result;
+  }
 
   async getItemInfo(itemId: string) {
     const result = await this.prisma.item.findUnique({
@@ -368,20 +401,19 @@ class Database {
     }
   }
 
-	/* LLM Interaction */
-	async runRawQuery(
-		query: string) {
-		try {
-			return await this.prisma.$queryRaw`${Prisma.raw(query)}`;
-		} catch (error) {
-			console.error(error);
-			return null;
-		}
-	}
+  /* LLM Interaction */
+  async runRawQuery(query: string) {
+    try {
+      return await this.prisma.$queryRaw`${Prisma.raw(query)}`;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 
-	async disconnect() {
-		await this.prisma.$disconnect();
-	}
+  async disconnect() {
+    await this.prisma.$disconnect();
+  }
 }
 
 export const db = new Database();

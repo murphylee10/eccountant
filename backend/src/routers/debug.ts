@@ -2,10 +2,10 @@ import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
 import { plaidClient } from "@/utils/plaid/client";
 import {
-	type NextFunction,
-	type Request,
-	Router,
-	type Response,
+  type NextFunction,
+  type Request,
+  Router,
+  type Response,
 } from "express";
 import { SandboxItemFireWebhookRequestWebhookCodeEnum } from "plaid";
 

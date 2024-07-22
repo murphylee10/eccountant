@@ -1,0 +1,30 @@
+<div class="">
+  <div class="">
+    <label for="queryInput" class="font-medium">🔍 Query Transactions</label>
+    <div class="h-2"></div>
+    <textarea
+      id="queryInput"
+      rows="3"
+      pInputTextarea
+      [(ngModel)]="query"
+      class="w-full rounded border border-gray-300 p-2"
+    ></textarea>
+  </div>
+  <div class="flex justify-end">
+    <button
+      pButton
+      label="Submit"
+      (click)="queryTransactions()"
+      class="p-button-primary mt-4 w-full"
+    ></button>
+  </div>
+  <div *ngIf="answer" class="mt-4">
+    <h4 class="font-semibold">Response:</h4>
+    <p
+      *ngIf="answer.length > 0"
+      class="rounded border border-gray-300 bg-gray-100 p-2"
+    >
+      {{ answer }}
+    </p>
+  </div>
+</div>

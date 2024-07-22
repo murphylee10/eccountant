@@ -1,4 +1,7 @@
-import type { RemovedTransaction, Transaction as PlaidTransaction } from "plaid";
+import type {
+  RemovedTransaction,
+  Transaction as PlaidTransaction,
+} from "plaid";
 import type { Transaction } from "@prisma/client";
 import { CATEGORY_MAP } from "./categoryMap";
 
