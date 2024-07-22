@@ -128,4 +128,22 @@ export class ApiService {
 	ask(query: String): Promise<any> {
 		return this.post<any>(`${this.transactionsUrl}/ask`, { query });
 	}
+  
+  chat(model: string, message: string): Promise<string> {
+    const body = {
+      model,
+      messages: [{ role: 'user', content: message }]
+    };
+
+    return new Promise<string>((resolve, reject) => {
+      this.http.post<string>(encodeURI(`${environment.api_url}/chat`), body).subscribe({
+        next: (response: string) => {
+          resolve(response);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
 }
