@@ -52,7 +52,7 @@ export class ChatDialogComponent {
       return false;
     }
     valid = valid.trimStart();
-    return valid.length > 0 && valid[0].toUpperCase() === 'Y'
+    return valid.length > 0 && valid[0].toUpperCase() === 'Y';
   }
 
   async generateQuery(question: string, LLM_MODEL: string, PROD: boolean) {
