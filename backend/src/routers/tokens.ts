@@ -1,8 +1,8 @@
 import {
-	type Request,
-	Router,
-	type Response,
-	type NextFunction,
+  type Request,
+  Router,
+  type Response,
+  type NextFunction,
 } from "express";
 import { plaidClient } from "@/utils/plaid/client";
 import { Products } from "plaid";
@@ -65,12 +65,12 @@ tokensRouter.post(
       // Call sync for the first time to activate the sync webhooks
       await syncTransactions(itemId);
 
-			res.json({ status: "success" });
-		} catch (error) {
-			console.log("Running into an error!");
-			next(error);
-		}
-	},
+      res.json({ status: "success" });
+    } catch (error) {
+      console.log("Running into an error!");
+      next(error);
+    }
+  },
 );
 
 const populateBankName = async (itemId: string, accessToken: string) => {

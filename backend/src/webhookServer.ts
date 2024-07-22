@@ -1,4 +1,9 @@
-import express, { type Express, type NextFunction, type Request, type Response } from "express";
+import express, {
+  type Express,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errors";
 import "express-async-errors";

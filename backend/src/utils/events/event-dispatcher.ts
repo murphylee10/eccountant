@@ -6,37 +6,37 @@ import type { Application } from "express-ws";
 const EVENTBUS_ENDPOINT = "/eventbus";
 
 export default class EventDispatcher {
-	private static instance: EventDispatcher;
-	private ws: WebSocket;
+  private static instance: EventDispatcher;
+  private ws: WebSocket;
 
-	private constructor(app: Application) {
-		this.setupWs(app);
-	}
+  private constructor(app: Application) {
+    this.setupWs(app);
+  }
 
-	// Method to get the single instance of the class
-	public static getInstance(app?: Application): EventDispatcher {
-		if (!EventDispatcher.instance) {
-			if (!app) throw Error("EventDispatcher server not created");
-			EventDispatcher.instance = new EventDispatcher(app);
-		}
-		return EventDispatcher.instance;
-	}
+  // Method to get the single instance of the class
+  public static getInstance(app?: Application): EventDispatcher {
+    if (!EventDispatcher.instance) {
+      if (!app) throw Error("EventDispatcher server not created");
+      EventDispatcher.instance = new EventDispatcher(app);
+    }
+    return EventDispatcher.instance;
+  }
 
-	private setupWs(app: Application) {
-		app.ws(`/api${EVENTBUS_ENDPOINT}`, (ws: WebSocket, req: any) => {
-			this.ws = ws;
-			console.log("established ws");
+  private setupWs(app: Application) {
+    app.ws(`/api${EVENTBUS_ENDPOINT}`, (ws: WebSocket, req: any) => {
+      this.ws = ws;
+      console.log("established ws");
 
-			ws.on("message", (message) => {
-				console.log(`Message received: ${message}`);
-			});
-			ws.on("close", () => {
-				console.log("The connection was closed!");
-			});
-		});
-	}
+      ws.on("message", (message) => {
+        console.log(`Message received: ${message}`);
+      });
+      ws.on("close", () => {
+        console.log("The connection was closed!");
+      });
+    });
+  }
 
-	public trigger(event: Event<any>) {
-		this.ws.send(event.serialize());
-	}
+  public trigger(event: Event<any>) {
+    this.ws.send(event.serialize());
+  }
 }

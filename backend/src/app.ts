@@ -14,10 +14,10 @@ import { tokensRouter } from "./routers/tokens";
 import { ExampleEvent } from "@common/event";
 import { debugRouter } from "./routers/debug";
 import expressWs, {
-	Application as ExpressWsApplication,
-	type WithWebsocketMethod,
+  Application as ExpressWsApplication,
+  type WithWebsocketMethod,
 } from "express-ws";
-import MistralClient from '@mistralai/mistralai'
+import MistralClient from "@mistralai/mistralai";
 
 type ExtendedExpress = Express & WithWebsocketMethod;
 
@@ -71,15 +71,15 @@ app.get("/api/example/event", (req, res) => {
 
 // Chat endpoint.
 const mistralClient = new MistralClient(process.env.MISTRAL_API_KEY);
-app.post('/api/chat', async (req, res) => {
+app.post("/api/chat", async (req, res) => {
   try {
     const { model, messages } = req.body;
     mistralClient.chat({ model, messages }).then((chatResponse) => {
       res.json(chatResponse.choices[0].message.content);
-    })
+    });
   } catch (error) {
-    console.error('Error in chat request:', error);
-    res.status(500).json({ error: 'Failed to process chat request' });
+    console.error("Error in chat request:", error);
+    res.status(500).json({ error: "Failed to process chat request" });
   }
 });
 
