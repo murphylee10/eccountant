@@ -59,9 +59,11 @@ app.get(
 );
 
 // Example endpoint that triggers realtime event update.
-app.get("/api/example/event", (req, res) => {
+app.get("/api/example/event/:id", (req, res) => {
   try {
-    dispatcher.trigger(new ExampleEvent({ foo: "hi", bar: 1 }));
+    const id = req.params.id;
+    dispatcher.notifyUser(new ExampleEvent({ foo: "chosen", bar: 0 }), id);
+    dispatcher.notifyAll(new ExampleEvent({ foo: "hi", bar: 1 }));
   } catch (e) {
     console.log(e);
     return res.json({ success: false });

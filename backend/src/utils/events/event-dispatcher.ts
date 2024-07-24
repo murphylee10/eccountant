@@ -2,12 +2,13 @@ import type { WebSocket } from "ws";
 import type { Express } from "express";
 import type { Event } from "@common/event";
 import type { Application } from "express-ws";
+import { requireAuth } from "@/middleware/auth";
 
 const EVENTBUS_ENDPOINT = "/eventbus";
 
 export default class EventDispatcher {
   private static instance: EventDispatcher;
-  private ws: WebSocket;
+  private wsMap: Map<string, WebSocket> = new Map();
 
   private constructor(app: Application) {
     this.setupWs(app);
@@ -23,9 +24,8 @@ export default class EventDispatcher {
   }
 
   private setupWs(app: Application) {
-    app.ws(`/api${EVENTBUS_ENDPOINT}`, (ws: WebSocket, req: any) => {
-      this.ws = ws;
-      console.log("established ws");
+    app.ws(`/api${EVENTBUS_ENDPOINT}/:sub`, (ws: WebSocket, req: any) => {
+      const sub = req.params.sub;
 
       ws.on("message", (message) => {
         console.log(`Message received: ${message}`);
@@ -33,10 +33,17 @@ export default class EventDispatcher {
       ws.on("close", () => {
         console.log("The connection was closed!");
       });
+
+      this.wsMap.set(sub, ws);
     });
   }
 
-  public trigger(event: Event<any>) {
-    this.ws.send(event.serialize());
+  public notifyUser(event: Event<any>, sub: string) {
+    if (!this.wsMap.has(sub)) return;
+    this.wsMap.get(sub)?.send(event.serialize());
+  }
+
+  public notifyAll(event: Event<any>) {
+    for (const ws of this.wsMap.values()) ws.send(event.serialize());
   }
 }

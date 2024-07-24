@@ -1,6 +1,6 @@
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from '@services/api.service';
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component, OnDestroy, inject, type OnInit } from '@angular/core';
 import type { SelectItem } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,9 @@ import type { PlaidTransaction } from 'src/app/models/transaction.model'; // Mak
 import { DistributionChartComponent } from '@components/distribution-chart/distribution-chart.component';
 import { AnnualSpendingsChartComponent } from '@components/annual-spendings-chart/annual-spendings-chart.component';
 import { SignalService } from '@services/signal.service';
+import { EventBusService, EventSubscription } from '@services/eventbus.service';
+import { EventType } from '@common/event';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,18 +28,25 @@ import { SignalService } from '@services/signal.service';
   templateUrl: './dashboard.component.html',
   styles: '',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   banks: SelectItem[] = [];
   selectedBankId = '';
   accounts: any[] = [];
   recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
   currentYear: number = new Date().getFullYear();
   signalService = inject(SignalService);
+  eventsub: EventSubscription<{ foo: string; bar: number }>;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
-  ) {}
+    private eventbus: EventBusService,
+  ) {
+    this.eventsub = this.eventbus.observe<{ foo: string; bar: number }>(
+      EventType.EXAMPLE,
+    );
+    this.eventsub.subscribe((res) => console.log(res));
+  }
 
   async ngOnInit() {
     await this.loadBanks();
@@ -166,5 +176,9 @@ export class DashboardComponent implements OnInit {
 
   getFormattedAmount(amount: number): string {
     return `$${Math.abs(amount).toFixed(2)}`;
+  }
+
+  ngOnDestroy(): void {
+    this.eventsub.unsubscribe();
   }
 }
