@@ -1,5 +1,5 @@
-<div class="relative h-screen w-full">
-  <div class="mx-auto mt-[7rem] max-w-md rounded-lg bg-white p-6 shadow-md">
+<div class="relative flex h-screen w-full items-center justify-center">
+  <!-- <div class="mx-auto mt-[7rem] max-w-md rounded-lg bg-white p-6 shadow-md">
     <h2 class="mb-4 text-center text-2xl font-bold">
       {{ isSignIn ? "Sign In" : "Sign Up" }}
     </h2>
@@ -56,6 +56,7 @@
           pPassword
           formControlName="password"
           class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          [feedback]="!isSignIn"
         />
         <div
           *ngIf="
@@ -81,10 +82,6 @@
       <hr class="w-full border-t border-gray-300" />
     </div>
     <div class="mt-4">
-      <!-- <button pButton class="p-button p-2 w-full bg-gray-200 text-black hover:bg-gray-300 border-gray-200 ">
-          <i class="pi pi-user" class="mr-2 text-[1.1rem]"></i>
-          <span>Sign In With Provider</span>
-        </button> -->
       <button
         pButton
         (click)="
@@ -108,4 +105,6 @@
       >
     </div>
   </div>
+-->
+  <p>Redirecting to authentication page...</p>
 </div>
