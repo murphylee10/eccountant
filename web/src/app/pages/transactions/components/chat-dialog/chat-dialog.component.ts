@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import environment from '@environment';
 
 @Component({
   selector: 'transactions-chat-dialog',
@@ -27,7 +28,7 @@ export class ChatDialogComponent {
     return await this.apiService.chat(model, message);
   }
 
-  async validateqQuery(question: string, LLM_MODEL: string, PROD: boolean) {
+  async validateqQuery(question: string, LLM_MODEL: string, prod: boolean) {
     const message = `
       Question "${question}".
       Task: Filter the question through the following list. If a single requirement is not satisfied return "N" immediately.
@@ -39,7 +40,7 @@ export class ChatDialogComponent {
       - Answer must be "Y" or "N".
     `;
     let valid = '';
-    if (PROD) {
+    if (prod) {
       valid = await this.askCodestralAPI(message, 'codestral-latest');
     } else {
       const response = await ollama.chat({
@@ -55,7 +56,7 @@ export class ChatDialogComponent {
     return valid.length > 0 && valid[0].toUpperCase() === 'Y';
   }
 
-  async generateQuery(question: string, LLM_MODEL: string, PROD: boolean) {
+  async generateQuery(question: string, LLM_MODEL: string, prod: boolean) {
     const message = `
 	model Transaction {
 	  category: is type String and is one of 'Income', 'Transfer In', 'Transfer Out', 'Loan Payments', 'Bank Fees', 'Entertainment', 'Food and Drink', 'General Merchandise', 'Home Improvement', 'Medical', 'Personal Care', 'General Services', 'Government and Non-Profit', 'Transportation', 'Travel', 'Rent and Utilities'
@@ -76,7 +77,7 @@ export class ChatDialogComponent {
 	- You must use only these relations: "Transaction".
 	`;
 
-    if (PROD) {
+    if (prod) {
       return await this.askCodestralAPI(message, 'codestral-latest');
     }
     const response = await ollama.chat({
@@ -128,14 +129,14 @@ export class ChatDialogComponent {
     LLM_MODEL: string,
     question: string,
     res: string,
-    PROD: boolean,
+    prod: boolean,
   ) {
     const message = `
 	Question: "${question}".
 	Answer: "${res}".
 	Task: say the answer in one sentence.
 	`;
-    if (PROD) {
+    if (prod) {
       return await this.askCodestralAPI(message, 'open-mistral-7b');
     }
     const postres = await ollama.chat({
@@ -146,7 +147,6 @@ export class ChatDialogComponent {
   }
 
   async queryTransactions() {
-    const PROD = true;
     const question = this.query;
     if (!question) {
       return;
@@ -155,12 +155,12 @@ export class ChatDialogComponent {
     const LLM_MODEL = 'codestral:22b';
     const LLM_MODEL_S = 'mistral:7b';
     console.log(question);
-    const valid = await this.validateqQuery(question, LLM_MODEL, PROD);
+    const valid = await this.validateqQuery(question, LLM_MODEL, environment.production);
     if (!valid) {
       this.answer = 'Invalid question. Please rephrase your question.';
       return;
     }
-    const response = await this.generateQuery(question, LLM_MODEL, PROD);
+    const response = await this.generateQuery(question, LLM_MODEL, environment.production);
     console.log('response:', response);
     if (response) {
       const formattedQuery = this.cleanResponse(response);
@@ -169,7 +169,7 @@ export class ChatDialogComponent {
       const res = JSON.stringify(await this.apiService.ask(formattedQuery));
       console.log(res);
 
-      const cc = await this.formulateResponse(LLM_MODEL_S, question, res, PROD);
+      const cc = await this.formulateResponse(LLM_MODEL_S, question, res, environment.production);
       console.log(cc);
       this.answer = cc;
     } else {
