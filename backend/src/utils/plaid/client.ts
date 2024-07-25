@@ -1,16 +1,28 @@
 import { Configuration, PlaidEnvironments, PlaidApi } from "plaid";
 
-const PLAID_ENV = (process.env.PLAID_ENV || "sandbox").toLowerCase();
-
-const plaidConfig = new Configuration({
-  basePath: PlaidEnvironments[PLAID_ENV],
-  baseOptions: {
-    headers: {
-      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
-      "PLAID-SECRET": process.env.PLAID_SECRET,
-      "Plaid-Version": "2020-09-14",
-    },
-  },
+const plaidSandboxConfig = new Configuration({
+	// biome-ignore lint/complexity/useLiteralKeys: Plaid prefers this
+	basePath: PlaidEnvironments["sandbox"],
+	baseOptions: {
+		headers: {
+			"PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+			"PLAID-SECRET": process.env.PLAID_SECRET_SANDBOX,
+			"Plaid-Version": "2020-09-14",
+		},
+	},
 });
 
-export const plaidClient = new PlaidApi(plaidConfig);
+const plaidProductionConfig = new Configuration({
+	// biome-ignore lint/complexity/useLiteralKeys: Plaid prefers this
+	basePath: PlaidEnvironments["production"],
+	baseOptions: {
+		headers: {
+			"PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID,
+			"PLAID-SECRET": process.env.PLAID_SECRET_PRODUCTION,
+			"Plaid-Version": "2020-09-14",
+		},
+	},
+});
+
+export const plaidSandboxClient = new PlaidApi(plaidSandboxConfig);
+export const plaidProductionClient = new PlaidApi(plaidProductionConfig);
