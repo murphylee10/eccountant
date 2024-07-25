@@ -29,7 +29,8 @@ tokensRouter.post(
 	async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			const userId = req.auth?.payload.sub as string;
-			const isSandbox = req.body.isSandbox || true;
+			const isSandbox = req.body.isSandbox ?? true;
+			console.log(isSandbox);
 			const userObject = { client_user_id: userId };
 			const tokenResponse = await (isSandbox
 				? plaidSandboxClient
@@ -59,7 +60,7 @@ tokensRouter.post(
 		try {
 			const userId = req.auth?.payload.sub as string;
 			const publicToken = req.body.publicToken;
-			const isSandbox = req.body.isSandbox || true;
+			const isSandbox = req.body.isSandbox ?? true;
 
 			const tokenResponse = await (isSandbox
 				? plaidSandboxClient

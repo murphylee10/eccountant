@@ -64,6 +64,7 @@ export class LinksComponent {
 	confirmModeSelection(isSandbox: boolean): void {
 		this.displayDialog = false;
 		this.isSandbox = isSandbox;
+		console.log(this.isSandbox);
 
 		this.plaidTokenService
 			.generateLinkToken(this.isSandbox)
