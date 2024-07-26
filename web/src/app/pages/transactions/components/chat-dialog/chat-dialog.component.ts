@@ -157,7 +157,7 @@ export class ChatDialogComponent {
     console.log(question);
     const valid = await this.validateqQuery(question, LLM_MODEL, environment.production);
     if (!valid) {
-      this.answer = 'Invalid question. Please rephrase your question.';
+      this.answer = 'Invalid question. Please rephrase your question or ask something about your transactions.';
       return;
     }
     const response = await this.generateQuery(question, LLM_MODEL, environment.production);
