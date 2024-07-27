@@ -27,6 +27,7 @@ model Item {
   transaction_cursor String?
   bank_name          String?
   is_active          Boolean @default(true)
+  isSandbox          Boolean @default(true)
   user               User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   accounts           Account[]
 }
