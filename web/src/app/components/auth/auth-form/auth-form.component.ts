@@ -64,7 +64,7 @@ export class AuthFormComponent {
             console.error('Error registering or logging in user:', err);
           });
       } else {
-        this.auth.loginWithPopup();
+        this.auth.loginWithRedirect();
       }
     });
   }

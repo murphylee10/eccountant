@@ -46,15 +46,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private eventbus: EventBusService,
   ) {
     this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
-    this.eventsub.subscribe(this.ngOnInit);
+    this.eventsub.subscribe(() => this.init(true));
   }
 
   async ngOnInit() {
+    await this.init(false);
+  }
+
+  init = async (webhook: boolean) => {
+    if (webhook) console.log('Webhook fired');
     await this.loadBanks();
     await this.loadRecentTransactions();
     await this.loadCategoryData();
     await this.loadMonthlySpendData();
-  }
+  };
 
   async loadBanks() {
     const banksData = await this.apiService.getBanks();
