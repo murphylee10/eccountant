@@ -1,371 +1,370 @@
-import { CommonModule } from '@angular/common';
-import { Component, type OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { TimelineModule } from 'primeng/timeline';
+import { CommonModule } from "@angular/common";
+import { Component, type OnInit } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ButtonModule } from "primeng/button";
+import { TimelineModule } from "primeng/timeline";
 
-import { TableModule } from 'primeng/table';
-import type { PlaidTransaction } from 'src/app/models/transaction.model';
-import { DistributionChartComponent } from '../../components/distribution-chart/distribution-chart.component';
-import { MonthlySpendChartComponent } from './components/monthly-spend-chart/monthly-spend-chart.component';
-import { SpendingsChartComponent } from '../../components/spending-chart/spendings-chart.component';
+import { TableModule } from "primeng/table";
+import type { PlaidTransaction } from "src/app/models/transaction.model";
+import { DistributionChartComponent } from "../../components/distribution-chart/distribution-chart.component";
+import { MonthlySpendChartComponent } from "./components/monthly-spend-chart/monthly-spend-chart.component";
+import { SpendingsChartComponent } from "../../components/spending-chart/spendings-chart.component";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
-import { ApiService } from '@services/api.service';
+import { ApiService } from "@services/api.service";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
-import { SignalService } from '@services/signal.service';
-import { CategoryDisplayPipe } from 'src/app/utils/category-display.pipe';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SignalService } from "@services/signal.service";
+import { CategoryDisplayPipe } from "src/app/utils/category-display.pipe";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { DropdownModule } from 'primeng/dropdown';
-import { AnnualSpendingsChartComponent } from '@components/annual-spendings-chart/annual-spendings-chart.component';
-import { bankLogos } from 'src/app/models/bank-logos-map';
-import { DialogModule } from 'primeng/dialog';
-// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
-import { DialogService, type DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ChatDialogComponent } from './components/chat-dialog/chat-dialog.component';
+import { InputTextModule } from "primeng/inputtext";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { DropdownModule } from "primeng/dropdown";
+import { AnnualSpendingsChartComponent } from "@components/annual-spendings-chart/annual-spendings-chart.component";
+import { bankLogos } from "src/app/models/bank-logos-map";
+import { DialogModule } from "primeng/dialog";
+import { DialogService, type DynamicDialogRef } from "primeng/dynamicdialog";
+import { ChatDialogComponent } from "./components/chat-dialog/chat-dialog.component";
 
 @Component({
-  selector: 'app-transactions',
-  standalone: true,
-  imports: [
-    ButtonModule,
-    TableModule,
-    CommonModule,
-    TimelineModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DistributionChartComponent,
-    MonthlySpendChartComponent,
-    SpendingsChartComponent,
-    AnnualSpendingsChartComponent,
-    CategoryDisplayPipe,
-    InputTextModule,
-    FloatLabelModule,
-    DropdownModule,
-    ProgressSpinnerModule,
-    DialogModule,
-  ],
-  providers: [DialogService],
-  templateUrl: './transactions.component.html',
-  styles: '',
+	selector: "app-transactions",
+	standalone: true,
+	imports: [
+		ButtonModule,
+		TableModule,
+		CommonModule,
+		TimelineModule,
+		FormsModule,
+		ReactiveFormsModule,
+		DistributionChartComponent,
+		MonthlySpendChartComponent,
+		SpendingsChartComponent,
+		AnnualSpendingsChartComponent,
+		CategoryDisplayPipe,
+		InputTextModule,
+		FloatLabelModule,
+		DropdownModule,
+		ProgressSpinnerModule,
+		DialogModule,
+	],
+	providers: [DialogService],
+	templateUrl: "./transactions.component.html",
+	styles: "",
 })
 export class TransactionsComponent implements OnInit {
-  transactions: PlaidTransaction[] = [];
-  filteredTransactions: PlaidTransaction[] = [];
-  searchQuery = '';
-  selectedCriteria = '';
-  minAmount: number | null = null;
-  maxAmount: number | null = null;
-  searchCriteria = [
-    { label: 'Merchant', value: 'name' },
-    { label: 'Bank', value: 'bank_name' },
-    { label: 'Account Name', value: 'account_name' },
-    { label: 'Amount', value: 'amount' },
-    { label: 'Date', value: 'date' },
-    { label: 'Category', value: 'category' },
-  ];
-  // test comment
-  // categoryData: { [key: string]: number } = {};
-  // monthlySpendData: { [key: string]: number } = {};
-  yearToMonthsMap = new Map<number, { label: string; value: number }[]>();
-  years: any[] = [];
-  months: any[] = [];
-  selectedYear: number = new Date().getFullYear();
-  selectedMonth: number | null = null;
-  dropdownYears: any[] = [];
-  dropdownMonths: any[] = [];
-  modes = [
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Timeline', value: 'timeline' },
-    { label: 'Custom Range', value: 'customRange' },
-  ];
-  selectedMode = 'monthly';
-  isLoading = false;
-  dialogRef: DynamicDialogRef | undefined;
-  query: string | undefined;
-  answer: string | undefined;
+	transactions: PlaidTransaction[] = [];
+	filteredTransactions: PlaidTransaction[] = [];
+	searchQuery = "";
+	selectedCriteria = "";
+	minAmount: number | null = null;
+	maxAmount: number | null = null;
+	searchCriteria = [
+		{ label: "Merchant", value: "name" },
+		{ label: "Bank", value: "bank_name" },
+		{ label: "Account Name", value: "account_name" },
+		{ label: "Amount", value: "amount" },
+		{ label: "Date", value: "date" },
+		{ label: "Category", value: "category" },
+	];
+	// test comment
+	// categoryData: { [key: string]: number } = {};
+	// monthlySpendData: { [key: string]: number } = {};
+	yearToMonthsMap = new Map<number, { label: string; value: number }[]>();
+	years: any[] = [];
+	months: any[] = [];
+	selectedYear: number = new Date().getFullYear();
+	selectedMonth: number | null = null;
+	dropdownYears: any[] = [];
+	dropdownMonths: any[] = [];
+	modes = [
+		{ label: "Monthly", value: "monthly" },
+		{ label: "Timeline", value: "timeline" },
+		{ label: "Custom Range", value: "customRange" },
+	];
+	selectedMode = "monthly";
+	isLoading = false;
+	dialogRef: DynamicDialogRef | undefined;
+	query: string | undefined;
+	answer: string | undefined;
 
-  constructor(
-    private apiService: ApiService,
-    private signalService: SignalService,
-    private dialogService: DialogService,
-  ) {}
+	constructor(
+		private apiService: ApiService,
+		private signalService: SignalService,
+		private dialogService: DialogService,
+	) {}
 
-  async ngOnInit(): Promise<void> {
-    await this.initTransactionRange();
-    await this.fetchTransactionsForPastYear();
-    this.fetchTransactionsByDateRange();
-  }
+	async ngOnInit(): Promise<void> {
+		await this.initTransactionRange();
+		await this.fetchTransactionsForPastYear();
+		this.fetchTransactionsByDateRange();
+	}
 
-  updateSelectedTimeline() {
-    this.months = this.months.map((month) => {
-      const [year, monthNumber] = month.split('-');
-      const label = `${year}-${monthNumber}`;
-      return label;
-    });
-  }
+	updateSelectedTimeline() {
+		this.months = this.months.map((month) => {
+			const [year, monthNumber] = month.split("-");
+			const label = `${year}-${monthNumber}`;
+			return label;
+		});
+	}
 
-  isSelected(label: string): boolean {
-    const [year, month] = label.split('-');
-    return (
-      Number.parseInt(year) === this.selectedYear &&
-      Number.parseInt(month) === this.selectedMonth
-    );
-  }
+	isSelected(label: string): boolean {
+		const [year, month] = label.split("-");
+		return (
+			Number.parseInt(year) === this.selectedYear &&
+			Number.parseInt(month) === this.selectedMonth
+		);
+	}
 
-  getBankLogo(bankName: string): string {
-    return bankLogos[bankName] || 'assets/images/default-bank.png';
-  }
+	getBankLogo(bankName: string): string {
+		return bankLogos[bankName] || "assets/images/default-bank.png";
+	}
 
-  async initTransactionRange() {
-    this.months = [];
+	async initTransactionRange() {
+		this.months = [];
 
-    // Get first and last transactions to determine transaction display range.
-    const first = await this.apiService.getFirstTransaction();
-    const last = await this.apiService.getLastTransaction();
-    const [firstYear, firstMonth] = first.date.split('-').map(Number);
-    const [lastYear, lastMonth] = last.date.split('-').map(Number);
+		// Get first and last transactions to determine transaction display range.
+		const first = await this.apiService.getFirstTransaction();
+		const last = await this.apiService.getLastTransaction();
+		const [firstYear, firstMonth] = first.date.split("-").map(Number);
+		const [lastYear, lastMonth] = last.date.split("-").map(Number);
 
-    this.buildYearToMonthsMap(firstYear, firstMonth, lastYear, lastMonth);
-    this.dropdownYears = Array.from(this.yearToMonthsMap.keys());
-    this.dropdownMonths = this.yearToMonthsMap.get(lastYear) || [];
+		this.buildYearToMonthsMap(firstYear, firstMonth, lastYear, lastMonth);
+		this.dropdownYears = Array.from(this.yearToMonthsMap.keys());
+		this.dropdownMonths = this.yearToMonthsMap.get(lastYear) || [];
 
-    // Add in all months between first and last transaction.
-    let yearCounter = firstYear;
-    let monthCounter = firstMonth;
-    for (;;) {
-      this.months.push(
-        `${yearCounter}-${monthCounter.toString().padStart(2, '0')}`,
-      );
-      monthCounter++;
-      if (monthCounter > 12) {
-        monthCounter = 1;
-        yearCounter++;
-      }
-      if (
-        yearCounter > lastYear ||
-        (yearCounter === lastYear && monthCounter > lastMonth)
-      ) {
-        break;
-      }
-    }
+		// Add in all months between first and last transaction.
+		let yearCounter = firstYear;
+		let monthCounter = firstMonth;
+		for (;;) {
+			this.months.push(
+				`${yearCounter}-${monthCounter.toString().padStart(2, "0")}`,
+			);
+			monthCounter++;
+			if (monthCounter > 12) {
+				monthCounter = 1;
+				yearCounter++;
+			}
+			if (
+				yearCounter > lastYear ||
+				(yearCounter === lastYear && monthCounter > lastMonth)
+			) {
+				break;
+			}
+		}
 
-    // Set selected year and month to last transaction and update timeline selection.
-    this.selectedMonth = lastMonth;
-    this.selectedYear = lastYear;
-    this.updateSelectedTimeline();
-  }
+		// Set selected year and month to last transaction and update timeline selection.
+		this.selectedMonth = lastMonth;
+		this.selectedYear = lastYear;
+		this.updateSelectedTimeline();
+	}
 
-  getFormattedAmount(amount: number): string {
-    return `$${Math.abs(amount).toFixed(2)}`;
-  }
+	getFormattedAmount(amount: number): string {
+		return `$${Math.abs(amount).toFixed(2)}`;
+	}
 
-  buildYearToMonthsMap(
-    firstYear: number,
-    firstMonth: number,
-    lastYear: number,
-    lastMonth: number,
-  ) {
-    const months = [
-      { label: 'January', value: 1 },
-      { label: 'February', value: 2 },
-      { label: 'March', value: 3 },
-      { label: 'April', value: 4 },
-      { label: 'May', value: 5 },
-      { label: 'June', value: 6 },
-      { label: 'July', value: 7 },
-      { label: 'August', value: 8 },
-      { label: 'September', value: 9 },
-      { label: 'October', value: 10 },
-      { label: 'November', value: 11 },
-      { label: 'December', value: 12 },
-    ];
+	buildYearToMonthsMap(
+		firstYear: number,
+		firstMonth: number,
+		lastYear: number,
+		lastMonth: number,
+	) {
+		const months = [
+			{ label: "January", value: 1 },
+			{ label: "February", value: 2 },
+			{ label: "March", value: 3 },
+			{ label: "April", value: 4 },
+			{ label: "May", value: 5 },
+			{ label: "June", value: 6 },
+			{ label: "July", value: 7 },
+			{ label: "August", value: 8 },
+			{ label: "September", value: 9 },
+			{ label: "October", value: 10 },
+			{ label: "November", value: 11 },
+			{ label: "December", value: 12 },
+		];
 
-    for (let year = firstYear; year <= lastYear; year++) {
-      const startMonth = year === firstYear ? firstMonth - 1 : 0;
-      const endMonth = year === lastYear ? lastMonth - 1 : 11;
+		for (let year = firstYear; year <= lastYear; year++) {
+			const startMonth = year === firstYear ? firstMonth - 1 : 0;
+			const endMonth = year === lastYear ? lastMonth - 1 : 11;
 
-      this.yearToMonthsMap.set(year, months.slice(startMonth, endMonth + 1));
-    }
-  }
+			this.yearToMonthsMap.set(year, months.slice(startMonth, endMonth + 1));
+		}
+	}
 
-  async fetchTransactionsForPastYear() {
-    const selectedYear = this.selectedYear as number;
-    const transactions =
-      await this.apiService.getTransactionsByYear(selectedYear);
+	async fetchTransactionsForPastYear() {
+		const selectedYear = this.selectedYear as number;
+		const transactions =
+			await this.apiService.getTransactionsByYear(selectedYear);
 
-    // Process transactions to format the data for the line chart
-    const monthlySpend = new Array(12).fill(0); // Initialize array for 12 months
+		// Process transactions to format the data for the line chart
+		const monthlySpend = new Array(12).fill(0); // Initialize array for 12 months
 
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth(); // 0-based index for current month
+		const currentYear = new Date().getFullYear();
+		const currentMonth = new Date().getMonth(); // 0-based index for current month
 
-    for (const transaction of transactions) {
-      const transactionDate = new Date(transaction.date);
-      const month = transactionDate.getMonth(); // 0-based index for months
-      if (selectedYear === currentYear && month > currentMonth) {
-        continue; // Skip future months if the selected year is the current year
-      }
-      monthlySpend[month] += transaction.amount;
-    }
+		for (const transaction of transactions) {
+			const transactionDate = new Date(transaction.date);
+			const month = transactionDate.getMonth(); // 0-based index for months
+			if (selectedYear === currentYear && month > currentMonth) {
+				continue; // Skip future months if the selected year is the current year
+			}
+			monthlySpend[month] += transaction.amount;
+		}
 
-    // Convert array to object with month numbers as keys
-    const monthlySpendData = monthlySpend.reduce(
-      (acc, value, index) => {
-        if (selectedYear !== currentYear || index <= currentMonth) {
-          acc[index + 1] = value; // Month numbers as keys (1-based index)
-        }
-        return acc;
-      },
-      {} as { [key: number]: number },
-    );
+		// Convert array to object with month numbers as keys
+		const monthlySpendData = monthlySpend.reduce(
+			(acc, value, index) => {
+				if (selectedYear !== currentYear || index <= currentMonth) {
+					acc[index + 1] = value; // Month numbers as keys (1-based index)
+				}
+				return acc;
+			},
+			{} as { [key: number]: number },
+		);
 
-    console.log('Monthly spend data:', monthlySpendData);
+		console.log("Monthly spend data:", monthlySpendData);
 
-    // Update signal service with the monthly spend data
-    this.signalService.updateMonthlySpendData(monthlySpendData);
-  }
+		// Update signal service with the monthly spend data
+		this.signalService.updateMonthlySpendData(monthlySpendData);
+	}
 
-  showChatModal() {
-    this.dialogRef = this.dialogService.open(ChatDialogComponent, {
-      header: 'Query Transactions',
-      width: '40rem',
-      height: '35rem',
-      baseZIndex: 10000,
-      contentStyle: { overflow: 'visible' },
-    });
+	showChatModal() {
+		this.dialogRef = this.dialogService.open(ChatDialogComponent, {
+			header: "Query Transactions",
+			width: "40rem",
+			height: "35rem",
+			baseZIndex: 10000,
+			contentStyle: { overflow: "visible" },
+		});
 
-    this.dialogRef.onClose.subscribe((data) => {
-      if (data) {
-        this.answer = data.response;
-      }
-    });
-  }
+		this.dialogRef.onClose.subscribe((data) => {
+			if (data) {
+				this.answer = data.response;
+			}
+		});
+	}
 
-  hideChatModal() {
-    if (this.dialogRef) {
-      this.dialogRef.close();
-    }
-  }
+	hideChatModal() {
+		if (this.dialogRef) {
+			this.dialogRef.close();
+		}
+	}
 
-  filterTransactions() {
-    const query = this.searchQuery.toLowerCase();
-    const criteria = this.selectedCriteria;
+	filterTransactions() {
+		const query = this.searchQuery.toLowerCase();
+		const criteria = this.selectedCriteria;
 
-    this.filteredTransactions = this.transactions.filter((transaction) => {
-      switch (criteria) {
-        case 'name':
-          return transaction.name.toLowerCase().includes(query);
-        case 'bank_name':
-          return transaction.account.item.bank_name
-            .toLowerCase()
-            .includes(query);
-        case 'account_name':
-          return transaction.account.name.toLowerCase().includes(query);
-        case 'date':
-          return transaction.date.includes(query);
-        case 'category':
-          return transaction.category.toLowerCase().includes(query);
-        case 'amount': {
-          const amount = transaction.amount;
-          const min =
-            this.minAmount != null ? this.minAmount : Number.NEGATIVE_INFINITY;
-          const max =
-            this.maxAmount != null ? this.maxAmount : Number.POSITIVE_INFINITY;
-          return amount >= min && amount <= max;
-        }
-        default:
-          return true;
-      }
-    });
-  }
+		this.filteredTransactions = this.transactions.filter((transaction) => {
+			switch (criteria) {
+				case "name":
+					return transaction.name.toLowerCase().includes(query);
+				case "bank_name":
+					return transaction.account.item.bank_name
+						.toLowerCase()
+						.includes(query);
+				case "account_name":
+					return transaction.account.name.toLowerCase().includes(query);
+				case "date":
+					return transaction.date.includes(query);
+				case "category":
+					return transaction.category.toLowerCase().includes(query);
+				case "amount": {
+					const amount = transaction.amount;
+					const min =
+						this.minAmount != null ? this.minAmount : Number.NEGATIVE_INFINITY;
+					const max =
+						this.maxAmount != null ? this.maxAmount : Number.POSITIVE_INFINITY;
+					return amount >= min && amount <= max;
+				}
+				default:
+					return true;
+			}
+		});
+	}
 
-  monthSelection(event: Event, label: string) {
-    // On click handler for month selection.
-    event.preventDefault();
-    this.selectedYear = Number.parseInt(label.split('-')[0]);
-    this.selectedMonth = Number.parseInt(label.split('-')[1]);
-    this.updateSelectedTimeline();
-    this.fetchTransactionsByDateRange();
-  }
+	monthSelection(event: Event, label: string) {
+		// On click handler for month selection.
+		event.preventDefault();
+		this.selectedYear = Number.parseInt(label.split("-")[0]);
+		this.selectedMonth = Number.parseInt(label.split("-")[1]);
+		this.updateSelectedTimeline();
+		this.fetchTransactionsByDateRange();
+	}
 
-  async fetchTransactionsByDateRange() {
-    this.isLoading = true; // Start loading spinner
-    let startDate = '';
-    let endDate = '';
-    if (this.selectedMode === 'monthly' || this.selectedMode === 'timeline') {
-      if (!(this.selectedYear && this.selectedMonth)) {
-        this.isLoading = false;
-        return;
-      }
-      startDate = `${this.selectedYear}-${this.selectedMonth
-        .toString()
-        .padStart(2, '0')}-01`;
-      endDate = `${this.selectedYear}-${this.selectedMonth
-        .toString()
-        .padStart(2, '0')}-${new Date(
-        this.selectedYear,
-        this.selectedMonth,
-        0,
-      ).getDate()}`;
-    }
-    if (!(startDate && endDate)) {
-      this.isLoading = false;
-      return;
-    }
+	async fetchTransactionsByDateRange() {
+		this.isLoading = true; // Start loading spinner
+		let startDate = "";
+		let endDate = "";
+		if (this.selectedMode === "monthly" || this.selectedMode === "timeline") {
+			if (!(this.selectedYear && this.selectedMonth)) {
+				this.isLoading = false;
+				return;
+			}
+			startDate = `${this.selectedYear}-${this.selectedMonth
+				.toString()
+				.padStart(2, "0")}-01`;
+			endDate = `${this.selectedYear}-${this.selectedMonth
+				.toString()
+				.padStart(2, "0")}-${new Date(
+				this.selectedYear,
+				this.selectedMonth,
+				0,
+			).getDate()}`;
+		}
+		if (!(startDate && endDate)) {
+			this.isLoading = false;
+			return;
+		}
 
-    this.transactions = await this.apiService.getTransactionsByDateRange(
-      startDate,
-      endDate,
-    );
-    this.filteredTransactions = this.transactions; // Initialize filtered transactions
-    this.isLoading = false; // Stop loading spinner
-    console.log('Transactions:', this.transactions);
-    this.updateCategoryData();
-  }
+		this.transactions = await this.apiService.getTransactionsByDateRange(
+			startDate,
+			endDate,
+		);
+		this.filteredTransactions = this.transactions; // Initialize filtered transactions
+		this.isLoading = false; // Stop loading spinner
+		console.log("Transactions:", this.transactions);
+		this.updateCategoryData();
+	}
 
-  updateCategoryData() {
-    const categoryData = this.transactions.reduce(
-      (acc: { [key: string]: number }, transaction: PlaidTransaction) => {
-        if (transaction.amount > 0) {
-          // Filter out negative amounts
-          if (!acc[transaction.category]) {
-            acc[transaction.category] = 0;
-          }
-          acc[transaction.category] = Number.parseFloat(
-            (acc[transaction.category] + transaction.amount).toFixed(2),
-          );
-        }
-        return acc;
-      },
-      {},
-    );
+	updateCategoryData() {
+		const categoryData = this.transactions.reduce(
+			(acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+				if (transaction.amount > 0) {
+					// Filter out negative amounts
+					if (!acc[transaction.category]) {
+						acc[transaction.category] = 0;
+					}
+					acc[transaction.category] = Number.parseFloat(
+						(acc[transaction.category] + transaction.amount).toFixed(2),
+					);
+				}
+				return acc;
+			},
+			{},
+		);
 
-    this.signalService.updateCategoryData(categoryData);
-  }
+		this.signalService.updateCategoryData(categoryData);
+	}
 
-  // updateMonthlySpendData() {
-  // 	const monthlySpendData = this.transactions.reduce(
-  // 		(acc: { [key: string]: number }, transaction: PlaidTransaction) => {
-  // 			const month = new Date(transaction.date).getMonth() + 1;
-  // 			if (!acc[month]) {
-  // 				acc[month] = 0;
-  // 			}
-  // 			acc[month] += transaction.amount;
-  // 			return acc;
-  // 		},
-  // 		{},
-  // 	);
-  // 	this.signalService.updateMonthlySpendData(monthlySpendData);
-  // }
+	// updateMonthlySpendData() {
+	// 	const monthlySpendData = this.transactions.reduce(
+	// 		(acc: { [key: string]: number }, transaction: PlaidTransaction) => {
+	// 			const month = new Date(transaction.date).getMonth() + 1;
+	// 			if (!acc[month]) {
+	// 				acc[month] = 0;
+	// 			}
+	// 			acc[month] += transaction.amount;
+	// 			return acc;
+	// 		},
+	// 		{},
+	// 	);
+	// 	this.signalService.updateMonthlySpendData(monthlySpendData);
+	// }
 
-  isVerified(transaction: PlaidTransaction): boolean {
-    return transaction.authorized_date !== null;
-  }
+	isVerified(transaction: PlaidTransaction): boolean {
+		return transaction.authorized_date !== null;
+	}
 
-  getVerificationIcon(transaction: PlaidTransaction): string {
-    return transaction.authorized_date !== null ? 'pi pi-check' : 'pi pi-clock';
-  }
+	getVerificationIcon(transaction: PlaidTransaction): string {
+		return transaction.authorized_date !== null ? "pi pi-check" : "pi pi-clock";
+	}
 }
