@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, type OnInit } from '@angular/core';
+import { Component, OnDestroy, type OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TimelineModule } from 'primeng/timeline';
@@ -25,6 +25,8 @@ import { DialogModule } from 'primeng/dialog';
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { DialogService, type DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChatDialogComponent } from './components/chat-dialog/chat-dialog.component';
+import { EventBusService, EventSubscription } from '@services/eventbus.service';
+import { EventType } from '@common/event';
 
 @Component({
   selector: 'app-transactions',
@@ -51,7 +53,7 @@ import { ChatDialogComponent } from './components/chat-dialog/chat-dialog.compon
   templateUrl: './transactions.component.html',
   styles: '',
 })
-export class TransactionsComponent implements OnInit {
+export class TransactionsComponent implements OnInit, OnDestroy {
   transactions: PlaidTransaction[] = [];
   filteredTransactions: PlaidTransaction[] = [];
   searchQuery = '';
@@ -86,18 +88,23 @@ export class TransactionsComponent implements OnInit {
   dialogRef: DynamicDialogRef | undefined;
   query: string | undefined;
   answer: string | undefined;
+  eventsub: EventSubscription<number>;
 
   constructor(
     private apiService: ApiService,
     private signalService: SignalService,
     private dialogService: DialogService,
-  ) {}
+    private eventbus: EventBusService,
+  ) {
+    this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+    this.eventsub.subscribe(this.ngOnInit);
+  }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit = async (): Promise<void> => {
     await this.initTransactionRange();
     await this.fetchTransactionsForPastYear();
     this.fetchTransactionsByDateRange();
-  }
+  };
 
   updateSelectedTimeline() {
     this.months = this.months.map((month) => {
@@ -367,5 +374,9 @@ export class TransactionsComponent implements OnInit {
 
   getVerificationIcon(transaction: PlaidTransaction): string {
     return transaction.authorized_date !== null ? 'pi pi-check' : 'pi pi-clock';
+  }
+
+  ngOnDestroy(): void {
+    this.eventsub.unsubscribe();
   }
 }

@@ -1,5 +1,6 @@
 export enum EventType {
   EXAMPLE = "event/example",
+  NEW_TRANSACTION = "event/new_transaction",
 }
 
 export abstract class Event<T> {
