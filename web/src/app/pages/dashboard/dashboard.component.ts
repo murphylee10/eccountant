@@ -35,17 +35,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
   recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
   currentYear: number = new Date().getFullYear();
   signalService = inject(SignalService);
-  eventsub: EventSubscription<{ foo: string; bar: number }>;
+  eventsub: EventSubscription<{
+    uid: string;
+    timestamp: number;
+  }>;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private eventbus: EventBusService,
   ) {
-    this.eventsub = this.eventbus.observe<{ foo: string; bar: number }>(
-      EventType.EXAMPLE,
-    );
-    this.eventsub.subscribe((res) => console.log(res));
+    this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+    this.eventsub.subscribe(this.ngOnInit);
   }
 
   async ngOnInit() {

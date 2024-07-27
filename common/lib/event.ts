@@ -27,3 +27,10 @@ export abstract class Event<T> {
 export class ExampleEvent extends Event<{ foo: string; bar: number }> {
   id = EventType.EXAMPLE;
 }
+
+export class TransactionEvent extends Event<{
+  uid: string;
+  timestamp: number;
+}> {
+  id = EventType.NEW_TRANSACTION;
+}

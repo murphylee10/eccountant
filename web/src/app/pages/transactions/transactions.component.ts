@@ -26,7 +26,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DialogService, type DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChatDialogComponent } from './components/chat-dialog/chat-dialog.component';
 import { EventBusService, EventSubscription } from '@services/eventbus.service';
-import { EventType } from '@common/event';
+import { EventType, TransactionEvent } from '@common/event';
 
 @Component({
   selector: 'app-transactions',
@@ -88,7 +88,10 @@ export class TransactionsComponent implements OnInit, OnDestroy {
   dialogRef: DynamicDialogRef | undefined;
   query: string | undefined;
   answer: string | undefined;
-  eventsub: EventSubscription<number>;
+  eventsub: EventSubscription<{
+    uid: string;
+    timestamp: number;
+  }>;
 
   constructor(
     private apiService: ApiService,
@@ -97,10 +100,14 @@ export class TransactionsComponent implements OnInit, OnDestroy {
     private eventbus: EventBusService,
   ) {
     this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
-    this.eventsub.subscribe(this.ngOnInit);
+    this.eventsub.subscribe(this.init);
   }
 
-  ngOnInit = async (): Promise<void> => {
+  ngOnInit() {
+    this.init();
+  }
+
+  init = async () => {
     await this.initTransactionRange();
     await this.fetchTransactionsForPastYear();
     this.fetchTransactionsByDateRange();
