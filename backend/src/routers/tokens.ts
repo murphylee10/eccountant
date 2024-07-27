@@ -31,6 +31,8 @@ tokensRouter.post(
 			const userId = req.auth?.payload.sub as string;
 			const isSandbox = req.body.isSandbox ?? true;
 			console.log(isSandbox);
+			console.log(CLIENT_NAME);
+			console.log(WEBHOOK_URL);
 			const userObject = { client_user_id: userId };
 			const tokenResponse = await (isSandbox
 				? plaidSandboxClient
