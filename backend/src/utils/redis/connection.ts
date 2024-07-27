@@ -24,6 +24,7 @@ txnWorker.on("completed", (job) => {
 });
 
 txnWorker.on("failed", (job, err) => {
+	// @ts-ignore
 	console.log(`Job ${job.id} has failed with error ${err.message}`);
 });
 
