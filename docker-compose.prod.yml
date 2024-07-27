@@ -24,7 +24,11 @@ services:
     environment:
       - NGINX_PROXY_CONTAINER=nginx-proxy
       - DEFAULT_EMAIL=murphy.lee@mail.utoronto.ca
-      
+  redis:
+    restart: always
+    image: redis:7.2.5-alpine
+    ports:
+      - 6381:6379
   db:
     image: postgres:13
     container_name: postgres

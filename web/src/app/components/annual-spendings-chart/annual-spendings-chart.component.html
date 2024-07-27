@@ -1,10 +1,10 @@
+<!-- annual-spendings-chart.component.html -->
 <div *ngIf="isDataAvailable(); else loading">
   <apx-chart
     [series]="chartOptions().series"
     [chart]="chartOptions().chart"
+    [xaxis]="chartOptions().xaxis"
     [responsive]="chartOptions().responsive"
-    [labels]="chartOptions().labels"
-    [colors]="chartOptions().colors"
   ></apx-chart>
 </div>
 <ng-template #loading>

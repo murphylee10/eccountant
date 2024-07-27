@@ -1,32 +1,44 @@
 <div>
   <h1>Bank Connections</h1>
-  <button pButton type="button" icon="pi pi-plus" label="Connect a Bank" class="p-button-raised p-button-rounded p-button-primary mb-4" (click)="startLink()"></button>
-  <!-- <p>{{ banksMessage }}</p> -->
-  <!-- <ul>
-    <li *ngFor="let bank of connectedBanks">
-      {{ bank.bank_name }}
-      <button (click)="deactivateBank($event, bank.id)">Deactivate</button>
-    </li>
-  </ul> -->
+  <button
+    pButton
+    type="button"
+    icon="pi pi-plus"
+    label="Connect a Bank"
+    class="p-button-raised p-button-rounded p-button-primary mb-4"
+    (click)="startLink()"
+  ></button>
+
   <p-accordion class="w-full" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
-      <p-accordionTab *ngFor="let bank of connectedBanks">
-          <ng-template pTemplate="header">
-              <div class="flex items-center gap-2 w-full">
-                  <img [src]="getBankLogo(bank.bank_name)" alt="{{ bank.bank_name }}" class="w-8 h-8 rounded-full">
-                  <span class="font-bold whitespace-nowrap">{{ bank.bank_name }}</span>
-                  <span class="ml-auto mr-2">Accounts: {{ bank.accountCount }}</span>
-              </div>
-          </ng-template>
-          <div class="w-full flex justify-end">
-            <button (click)="deactivateBank($event, bank.id)" class="px-3 mb-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer">Deactivate Bank</button>
-          </div>
-          <div *ngIf="bank.accounts" class="account-list bg-gray-100 p-4 rounded">
-              <div *ngFor="let account of bank.accounts" class="account-item flex justify-between py-2 border-b border-gray-300 last:border-b-0">
-                  <span class="account-name font-semibold">{{ account.name }}</span>
-                  <span class="account-balance text-blue-600">{{ account.balances.current | currency }}</span>
-              </div>
-          </div>
-      </p-accordionTab>
+    <p-accordionTab *ngFor="let bank of connectedBanks">
+      <ng-template pTemplate="header">
+        <div class="flex w-full items-center gap-2">
+          <img [src]="getBankLogo(bank.bank_name)" alt="{{ bank.bank_name }}" class="h-8 w-8 rounded-full" />
+          <span class="whitespace-nowrap font-bold">{{ bank.bank_name }}</span>
+          <span class="ml-auto mr-2">Accounts: {{ bank.accountCount }}</span>
+        </div>
+      </ng-template>
+      <div class="flex w-full justify-end">
+        <button
+          (click)="deactivateBank($event, bank.id)"
+          class="mb-2 cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+        >
+          Deactivate Bank
+        </button>
+      </div>
+      <div *ngIf="bank.accounts" class="account-list rounded bg-gray-100 p-4">
+        <div *ngFor="let account of bank.accounts" class="account-item flex justify-between border-b border-gray-300 py-2 last:border-b-0">
+          <span class="account-name font-semibold">{{ account.name }}</span>
+          <span class="account-balance text-blue-600">{{ account.balances.current | currency }}</span>
+        </div>
+      </div>
+    </p-accordionTab>
   </p-accordion>
 
+  <p-dialog header="Select Mode" [(visible)]="displayDialog" [modal]="true" [closable]="false">
+    <div class="p-grid p-justify-center p-align-center">
+      <button pButton label="Sandbox Mode" icon="pi pi-wrench" class="p-button-secondary m-2" (click)="confirmModeSelection(true)"></button>
+      <button pButton label="Personal Accounts" icon="pi pi-user" class="p-button-secondary m-2" (click)="confirmModeSelection(false)"></button>
+    </div>
+  </p-dialog>
 </div>

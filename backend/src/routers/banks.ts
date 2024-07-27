@@ -1,25 +1,28 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
-import { plaidClient } from "@/utils/plaid/client";
+import {
+	plaidSandboxClient,
+	plaidProductionClient,
+} from "@/utils/plaid/client";
 import { type Request, Router } from "express";
 
 interface DeactivateRequest extends Request {
-  body: {
-    itemId: string;
-  };
+	body: {
+		itemId: string;
+	};
 }
 
 export const banksRouter = Router();
 
 banksRouter.get("/list", requireAuth, async (req, res, next) => {
-  try {
-    const userId = req.auth?.payload.sub as string;
-    const result = await db.getBankNamesForUser(userId);
-    // console.log(result);
-    return res.json(result);
-  } catch (error) {
-    next(error);
-  }
+	try {
+		const userId = req.auth?.payload.sub as string;
+		const result = await db.getBankNamesForUser(userId);
+		// console.log(result);
+		return res.json(result);
+	} catch (error) {
+		next(error);
+	}
 });
 
 banksRouter.get("/accounts/:itemId", requireAuth, async (req, res, next) => {
@@ -37,7 +40,10 @@ banksRouter.get("/accounts/:itemId", requireAuth, async (req, res, next) => {
 		}
 
 		// Retrieve accounts and balances from Plaid
-		const response = await plaidClient.accountsGet({
+		const response = await (item.isSandbox
+			? plaidSandboxClient
+			: plaidProductionClient
+		).accountsGet({
 			access_token: item.access_token,
 		});
 		const accounts = response.data.accounts;
@@ -49,23 +55,26 @@ banksRouter.get("/accounts/:itemId", requireAuth, async (req, res, next) => {
 });
 
 banksRouter.post(
-  "/deactivate",
-  requireAuth,
-  async (req: DeactivateRequest, res, next) => {
-    try {
-      const itemId = req.body.itemId;
-      const userId = req.auth?.payload.sub as string;
-      const result = await db.getItemInfoForUser(itemId, userId);
-      if (!result) return;
-      const { access_token: accessToken } = result;
-      await plaidClient.itemRemove({
-        access_token: accessToken,
-      });
-      await db.deactivateItem(itemId);
+	"/deactivate",
+	requireAuth,
+	async (req: DeactivateRequest, res, next) => {
+		try {
+			const itemId = req.body.itemId;
+			const userId = req.auth?.payload.sub as string;
+			const result = await db.getItemInfoForUser(itemId, userId);
+			if (!result) return;
+			const { access_token: accessToken } = result;
+			await (result.isSandbox
+				? plaidSandboxClient
+				: plaidProductionClient
+			).itemRemove({
+				access_token: accessToken,
+			});
+			await db.deactivateItem(itemId);
 
-      return res.json({ removed: itemId });
-    } catch (error) {
-      next(error);
-    }
-  },
+			return res.json({ removed: itemId });
+		} catch (error) {
+			next(error);
+		}
+	},
 );

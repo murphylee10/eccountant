@@ -15,6 +15,8 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 // biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
 import { AuthService } from '@auth0/auth0-angular';
+// biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
+import { ApiService } from '@services/api.service';
 
 @Component({
   selector: 'app-auth-form',
@@ -32,27 +34,38 @@ import { AuthService } from '@auth0/auth0-angular';
   styles: '',
 })
 export class AuthFormComponent {
-  isSignIn = true;
-  authForm: FormGroup;
+  // isSignIn = true;
+  // authForm: FormGroup;
 
   constructor(
-    @Inject(DOCUMENT) public document: Document,
+    // @Inject(DOCUMENT) public document: Document,
     public auth: AuthService,
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
+    // private fb: FormBuilder,
+    // private route: ActivatedRoute,
+    api: ApiService,
+    router: Router,
   ) {
-    this.authForm = this.fb.group({
-      fullName: [''],
-      username: ['', Validators.required],
-      password: ['', Validators.required],
-    });
-  }
-
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
-      this.isSignIn = data['isSignIn'];
+    // this.authForm = this.fb.group({
+    //   fullName: [''],
+    //   username: ['', Validators.required],
+    //   password: ['', Validators.required],
+    // });
+    auth.user$.subscribe((user) => {
+      if (user) {
+        // Extract the user ID (sub) and send it to the backend
+        const userId = user.sub;
+        api
+          .storeUserId(userId as string)
+          .then((response) => {
+            console.log('User registered or logged in:', response);
+            router.navigate(['/dashboard']);
+          })
+          .catch((err) => {
+            console.error('Error registering or logging in user:', err);
+          });
+      } else {
+        this.auth.loginWithPopup();
+      }
     });
   }
 
@@ -65,13 +78,17 @@ export class AuthFormComponent {
   // 	this.authForm.get("fullName")?.updateValueAndValidity();
   // }
 
-  onSubmit() {
-    if (this.authForm.valid) {
-      if (this.isSignIn) {
-        console.log('Todo sign in');
-      } else {
-        console.log('Todo sign up');
-      }
-    }
-  }
+  // onSubmit() {
+  //   const username = this.authForm.get('username')?.value;
+  //   const password = this.authForm.get('password')?.value;
+  //   if (this.authForm.valid) {
+  //     if (this.isSignIn) {
+  //       console.log('Todo sign in');
+  //       this.auth.login
+  //     } else {
+  //       const name = this.authForm.get('fullName')?.value;
+  //       console.log('Todo sign up');
+  //     }
+  //   }
+  // }
 }

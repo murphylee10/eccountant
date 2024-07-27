@@ -7,3 +7,4 @@
     - allow selection node to be clickable
     - when timeline is longer than the screen width, allow scrolling
     - when card has no transactions in any months should not indicate timeline is still loading
+- can add same account multiple times

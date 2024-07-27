@@ -19,13 +19,13 @@ export class TopbarComponent {
 
   ngOnInit() {
     this.items = [
-      {
-        label: 'Preferences',
-        icon: 'pi pi-cog',
-        command: () => {
-          this.navigateToPreferences();
-        },
-      },
+      // {
+      //   label: 'Preferences',
+      //   icon: 'pi pi-cog',
+      //   command: () => {
+      //     this.navigateToPreferences();
+      //   },
+      // },
       {
         label: 'Logout',
         icon: 'pi pi-sign-out',
