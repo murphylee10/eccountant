@@ -85,6 +85,7 @@ export class TransactionsComponent implements OnInit {
 	dialogRef: DynamicDialogRef | undefined;
 	query: string | undefined;
 	answer: string | undefined;
+	monthlySpendData: { [key: string]: number } = {};
 
 	constructor(
 		private apiService: ApiService,
@@ -214,16 +215,14 @@ export class TransactionsComponent implements OnInit {
 		const monthlySpendData = monthlySpend.reduce(
 			(acc, value, index) => {
 				if (selectedYear !== currentYear || index <= currentMonth) {
-					acc[index + 1] = value; // Month numbers as keys (1-based index)
+					acc[index + 1] = Number.parseFloat(value.toFixed(2)); // Round to 2 decimal places
 				}
 				return acc;
 			},
 			{} as { [key: number]: number },
 		);
 
-		console.log("Monthly spend data:", monthlySpendData);
-
-		// Update signal service with the monthly spend data
+		this.monthlySpendData = monthlySpendData;
 		this.signalService.updateMonthlySpendData(monthlySpendData);
 	}
 

@@ -1,18 +1,10 @@
-<!-- <div class="w-full flex justify-between mb-4">
-  <div class="card flex justify-content-center">
-    <p-floatLabel>
-        <input pInputText id="queryInput" [(ngModel)]="query" (keydown.enter)="queryTransactions()"/>
-        <label for="queryInput">🔍 Query Transactions</label>
-    </p-floatLabel>
-  </div>
+<div class="w-full flex justify-end mb-4">
   <p-dropdown
     [options]="modes"
     [(ngModel)]="selectedMode"
     placeholder="Select a Mode"
   ></p-dropdown>
 </div>
-
-<div *ngIf="answer">{{ answer }}</div> -->
 
 <div *ngIf="selectedMode === 'monthly'" class="mb-10 flex gap-x-2">
   <p-dropdown
