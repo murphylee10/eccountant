@@ -1,3 +1,4 @@
+<p-toast />
 <div class="w-full flex justify-end mb-4">
   <p-dropdown
     [options]="modes"
@@ -120,6 +121,14 @@
           class="p-inputtext-sm"
         />
       </div>
+      <button
+        pButton
+        type="button"
+        label="Add Transaction"
+        icon="pi pi-plus"
+        class="p-button-raised p-button-primary"
+        (click)="showAddTransactionDialog()"
+      ></button>
     </div>
   </div>
 
@@ -130,46 +139,57 @@
     styleClass="p-datatable-sm custom-scrollbar"
   >
     <ng-template pTemplate="header">
-      <tr>
-        <th>Bank</th>
-        <th>Account Name</th>
-        <th>Date</th>
-        <th>Merchant</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Verified</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-transaction>
-      <tr>
-        <td class="h-12">
-          <img
-            [src]="getBankLogo(transaction.account.item.bank_name)"
-            alt="{{ transaction.account.item.bank_name }}"
-            class="h-8 w-8 rounded-full"
-          />
-        </td>
-        <td class="h-12">{{ transaction.account.name }}</td>
-        <td>{{ transaction.date }}</td>
-        <td>{{ transaction.name }}</td>
-        <td>
-          <span
-            [ngClass]="{
-              'text-red-500': transaction.amount > 0,
-              'text-green-500': transaction.amount < 0,
-            }"
-          >
-            <i *ngIf="transaction.amount >= 0" class="pi pi-arrow-down"></i>
-            <i *ngIf="transaction.amount < 0" class="pi pi-arrow-up"></i>
-            {{ getFormattedAmount(transaction.amount) }}
-          </span>
-        </td>
-        <td>{{ transaction.category | categoryDisplay }}</td>
-        <td class="ml-auto mr-0">
-          <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
-        </td>
-      </tr>
-    </ng-template>
+  <tr>
+    <th>Bank</th>
+    <th>Account Name</th>
+    <th>Date</th>
+    <th>Merchant</th>
+    <th>Amount</th>
+    <th>Category</th>
+    <th>Verified</th>
+  </tr>
+</ng-template>
+<ng-template pTemplate="body" let-transaction>
+  <tr>
+    <td class="h-12">
+      <img
+        [src]="transaction.isUserInput ? getBankLogo('default') : getBankLogo(transaction.account?.item?.bank_name)"
+        alt="{{ transaction.isUserInput ? 'Default Bank' : transaction.account?.item?.bank_name }}"
+        class="h-8 w-8 rounded-full"
+      />
+    </td>
+    <td class="h-12">{{ transaction.isUserInput ? 'Personal' : transaction.account?.name }}</td>
+    <td>{{ transaction.date }}</td>
+    <td>{{ transaction.name }}</td>
+    <td>
+      <span
+        [ngClass]="{
+          'text-red-500': transaction.amount > 0,
+          'text-green-500': transaction.amount < 0,
+        }"
+      >
+        <i *ngIf="transaction.amount >= 0" class="pi pi-arrow-down"></i>
+        <i *ngIf="transaction.amount < 0" class="pi pi-arrow-up"></i>
+        {{ getFormattedAmount(transaction.amount) }}
+      </span>
+    </td>
+    <td>{{ transaction.category | categoryDisplay }}</td>
+    <td class="ml-auto mr-0">
+      <ng-container *ngIf="transaction.isUserInput; else verifiedTemplate">
+        <button
+          pButton
+          icon="pi pi-trash"
+          class="p-button-danger rounded-full"
+          (click)="deleteUserTransaction(transaction.id)"
+        ></button>
+      </ng-container>
+      <ng-template #verifiedTemplate>
+        <i [class]="getVerificationIcon(transaction)" class="pt-2"></i>
+      </ng-template>
+    </td>
+  </tr>
+</ng-template>
+
   </p-table>
 </div>
 

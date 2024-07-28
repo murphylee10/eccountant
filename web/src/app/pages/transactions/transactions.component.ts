@@ -26,6 +26,9 @@ import { DialogService, type DynamicDialogRef } from "primeng/dynamicdialog";
 import { ChatDialogComponent } from "./components/chat-dialog/chat-dialog.component";
 import { EventBusService, EventSubscription } from "@services/eventbus.service";
 import { EventType, TransactionEvent } from "@common/event";
+import { MessageService } from "primeng/api";
+import { ToastModule } from "primeng/toast";
+import { AddTransactionDialogComponent } from "./components/add-transaction-dialog/add-transaction-dialog.component";
 
 @Component({
 	selector: "app-transactions",
@@ -47,8 +50,9 @@ import { EventType, TransactionEvent } from "@common/event";
 		DropdownModule,
 		ProgressSpinnerModule,
 		DialogModule,
+		ToastModule,
 	],
-	providers: [DialogService],
+	providers: [DialogService, MessageService],
 	templateUrl: "./transactions.component.html",
 	styles: "",
 })
@@ -91,15 +95,29 @@ export class TransactionsComponent implements OnInit {
 		uid: string;
 		timestamp: number;
 	}>;
+	eventsub2: EventSubscription<{
+		uid: string;
+		timestamp: number;
+	}>;
 
 	constructor(
 		private apiService: ApiService,
 		private signalService: SignalService,
 		private dialogService: DialogService,
 		private eventbus: EventBusService,
+		private messageService: MessageService,
 	) {
 		this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
-		this.eventsub.subscribe(this.init);
+		this.eventsub.subscribe(() => {
+			this.init();
+			this.logSuccess("Transaction Updated", "You have new transactions!");
+		});
+
+		this.eventsub2 = this.eventbus.observe(EventType.REMOVE_TRANSACTION);
+		this.eventsub2.subscribe(() => {
+			this.init();
+			this.logSuccess("Transaction Removed", "Successful deletion!");
+		});
 	}
 
 	ngOnInit() {
@@ -107,9 +125,16 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	init = async () => {
-		await this.initTransactionRange();
-		await this.fetchTransactionsForPastYear();
-		this.fetchTransactionsByDateRange();
+		this.isLoading = true;
+		this.filteredTransactions = [];
+		console.log(this.isLoading);
+		try {
+			await this.initTransactionRange();
+			await this.fetchTransactionsForPastYear();
+			await this.fetchTransactionsByDateRange();
+		} finally {
+			this.isLoading = false;
+		}
 	};
 
 	updateSelectedTimeline() {
@@ -129,7 +154,7 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	getBankLogo(bankName: string): string {
-		return bankLogos[bankName] || "assets/images/default-bank.png";
+		return bankLogos[bankName] || "assets/images/bank-logos/bank.png";
 	}
 
 	async initTransactionRange() {
@@ -169,6 +194,27 @@ export class TransactionsComponent implements OnInit {
 		this.selectedMonth = lastMonth;
 		this.selectedYear = lastYear;
 		this.updateSelectedTimeline();
+	}
+
+	showAddTransactionDialog() {
+		this.dialogService.open(AddTransactionDialogComponent, {
+			header: "Add Transaction",
+			baseZIndex: 10000,
+			contentStyle: { overflow: "visible" },
+		});
+	}
+
+	async deleteUserTransaction(transactionId: string) {
+		try {
+			await this.apiService.deleteUserTransaction(transactionId);
+			this.init();
+		} catch (error) {
+			this.messageService.add({
+				severity: "error",
+				summary: "Error",
+				detail: "Failed to delete the transaction",
+			});
+		}
 	}
 
 	getFormattedAmount(amount: number): string {
@@ -381,5 +427,29 @@ export class TransactionsComponent implements OnInit {
 
 	ngOnDestroy(): void {
 		this.eventsub.unsubscribe();
+	}
+
+	logSuccess(summary: string, detail: string) {
+		this.messageService.add({
+			severity: "success",
+			summary,
+			detail,
+		});
+	}
+
+	logError(detail: string) {
+		this.messageService.add({
+			severity: "error",
+			summary: "Error",
+			detail: detail,
+		});
+	}
+
+	logWarn(detail: string) {
+		this.messageService.add({
+			severity: "warn",
+			summary: "Warning",
+			detail: detail,
+		});
 	}
 }

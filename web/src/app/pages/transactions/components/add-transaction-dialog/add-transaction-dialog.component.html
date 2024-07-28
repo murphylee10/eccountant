@@ -1,0 +1,29 @@
+<div class="p-fluid p-formgrid p-grid h-[30rem] w-[25rem]">
+    <div class="h-4"></div>
+    <div class="p-field p-col-12">
+        <label for="name">Name</label>
+        <input id="name" pInputText [(ngModel)]="transaction.name" required class="w-full" />
+    </div>
+    <div class="h-4"></div>
+    <div class="p-field p-col-12">
+        <label for="date">Date</label>
+        <p-calendar id="date" [(ngModel)]="transaction.date" dateFormat="yy-mm-dd" required class="w-full"></p-calendar>
+    </div>
+    <div class="h-4"></div>
+    <div class="p-field p-col-12">
+        <label for="category">Category</label>
+        <input id="category" pInputText [(ngModel)]="transaction.category" required class="w-full" />
+    </div>
+    <div class="h-4"></div>
+    <div class="p-field p-col-12">
+        <label for="amount">Amount</label>
+        <input id="amount" type="number" pInputText [(ngModel)]="transaction.amount" required class="w-full" />
+    </div>
+    <div class="h-4"></div>
+    <div class="p-field-checkbox p-col-12">
+      <p-checkbox [(ngModel)]="transaction.isIncoming" binary="true" label="Is Incoming" class="mt-2"></p-checkbox>
+    </div>
+    <div class="p-col-12 text-center mt-4">
+      <button pButton type="button" label="Submit" (click)="addTransaction()" class="p-button-primary"></button>
+    </div>
+  </div>

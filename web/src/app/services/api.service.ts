@@ -1,5 +1,5 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import environment from "@environment";
 import { take } from "rxjs";
@@ -31,6 +31,24 @@ export class ApiService {
 				.post<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
 				.pipe(take(1))
 				.subscribe({ next: res, error: rej });
+		});
+	}
+
+	private async delete<T>(endpoint: string, body: any): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			this.http
+				.request<void>(
+					"delete",
+					encodeURI(`${environment.api_url}${endpoint}`),
+					{
+						body,
+					},
+				)
+				.pipe(take(1))
+				.subscribe({
+					next: () => resolve(),
+					error: (err: HttpErrorResponse) => reject(err),
+				});
 		});
 	}
 
@@ -71,7 +89,22 @@ export class ApiService {
 		});
 	}
 
+	async addTransaction(transaction: {
+		name: string;
+		date: string;
+		category: string;
+		amount: number;
+		isIncoming: boolean;
+	}) {
+		return this.post(`${this.transactionsUrl}/add`, transaction);
+	}
+
+	async deleteUserTransaction(transactionId: string) {
+		return this.delete(`${this.transactionsUrl}/delete/${transactionId}`, {});
+	}
+
 	/* PLAID API */
+
 	getTransactionsByDateRange(
 		startDate: string,
 		endDate: string,
