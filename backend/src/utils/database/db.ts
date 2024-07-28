@@ -88,8 +88,6 @@ class Database {
 
 		return results.map((transaction) => ({
 			...transaction,
-			account_name: transaction.account.name,
-			bank_name: transaction.account.item.bank_name,
 		}));
 	}
 

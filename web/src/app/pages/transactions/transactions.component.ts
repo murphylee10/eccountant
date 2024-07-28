@@ -127,7 +127,6 @@ export class TransactionsComponent implements OnInit {
 	init = async () => {
 		this.isLoading = true;
 		this.filteredTransactions = [];
-		console.log(this.isLoading);
 		try {
 			await this.initTransactionRange();
 			await this.fetchTransactionsForPastYear();
@@ -348,7 +347,7 @@ export class TransactionsComponent implements OnInit {
 	}
 
 	async fetchTransactionsByDateRange() {
-		this.isLoading = true; // Start loading spinner
+		this.isLoading = true;
 		let startDate = "";
 		let endDate = "";
 		if (this.selectedMode === "monthly" || this.selectedMode === "timeline") {
@@ -377,7 +376,7 @@ export class TransactionsComponent implements OnInit {
 			endDate,
 		);
 		this.filteredTransactions = this.transactions; // Initialize filtered transactions
-		this.isLoading = false; // Stop loading spinner
+		this.isLoading = false;
 		console.log("Transactions:", this.transactions);
 		this.updateCategoryData();
 	}
