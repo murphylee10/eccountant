@@ -5,6 +5,9 @@ import {
 	type SyncedTransactionData,
 	SimpleTransaction,
 } from "../types/transactions";
+import EventDispatcher from "../events/event-dispatcher";
+import { TransactionEvent } from "@common/event";
+import path from "path";
 
 export const syncTransactions = async (itemId: string) => {
 	// Step 1: Retrieve our access token and cursor from the database
@@ -70,6 +73,17 @@ export const syncTransactions = async (itemId: string) => {
 	console.log(`The last cursor value was ${allData.nextCursor}`);
 	// Step 5: Save our cursor value to the database
 	await db.saveCursorForItem(allData.nextCursor, itemId);
+
+  // Step 6: Notify user clients to resync.
+  try {
+    const dispatcher = EventDispatcher.getInstance();
+    dispatcher.notifyUser(
+      new TransactionEvent({ uid: userId, timestamp: Date.now() }),
+      userId,
+    );
+  } catch {
+    console.log("Unable to provide rt update - server not connected");
+  }
 
 	console.log(summary);
 	return summary;

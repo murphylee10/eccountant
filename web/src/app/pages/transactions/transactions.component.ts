@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, type OnInit } from "@angular/core";
+import { Component, OnDestroy, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ButtonModule } from "primeng/button";
 import { TimelineModule } from "primeng/timeline";
@@ -24,6 +24,8 @@ import { bankLogos } from "src/app/models/bank-logos-map";
 import { DialogModule } from "primeng/dialog";
 import { DialogService, type DynamicDialogRef } from "primeng/dynamicdialog";
 import { ChatDialogComponent } from "./components/chat-dialog/chat-dialog.component";
+import { EventBusService, EventSubscription } from "@services/eventbus.service";
+import { EventType, TransactionEvent } from "@common/event";
 
 @Component({
 	selector: "app-transactions",
@@ -85,18 +87,30 @@ export class TransactionsComponent implements OnInit {
 	dialogRef: DynamicDialogRef | undefined;
 	query: string | undefined;
 	answer: string | undefined;
+	eventsub: EventSubscription<{
+		uid: string;
+		timestamp: number;
+	}>;
 
 	constructor(
 		private apiService: ApiService,
 		private signalService: SignalService,
 		private dialogService: DialogService,
-	) {}
+		private eventbus: EventBusService,
+	) {
+		this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+		this.eventsub.subscribe(this.init);
+	}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit() {
+		this.init();
+	}
+
+	init = async () => {
 		await this.initTransactionRange();
 		await this.fetchTransactionsForPastYear();
 		this.fetchTransactionsByDateRange();
-	}
+	};
 
 	updateSelectedTimeline() {
 		this.months = this.months.map((month) => {
@@ -214,16 +228,13 @@ export class TransactionsComponent implements OnInit {
 		const monthlySpendData = monthlySpend.reduce(
 			(acc, value, index) => {
 				if (selectedYear !== currentYear || index <= currentMonth) {
-					acc[index + 1] = value; // Month numbers as keys (1-based index)
+					acc[index + 1] = Number.parseFloat(value.toFixed(2)); // Round to 2 decimal places
 				}
 				return acc;
 			},
 			{} as { [key: number]: number },
 		);
 
-		console.log("Monthly spend data:", monthlySpendData);
-
-		// Update signal service with the monthly spend data
 		this.signalService.updateMonthlySpendData(monthlySpendData);
 	}
 
@@ -366,5 +377,9 @@ export class TransactionsComponent implements OnInit {
 
 	getVerificationIcon(transaction: PlaidTransaction): string {
 		return transaction.authorized_date !== null ? "pi pi-check" : "pi pi-clock";
+	}
+
+	ngOnDestroy(): void {
+		this.eventsub.unsubscribe();
 	}
 }

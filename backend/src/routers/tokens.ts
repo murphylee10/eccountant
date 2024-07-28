@@ -30,9 +30,6 @@ tokensRouter.post(
 		try {
 			const userId = req.auth?.payload.sub as string;
 			const isSandbox = req.body.isSandbox ?? true;
-			console.log(isSandbox);
-			console.log(CLIENT_NAME);
-			console.log(WEBHOOK_URL);
 			const userObject = { client_user_id: userId };
 			const tokenResponse = await (isSandbox
 				? plaidSandboxClient
@@ -72,7 +69,7 @@ tokensRouter.post(
 			});
 			const tokenData = tokenResponse.data;
 			const { item_id: itemId, access_token: accessToken } = tokenData;
-			await db.addItem(itemId, userId, accessToken);
+			await db.addItem(itemId, userId, accessToken, isSandbox);
 			await populateBankName(itemId, accessToken, isSandbox);
 			await populateAccountNames(accessToken, isSandbox);
 

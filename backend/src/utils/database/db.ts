@@ -292,12 +292,18 @@ class Database {
 		return result;
 	}
 
-	async addItem(itemId: string, userId: string, accessToken: string) {
+	async addItem(
+		itemId: string,
+		userId: string,
+		accessToken: string,
+		isSandbox: boolean,
+	) {
 		const result = await this.prisma.item.create({
 			data: {
 				id: itemId,
 				user_id: userId,
 				access_token: accessToken,
+				isSandbox: isSandbox,
 			},
 		});
 		return result;
