@@ -1,5 +1,8 @@
 # Eccountant Project Proposal
 
+## Notes For Submission
+- Production Link: https://eccountant.live/
+
 ## Project Metadata
 
 Project Title: Eccountant

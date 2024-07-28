@@ -13,7 +13,7 @@ import { ButtonModule } from "primeng/button";
 export class DebugComponent {
 	constructor(private api: ApiService) {}
 
-	async fireWebhook() {
-		await this.api.fireWebhook();
+	fireWebhook() {
+		this.api.fireWebhook();
 	}
 }

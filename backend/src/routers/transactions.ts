@@ -1,5 +1,7 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
+import EventDispatcher from "@/utils/events/event-dispatcher";
+import { RemoveTransaction, TransactionEvent } from "@common/event";
 import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
 
@@ -17,6 +19,70 @@ transactionsRouter.get("/", requireAuth, async (req, res, next) => {
 		next(error);
 	}
 });
+
+transactionsRouter.post(
+	"/add",
+	requireAuth,
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const userId = req.auth?.payload.sub as string;
+			const { category, date, amount, name, isIncoming } = req.body;
+
+			if (
+				!category ||
+				!date ||
+				amount === undefined ||
+				!name ||
+				isIncoming === undefined
+			) {
+				return res.status(400).json({ error: "All fields are required" });
+			}
+
+			const adjustedAmount = isIncoming ? amount * -1 : amount;
+
+			const dateOnly = new Date(date).toISOString().split("T")[0];
+
+			const transaction = await db.addUserTransaction(
+				userId,
+				category,
+				dateOnly,
+				adjustedAmount,
+				name,
+			);
+			const dispatcher = EventDispatcher.getInstance();
+			dispatcher.notifyUser(
+				new TransactionEvent({ uid: userId, timestamp: Date.now() }),
+				userId,
+			);
+			res.json(transaction);
+		} catch (error) {
+			console.log("Running into an error!");
+			next(error);
+		}
+	},
+);
+
+transactionsRouter.delete(
+	"/delete/:id",
+	requireAuth,
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const transactionId = req.params.id;
+			const userId = req.auth?.payload.sub as string;
+
+			await db.removeTransaction(transactionId, userId);
+			const dispatcher = EventDispatcher.getInstance();
+			dispatcher.notifyUser(
+				new RemoveTransaction({ uid: userId, timestamp: Date.now() }),
+				userId,
+			);
+			res.status(204).send(); // No Content response
+		} catch (error) {
+			console.log("Running into an error!");
+			next(error);
+		}
+	},
+);
 
 transactionsRouter.get(
 	"/date-range",
@@ -52,6 +118,7 @@ transactionsRouter.get("/recent", requireAuth, async (req, res, next) => {
 		const transactions = await db.getRecentTransactions(userId, 5);
 		res.json(transactions);
 	} catch (error) {
+		console.log(error);
 		console.log("Running into an error!");
 		next(error);
 	}
