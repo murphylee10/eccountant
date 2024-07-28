@@ -14,6 +14,7 @@ import { SignalService } from "@services/signal.service";
 import { EventBusService, EventSubscription } from "@services/eventbus.service";
 import { EventType } from "@common/event";
 import { Subscription } from "rxjs";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
 	selector: "app-dashboard",
@@ -24,42 +25,46 @@ import { Subscription } from "rxjs";
 		CommonModule,
 		DistributionChartComponent,
 		AnnualSpendingsChartComponent,
+		ProgressSpinnerModule,
 	],
 	templateUrl: "./dashboard.component.html",
 	styles: "",
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  banks: SelectItem[] = [];
-  selectedBankId = '';
-  accounts: any[] = [];
-  recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
-  currentYear: number = new Date().getFullYear();
-  signalService = inject(SignalService);
-  eventsub: EventSubscription<{
-    uid: string;
-    timestamp: number;
-  }>;
+	banks: SelectItem[] = [];
+	selectedBankId = "";
+	accounts: any[] = [];
+	recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
+	currentYear: number = new Date().getFullYear();
+	signalService = inject(SignalService);
+	eventsub: EventSubscription<{
+		uid: string;
+		timestamp: number;
+	}>;
+	isLoading = false;
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private eventbus: EventBusService,
-  ) {
-    this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
-    this.eventsub.subscribe(() => this.init(true));
-  }
+	constructor(
+		private apiService: ApiService,
+		private router: Router,
+		private eventbus: EventBusService,
+	) {
+		this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+		this.eventsub.subscribe(() => this.init(true));
+	}
 
-  async ngOnInit() {
-    await this.init(false);
-  }
+	ngOnInit() {
+		this.init(false);
+	}
 
-  init = async (webhook: boolean) => {
-    if (webhook) console.log('Webhook fired');
-    await this.loadBanks();
-    await this.loadRecentTransactions();
-    await this.loadCategoryData();
-    await this.loadMonthlySpendData();
-  };
+	init = async (webhook: boolean) => {
+		if (webhook) console.log("Webhook fired");
+		this.isLoading = true;
+		await this.loadBanks();
+		await this.loadRecentTransactions();
+		await this.loadCategoryData();
+		await this.loadMonthlySpendData();
+		this.isLoading = false;
+	};
 
 	async loadBanks() {
 		const banksData = await this.apiService.getBanks();
@@ -131,7 +136,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 		const monthlySpendData = monthlySpend.reduce(
 			(acc, value, index) => {
 				if (selectedYear !== currentYear || index <= currentMonth) {
-					acc[index + 1] = value; // Month numbers as keys (1-based index)
+					acc[index + 1] = Number.parseFloat(value.toFixed(2)); // Round to 2 decimal places
 				}
 				return acc;
 			},

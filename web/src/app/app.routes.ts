@@ -16,17 +16,17 @@ export const routes: Routes = [
 	{
 		path: "user",
 		component: LayoutComponent,
+		canActivate: [authGuard],
 		children: [
 			{ path: "demo", component: HomeComponent },
 			{ path: "test", component: DebugComponent },
 			{ path: "dashboard", component: DashboardComponent },
-			{ path: "accounts", component: LinksComponent, canActivate: [authGuard] },
+			{ path: "accounts", component: LinksComponent },
 			{
 				path: "transactions",
 				component: TransactionsComponent,
-				canActivate: [authGuard],
 			},
-			{ path: "**", redirectTo: "transactions" },
+			{ path: "**", redirectTo: "dashboard" },
 		],
 	},
 	{ path: "credits", component: CreditsComponent },
@@ -48,5 +48,5 @@ export const routes: Routes = [
 		pathMatch: "full",
 		canActivate: [authCallbackGuard],
 	},
-	{ path: "**", redirectTo: "user/dashboard" },
+	{ path: "**", redirectTo: "" },
 ];

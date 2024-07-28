@@ -27,6 +27,41 @@ class Database {
 	}
 
 	/* Transaction interactions */
+	async addUserTransaction(
+		userId: string,
+		category: string,
+		date: string,
+		amount: number,
+		name: string,
+	) {
+		const result = await this.prisma.transaction.create({
+			data: {
+				user_id: userId,
+				category: category,
+				date: date,
+				amount: amount,
+				name: name,
+				isUserInput: true,
+			},
+		});
+		return result;
+	}
+
+	async removeTransaction(transactionId: string, userId: string) {
+		const result = await this.prisma.transaction.deleteMany({
+			where: {
+				id: transactionId,
+				user_id: userId,
+			},
+		});
+
+		if (result.count === 0) {
+			throw new Error("Transaction not found or does not belong to user");
+		}
+
+		return result;
+	}
+
 	async getRecentTransactions(userId: string, limit: number) {
 		const results = await this.prisma.transaction.findMany({
 			where: {
@@ -53,8 +88,6 @@ class Database {
 
 		return results.map((transaction) => ({
 			...transaction,
-			account_name: transaction.account.name,
-			bank_name: transaction.account.item.bank_name,
 		}));
 	}
 
@@ -201,8 +234,10 @@ class Database {
 
 		return results.map((transaction) => ({
 			...transaction,
-			account_name: transaction.account.name,
-			bank_name: transaction.account.item.bank_name,
+			account_name: transaction.account ? transaction.account.name : null,
+			bank_name: transaction.account
+				? transaction.account.item.bank_name
+				: null,
 		}));
 	}
 
