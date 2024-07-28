@@ -84,7 +84,7 @@ export class TransactionsComponent implements OnInit {
 	modes = [
 		{ label: "Monthly", value: "monthly" },
 		{ label: "Timeline", value: "timeline" },
-		{ label: "Custom Range", value: "customRange" },
+		// { label: "Custom Range", value: "customRange" },
 	];
 	selectedMode = "monthly";
 	isLoading = false;
