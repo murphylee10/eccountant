@@ -1,1 +1,32 @@
-<p>landing works!</p>
+<div class="">
+  <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh]">
+    <ng-template pTemplate="start">
+      <a href="/">
+        <img
+          src="assets/images/EccountantLogoLight.svg"
+          alt="Eccountant Logo"
+          class="w-[16rem]"
+        />
+      </a>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="flex items-center gap-4">
+        <button
+          pButton
+          label="{{ isAuthenticated ? 'Dashboard' : 'Sign In' }}"
+          icon="{{ isAuthenticated ? 'pi pi-home' : 'pi pi-sign-in' }}"
+          class="p-button-rounded p-button-primary"
+          (click)="handleButtonClick()"
+        ></button>
+        <button
+          *ngIf="isAuthenticated"
+          pButton
+          label="Logout"
+          icon="pi pi-sign-out"
+          class="p-button-rounded p-button-danger"
+          (click)="logout()"
+        ></button>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
