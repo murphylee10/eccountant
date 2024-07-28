@@ -69,7 +69,6 @@ export class LinksComponent {
 		this.plaidTokenService
 			.generateLinkToken(this.isSandbox)
 			.subscribe((data) => {
-				console.log(data);
 				const handler = Plaid.create({
 					token: data.link_token,
 					onSuccess: (publicToken, metadata) => {
