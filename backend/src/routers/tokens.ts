@@ -69,7 +69,7 @@ tokensRouter.post(
 			});
 			const tokenData = tokenResponse.data;
 			const { item_id: itemId, access_token: accessToken } = tokenData;
-			await db.addItem(itemId, userId, accessToken);
+			await db.addItem(itemId, userId, accessToken, isSandbox);
 			await populateBankName(itemId, accessToken, isSandbox);
 			await populateAccountNames(accessToken, isSandbox);
 
