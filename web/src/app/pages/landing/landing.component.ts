@@ -6,16 +6,19 @@ import { Router } from "@angular/router";
 import { AuthService } from "@auth0/auth0-angular";
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
+import { ChartModule } from "primeng/chart";
 
 @Component({
 	selector: "app-landing",
 	standalone: true,
-	imports: [MenubarModule, ButtonModule, CommonModule],
+	imports: [MenubarModule, ButtonModule, CommonModule, ChartModule],
 	templateUrl: "./landing.component.html",
-	styles: "",
+	styles: [],
 })
 export class LandingComponent implements OnInit {
 	isAuthenticated = false;
+	data: any;
+	options: any;
 
 	constructor(
 		private auth: AuthService,
@@ -26,6 +29,35 @@ export class LandingComponent implements OnInit {
 		this.auth.isAuthenticated$.subscribe((isAuthenticated) => {
 			this.isAuthenticated = isAuthenticated;
 		});
+
+		this.data = {
+			labels: ["January", "February", "March", "April", "May", "June", "July"],
+			datasets: [
+				{
+					label: "Time vs Money",
+					data: [65, 59, 80, 81, 56, 55, 40],
+					fill: false,
+					borderColor: "#4bc0c0",
+				},
+			],
+		};
+
+		this.options = {
+			scales: {
+				x: {
+					title: {
+						display: true,
+						text: "Time",
+					},
+				},
+				y: {
+					title: {
+						display: true,
+						text: "Money",
+					},
+				},
+			},
+		};
 	}
 
 	handleButtonClick(): void {

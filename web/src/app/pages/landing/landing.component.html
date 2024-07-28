@@ -1,32 +1,66 @@
-<div class="">
-  <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh]">
-    <ng-template pTemplate="start">
-      <a href="/">
-        <img
-          src="assets/images/EccountantLogoLight.svg"
-          alt="Eccountant Logo"
-          class="w-[16rem]"
-        />
-      </a>
-    </ng-template>
-    <ng-template pTemplate="end">
-      <div class="flex items-center gap-4">
-        <button
-          pButton
-          label="{{ isAuthenticated ? 'Dashboard' : 'Sign In' }}"
-          icon="{{ isAuthenticated ? 'pi pi-home' : 'pi pi-sign-in' }}"
-          class="p-button-rounded p-button-primary"
-          (click)="handleButtonClick()"
-        ></button>
-        <button
-          *ngIf="isAuthenticated"
-          pButton
-          label="Logout"
-          icon="pi pi-sign-out"
-          class="p-button-rounded p-button-danger"
-          (click)="logout()"
-        ></button>
-      </div>
-    </ng-template>
-  </p-menubar>
+<div class="min-h-screen flex flex-col justify-between">
+  <div>
+    <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh]">
+      <ng-template pTemplate="start">
+        <a href="/">
+          <img
+            src="assets/images/EccountantLogoLight.svg"
+            alt="Eccountant Logo"
+            class="w-[16rem]"
+          />
+        </a>
+      </ng-template>
+      <ng-template pTemplate="end">
+        <div class="flex items-center gap-4">
+          <button
+            pButton
+            label="{{ isAuthenticated ? 'Dashboard' : 'Sign In' }}"
+            icon="{{ isAuthenticated ? 'pi pi-home' : 'pi pi-sign-in' }}"
+            class="p-button-rounded p-button-primary"
+            (click)="handleButtonClick()"
+          ></button>
+          <button
+            *ngIf="isAuthenticated"
+            pButton
+            label="Logout"
+            icon="pi pi-sign-out"
+            class="p-button-rounded p-button-danger"
+            (click)="logout()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-menubar>
+  </div>
+  <div class="flex-grow flex flex-col md:flex-row justify-around items-center px-20 py-12">
+    <div class="max-w-[50rem]">
+        <div>
+            <h1 class="text-6xl font-bold">Welcome To</h1>
+            <img
+              src="assets/images/EccountantLogoLight.svg"
+              alt="Eccountant Logo"
+              class="w-[40rem] ml-2"
+            />
+        </div>
+        
+      <p class="text-xl mb-6">
+        Eccountant helps you manage and visualize your financial data effortlessly.
+      </p>
+      <p class="text-xl mb-6">
+        Start viewing your financial data today.
+      </p>
+      <button
+        pButton
+        label="Get Started"
+        icon="pi pi-arrow-right"
+        class="p-button-rounded p-button-lg p-button-primary"
+        (click)="handleButtonClick()"
+      ></button>
+    </div>
+    <div class="w-[60rem]">
+      <p-chart type="line" [data]="data" [options]="options"></p-chart>
+    </div>
+  </div>
+  <div class="text-center py-4">
+    <a routerLink="/credits" class="text-blue-500 hover:text-blue-700 underline">Credits</a>
+  </div>
 </div>
