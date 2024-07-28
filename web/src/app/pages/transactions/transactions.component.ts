@@ -1,14 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, type OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { TimelineModule } from 'primeng/timeline';
+import { CommonModule } from "@angular/common";
+import { Component, OnDestroy, type OnInit } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ButtonModule } from "primeng/button";
+import { TimelineModule } from "primeng/timeline";
 
-import { TableModule } from 'primeng/table';
-import type { PlaidTransaction } from 'src/app/models/transaction.model';
-import { DistributionChartComponent } from '../../components/distribution-chart/distribution-chart.component';
-import { MonthlySpendChartComponent } from './components/monthly-spend-chart/monthly-spend-chart.component';
-import { SpendingsChartComponent } from '../../components/spending-chart/spendings-chart.component';
+import { TableModule } from "primeng/table";
+import type { PlaidTransaction } from "src/app/models/transaction.model";
+import { DistributionChartComponent } from "../../components/distribution-chart/distribution-chart.component";
+import { MonthlySpendChartComponent } from "./components/monthly-spend-chart/monthly-spend-chart.component";
+import { SpendingsChartComponent } from "../../components/spending-chart/spendings-chart.component";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from "@services/api.service";
 // biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
@@ -24,8 +24,8 @@ import { bankLogos } from "src/app/models/bank-logos-map";
 import { DialogModule } from "primeng/dialog";
 import { DialogService, type DynamicDialogRef } from "primeng/dynamicdialog";
 import { ChatDialogComponent } from "./components/chat-dialog/chat-dialog.component";
-import { EventBusService, EventSubscription } from '@services/eventbus.service';
-import { EventType, TransactionEvent } from '@common/event';
+import { EventBusService, EventSubscription } from "@services/eventbus.service";
+import { EventType, TransactionEvent } from "@common/event";
 
 @Component({
 	selector: "app-transactions",
@@ -87,30 +87,30 @@ export class TransactionsComponent implements OnInit {
 	dialogRef: DynamicDialogRef | undefined;
 	query: string | undefined;
 	answer: string | undefined;
-  eventsub: EventSubscription<{
-    uid: string;
-    timestamp: number;
-  }>;
+	eventsub: EventSubscription<{
+		uid: string;
+		timestamp: number;
+	}>;
 
-  constructor(
-    private apiService: ApiService,
-    private signalService: SignalService,
-    private dialogService: DialogService,
-    private eventbus: EventBusService,
-  ) {
-    this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
-    this.eventsub.subscribe(this.init);
-  }
+	constructor(
+		private apiService: ApiService,
+		private signalService: SignalService,
+		private dialogService: DialogService,
+		private eventbus: EventBusService,
+	) {
+		this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+		this.eventsub.subscribe(this.init);
+	}
 
-  ngOnInit() {
-    this.init();
-  }
+	ngOnInit() {
+		this.init();
+	}
 
-  init = async () => {
-    await this.initTransactionRange();
-    await this.fetchTransactionsForPastYear();
-    this.fetchTransactionsByDateRange();
-  };
+	init = async () => {
+		await this.initTransactionRange();
+		await this.fetchTransactionsForPastYear();
+		this.fetchTransactionsByDateRange();
+	};
 
 	updateSelectedTimeline() {
 		this.months = this.months.map((month) => {
@@ -228,16 +228,13 @@ export class TransactionsComponent implements OnInit {
 		const monthlySpendData = monthlySpend.reduce(
 			(acc, value, index) => {
 				if (selectedYear !== currentYear || index <= currentMonth) {
-					acc[index + 1] = value; // Month numbers as keys (1-based index)
+					acc[index + 1] = Number.parseFloat(value.toFixed(2)); // Round to 2 decimal places
 				}
 				return acc;
 			},
 			{} as { [key: number]: number },
 		);
 
-		console.log("Monthly spend data:", monthlySpendData);
-
-		// Update signal service with the monthly spend data
 		this.signalService.updateMonthlySpendData(monthlySpendData);
 	}
 
@@ -381,8 +378,8 @@ export class TransactionsComponent implements OnInit {
 	getVerificationIcon(transaction: PlaidTransaction): string {
 		return transaction.authorized_date !== null ? "pi pi-check" : "pi pi-clock";
 	}
-  
-  ngOnDestroy(): void {
-    this.eventsub.unsubscribe();
-  }
+
+	ngOnDestroy(): void {
+		this.eventsub.unsubscribe();
+	}
 }
