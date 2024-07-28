@@ -18,13 +18,16 @@
       class="p-button-primary mt-4 w-full"
     ></button>
   </div>
-  <div *ngIf="answer" class="mt-4">
+  <div *ngIf="isLoading" class="mt-4 flex justify-center">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <div *ngIf="answer && !isLoading" class="mt-4">
     <h4 class="font-semibold">Response:</h4>
     <p
       *ngIf="answer.length > 0"
       class="rounded border border-gray-300 bg-gray-100 p-2"
     >
-      {{ answer }}
+      {{ displayedAnswer }}
     </p>
   </div>
 </div>

@@ -1,5 +1,7 @@
 import { Component } from "@angular/core";
+// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { ApiService } from "@services/api.service";
+// biome-ignore lint/style/useImportType: Angular wants the whole module imported not just the type
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 // import ollama from 'ollama';
 import { FormsModule } from "@angular/forms";
@@ -7,28 +9,37 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { CommonModule } from "@angular/common";
 import { ButtonModule } from "primeng/button";
 import environment from "@environment";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 
 @Component({
 	selector: "transactions-chat-dialog",
 	standalone: true,
-	imports: [FormsModule, FloatLabelModule, CommonModule, ButtonModule],
+	imports: [
+		FormsModule,
+		FloatLabelModule,
+		CommonModule,
+		ButtonModule,
+		ProgressSpinnerModule,
+	],
 	templateUrl: "./chat-dialog.component.html",
 	styles: "",
 })
 export class ChatDialogComponent {
 	query: string | undefined;
 	answer: string | undefined;
+	displayedAnswer = "";
+	isLoading = false;
 
 	constructor(
 		public ref: DynamicDialogRef,
 		private apiService: ApiService,
 	) {}
 
-	async askCodestralAPI(message: string, model = "codestral-latest") {
-		return await this.apiService.chat(model, message);
+	askCodestralAPI(message: string, model = "codestral-latest") {
+		return this.apiService.chat(model, message);
 	}
 
-	async validateqQuery(question: string, LLM_MODEL: string, prod: boolean) {
+	validateqQuery(question: string, LLM_MODEL: string, prod: boolean) {
 		const message = `
 	    Question "${question}".
 	    Task: Filter the question through the following list. If a single requirement is not satisfied return "N" immediately.
@@ -39,24 +50,16 @@ export class ChatDialogComponent {
 	    - Do not explain your answer.
 	    - Answer must be "Y" or "N".
 	  `;
-		let valid = "";
-		// if (prod) {
-		valid = await this.askCodestralAPI(message, "codestral-latest");
-		// } else {
-		//   const response = await ollama.chat({
-		//     model: LLM_MODEL,
-		//     messages: [{ role: 'user', content: message }],
-		//   });
-		//   valid = response.message.content;
-		// }
-		if (valid === undefined) {
-			return false;
-		}
-		valid = valid.trimStart();
-		return valid.length > 0 && valid[0].toUpperCase() === "Y";
+		return this.askCodestralAPI(message, "codestral-latest").then((valid) => {
+			if (valid === undefined) {
+				return false;
+			}
+			valid = valid.trimStart();
+			return valid.length > 0 && valid[0].toUpperCase() === "Y";
+		});
 	}
 
-	async generateQuery(question: string, LLM_MODEL: string, prod: boolean) {
+	generateQuery(question: string, LLM_MODEL: string, prod: boolean) {
 		const message = `
 	model Transaction {
 	  category: is type String and is one of 'Income', 'Transfer In', 'Transfer Out', 'Loan Payments', 'Bank Fees', 'Entertainment', 'Food and Drink', 'General Merchandise', 'Home Improvement', 'Medical', 'Personal Care', 'General Services', 'Government and Non-Profit', 'Transportation', 'Travel', 'Rent and Utilities'
@@ -76,31 +79,19 @@ export class ChatDialogComponent {
 	- The date column is type String. Any date operation must be done taking this into account.
 	- You must use only these relations: "Transaction".
 	`;
-
-		// if (prod) {
-		return await this.askCodestralAPI(message, "codestral-latest");
-		// }
-		// const response = await ollama.chat({
-		//   model: LLM_MODEL,
-		//   messages: [{ role: 'user', content: message }],
-		// });
-		// return response.message.content;
+		return this.askCodestralAPI(message, "codestral-latest");
 	}
 
 	cleanResponse(response: string) {
 		const regex = /SELECT\s.*?\sFROM\s+"?(\w+)"?/g;
 		response = response.replace(regex, (match, tableName) => {
-			console.log("MATCH:", match);
-			console.log("TABLENAME:", tableName);
 			const titleCaseTableName = tableName.replace(/\b\w/g, (char: string) =>
 				char.toUpperCase(),
 			);
 			return match.replace(tableName, titleCaseTableName);
 		});
-		console.log("replaced:", response);
-
 		const content = response;
-		var query = content;
+		let query = content;
 		if (content.includes("```")) {
 			const lines = content.split("\n");
 			const idx_begin = lines.findIndex((line) => line.includes("```"));
@@ -110,7 +101,6 @@ export class ChatDialogComponent {
 			);
 			query = lines.slice(idx_begin + 1, idx_end).join("\n");
 		}
-
 		const TABLES = new Set(["User", "Item", "Account", "Transaction"]);
 		const queryParts = query.trim().split(/\s+/);
 		for (let i = 1; i < queryParts.length; i++) {
@@ -125,7 +115,7 @@ export class ChatDialogComponent {
 		return formattedQuery;
 	}
 
-	async formulateResponse(
+	formulateResponse(
 		LLM_MODEL: string,
 		question: string,
 		res: string,
@@ -136,17 +126,23 @@ export class ChatDialogComponent {
 	Answer: "${res}".
 	Task: say the answer in one sentence.
 	`;
-		// if (prod) {
-		return await this.askCodestralAPI(message, "open-mistral-7b");
-		// }
-		// const postres = await ollama.chat({
-		// 	model: LLM_MODEL,
-		// 	messages: [{ role: "user", content: message }],
-		// });
-		// return postres.message.content;
+		return this.askCodestralAPI(message, "open-mistral-7b");
 	}
 
-	async queryTransactions() {
+	typeResponse(answer: string) {
+		let index = 0;
+		this.displayedAnswer = "";
+		const typingInterval = setInterval(() => {
+			if (index < answer.length) {
+				this.displayedAnswer += answer.charAt(index);
+				index++;
+			} else {
+				clearInterval(typingInterval);
+			}
+		}, 50); // Adjust typing speed by changing the interval (50ms here)
+	}
+
+	queryTransactions() {
 		const question = this.query;
 		if (!question) {
 			return;
@@ -154,39 +150,42 @@ export class ChatDialogComponent {
 
 		const LLM_MODEL = "codestral:22b";
 		const LLM_MODEL_S = "mistral:7b";
-		console.log(question);
-		const valid = await this.validateqQuery(
-			question,
-			LLM_MODEL,
-			environment.production,
-		);
-		if (!valid) {
-			this.answer = "Invalid question. Please rephrase your question.";
-			return;
-		}
-		const response = await this.generateQuery(
-			question,
-			LLM_MODEL,
-			environment.production,
-		);
-		console.log("response:", response);
-		if (response) {
-			const formattedQuery = this.cleanResponse(response);
-			console.log("formatted:", formattedQuery);
-
-			const res = JSON.stringify(await this.apiService.ask(formattedQuery));
-			console.log(res);
-
-			const cc = await this.formulateResponse(
-				LLM_MODEL_S,
-				question,
-				res,
-				environment.production,
-			);
-			console.log(cc);
-			this.answer = cc;
-		} else {
-			this.answer = "Error processing question.";
-		}
+		this.isLoading = true;
+		this.validateqQuery(question, LLM_MODEL, environment.production)
+			.then((valid) => {
+				if (!valid) {
+					this.isLoading = false;
+					this.answer = "Invalid question. Please rephrase your question.";
+					throw new Error("Invalid question.");
+				}
+				return this.generateQuery(question, LLM_MODEL, environment.production);
+			})
+			.then((response) => {
+				if (!response) {
+					this.isLoading = false;
+					this.answer = "Error processing question.";
+					throw new Error("Error processing question.");
+				}
+				const formattedQuery = this.cleanResponse(response);
+				return this.apiService.ask(formattedQuery);
+			})
+			.then((res) => {
+				const resString = JSON.stringify(res);
+				return this.formulateResponse(
+					LLM_MODEL_S,
+					question,
+					resString,
+					environment.production,
+				);
+			})
+			.then((cc) => {
+				this.isLoading = false;
+				this.answer = cc;
+				this.typeResponse(cc);
+			})
+			.catch((error) => {
+				this.isLoading = false;
+				console.error(error);
+			});
 	}
 }
