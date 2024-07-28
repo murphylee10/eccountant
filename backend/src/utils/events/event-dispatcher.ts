@@ -40,9 +40,9 @@ export default class EventDispatcher {
 				const idx = arr.indexOf(ws);
 				arr.splice(idx);
 
-				// If no websockets left for user, remove user from map.
-				if (arr.length === 0) this.wsMap.delete(sub);
-			});
+        // If no websockets left for user, remove user from map.
+        if (arr.length === 0) this.wsMap.delete(sub);
+      });
 
 			// If user already in map, add this websocket to user's websocket array.
 			if (this.wsMap.has(sub)) this.wsMap.get(sub)?.push(ws);

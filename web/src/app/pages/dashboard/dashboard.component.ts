@@ -29,31 +29,37 @@ import { Subscription } from "rxjs";
 	styles: "",
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-	banks: SelectItem[] = [];
-	selectedBankId = "";
-	accounts: any[] = [];
-	recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
-	currentYear: number = new Date().getFullYear();
-	signalService = inject(SignalService);
-	eventsub: EventSubscription<{ foo: string; bar: number }>;
+  banks: SelectItem[] = [];
+  selectedBankId = '';
+  accounts: any[] = [];
+  recentTransactions: PlaidTransaction[] = []; // Add a property for recent transactions
+  currentYear: number = new Date().getFullYear();
+  signalService = inject(SignalService);
+  eventsub: EventSubscription<{
+    uid: string;
+    timestamp: number;
+  }>;
 
-	constructor(
-		private apiService: ApiService,
-		private router: Router,
-		private eventbus: EventBusService,
-	) {
-		this.eventsub = this.eventbus.observe<{ foo: string; bar: number }>(
-			EventType.EXAMPLE,
-		);
-		this.eventsub.subscribe((res) => console.log(res));
-	}
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private eventbus: EventBusService,
+  ) {
+    this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+    this.eventsub.subscribe(() => this.init(true));
+  }
 
-	ngOnInit() {
-		this.loadBanks();
-		this.loadRecentTransactions();
-		this.loadCategoryData();
-		this.loadMonthlySpendData();
-	}
+  async ngOnInit() {
+    await this.init(false);
+  }
+
+  init = async (webhook: boolean) => {
+    if (webhook) console.log('Webhook fired');
+    await this.loadBanks();
+    await this.loadRecentTransactions();
+    await this.loadCategoryData();
+    await this.loadMonthlySpendData();
+  };
 
 	async loadBanks() {
 		const banksData = await this.apiService.getBanks();

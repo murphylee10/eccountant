@@ -1,5 +1,6 @@
 export enum EventType {
   EXAMPLE = "event/example",
+  NEW_TRANSACTION = "event/new_transaction",
 }
 
 export abstract class Event<T> {
@@ -25,4 +26,11 @@ export abstract class Event<T> {
 
 export class ExampleEvent extends Event<{ foo: string; bar: number }> {
   id = EventType.EXAMPLE;
+}
+
+export class TransactionEvent extends Event<{
+  uid: string;
+  timestamp: number;
+}> {
+  id = EventType.NEW_TRANSACTION;
 }

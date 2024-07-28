@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, type OnInit } from "@angular/core";
+import { Component, OnDestroy, type OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ButtonModule } from "primeng/button";
 import { TimelineModule } from "primeng/timeline";
@@ -24,6 +24,8 @@ import { bankLogos } from "src/app/models/bank-logos-map";
 import { DialogModule } from "primeng/dialog";
 import { DialogService, type DynamicDialogRef } from "primeng/dynamicdialog";
 import { ChatDialogComponent } from "./components/chat-dialog/chat-dialog.component";
+import { EventBusService, EventSubscription } from "@services/eventbus.service";
+import { EventType, TransactionEvent } from "@common/event";
 
 @Component({
 	selector: "app-transactions",
@@ -85,19 +87,30 @@ export class TransactionsComponent implements OnInit {
 	dialogRef: DynamicDialogRef | undefined;
 	query: string | undefined;
 	answer: string | undefined;
-	monthlySpendData: { [key: string]: number } = {};
+	eventsub: EventSubscription<{
+		uid: string;
+		timestamp: number;
+	}>;
 
 	constructor(
 		private apiService: ApiService,
 		private signalService: SignalService,
 		private dialogService: DialogService,
-	) {}
+		private eventbus: EventBusService,
+	) {
+		this.eventsub = this.eventbus.observe(EventType.NEW_TRANSACTION);
+		this.eventsub.subscribe(this.init);
+	}
 
-	async ngOnInit(): Promise<void> {
+	ngOnInit() {
+		this.init();
+	}
+
+	init = async () => {
 		await this.initTransactionRange();
 		await this.fetchTransactionsForPastYear();
 		this.fetchTransactionsByDateRange();
-	}
+	};
 
 	updateSelectedTimeline() {
 		this.months = this.months.map((month) => {
@@ -222,7 +235,6 @@ export class TransactionsComponent implements OnInit {
 			{} as { [key: number]: number },
 		);
 
-		this.monthlySpendData = monthlySpendData;
 		this.signalService.updateMonthlySpendData(monthlySpendData);
 	}
 
@@ -365,5 +377,9 @@ export class TransactionsComponent implements OnInit {
 
 	getVerificationIcon(transaction: PlaidTransaction): string {
 		return transaction.authorized_date !== null ? "pi pi-check" : "pi pi-clock";
+	}
+
+	ngOnDestroy(): void {
+		this.eventsub.unsubscribe();
 	}
 }
