@@ -1,45 +1,49 @@
 <div>
-  <p-toast />
-  <h1>Bank Connections</h1>
-  <button
-    pButton
-    type="button"
-    icon="pi pi-plus"
-    label="Connect a Bank"
-    class="p-button-raised p-button-rounded p-button-primary mb-4"
-    (click)="startLink()"
-  ></button>
+    <p-toast></p-toast>
+    <h1>Bank Connections</h1>
+    <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        label="Connect a Bank"
+        class="p-button-raised p-button-rounded p-button-primary mb-4"
+        (click)="startLink()"
+    ></button>
 
-  <p-accordion class="w-full" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
-    <p-accordionTab *ngFor="let bank of connectedBanks">
-      <ng-template pTemplate="header">
-        <div class="flex w-full items-center gap-2">
-          <img [src]="getBankLogo(bank.bank_name)" alt="{{ bank.bank_name }}" class="h-8 w-8 rounded-full" />
-          <span class="whitespace-nowrap font-bold">{{ bank.bank_name }}</span>
-          <span class="ml-auto mr-2">Accounts: {{ bank.accountCount }}</span>
-        </div>
-      </ng-template>
-      <div class="flex w-full justify-end">
-        <button
-          (click)="deactivateBank($event, bank.id)"
-          class="mb-2 cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
-        >
-          Deactivate Bank
-        </button>
-      </div>
-      <div *ngIf="bank.accounts" class="account-list rounded bg-gray-100 p-4">
-        <div *ngFor="let account of bank.accounts" class="account-item flex justify-between border-b border-gray-300 py-2 last:border-b-0">
-          <span class="account-name font-semibold">{{ account.name }}</span>
-          <span class="account-balance text-blue-600">{{ account.balances.current | currency }}</span>
-        </div>
-      </div>
-    </p-accordionTab>
-  </p-accordion>
-
-  <p-dialog header="Select Mode" [(visible)]="displayDialog" [modal]="true" [closable]="false">
-    <div class="p-grid p-justify-center p-align-center">
-      <button pButton label="Sandbox Mode" icon="pi pi-wrench" class="p-button-secondary m-2" (click)="confirmModeSelection(true)"></button>
-      <button pButton label="Personal Accounts" icon="pi pi-user" class="p-button-secondary m-2" (click)="confirmModeSelection(false)"></button>
+    <div *ngIf="loading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-70 z-50">
+        <p-progressSpinner class="w-16 h-16"></p-progressSpinner>
     </div>
-  </p-dialog>
+
+    <p-accordion *ngIf="!loading" class="w-full" expandIcon="pi pi-plus" collapseIcon="pi pi-minus">
+        <p-accordionTab *ngFor="let bank of connectedBanks">
+            <ng-template pTemplate="header">
+                <div class="flex w-full items-center gap-2">
+                    <img [src]="getBankLogo(bank.bank_name)" alt="{{ bank.bank_name }}" class="h-8 w-8 rounded-full" />
+                    <span class="whitespace-nowrap font-bold">{{ bank.bank_name }}</span>
+                    <span class="ml-auto mr-2">Accounts: {{ bank.accountCount }}</span>
+                </div>
+            </ng-template>
+            <div class="flex w-full justify-end">
+                <button
+                    (click)="deactivateBank($event, bank.id)"
+                    class="mb-2 cursor-pointer rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600"
+                >
+                    Deactivate Bank
+                </button>
+            </div>
+            <div *ngIf="bank.accounts" class="account-list rounded bg-gray-100 p-4">
+                <div *ngFor="let account of bank.accounts" class="account-item flex justify-between border-b border-gray-300 py-2 last:border-b-0">
+                    <span class="account-name font-semibold">{{ account.name }}</span>
+                    <span class="account-balance text-blue-600">{{ account.balances.current | currency }}</span>
+                </div>
+            </div>
+        </p-accordionTab>
+    </p-accordion>
+
+    <p-dialog header="Select Mode" [(visible)]="displayDialog" [modal]="true" [closable]="false">
+        <div class="p-grid p-justify-center p-align-center">
+            <button pButton label="Sandbox Mode" icon="pi pi-wrench" class="p-button-secondary m-2" (click)="confirmModeSelection(true)"></button>
+            <button pButton label="Personal Accounts" icon="pi pi-user" class="p-button-secondary m-2" (click)="confirmModeSelection(false)"></button>
+        </div>
+    </p-dialog>
 </div>

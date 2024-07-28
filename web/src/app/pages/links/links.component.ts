@@ -11,6 +11,7 @@ import { ButtonModule } from "primeng/button";
 import { DialogModule } from "primeng/dialog";
 import { ToastModule } from "primeng/toast";
 import { bankLogos } from "src/app/models/bank-logos-map";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
 import type { Bank } from "src/app/models/bank.model";
 import type { Plaid } from "src/app/models/plaid.model";
 
@@ -26,6 +27,7 @@ declare let Plaid: Plaid;
 		ButtonModule,
 		DialogModule,
 		ToastModule,
+		ProgressSpinnerModule,
 	],
 	templateUrl: "./links.component.html",
 	styles: [],
@@ -35,6 +37,7 @@ export class LinksComponent implements OnInit {
 	connectedBanks: any[] = [];
 	displayDialog = false;
 	isSandbox = true;
+	loading = false;
 
 	constructor(
 		private apiService: ApiService,
@@ -99,6 +102,8 @@ export class LinksComponent implements OnInit {
 	}
 
 	refreshConnectedBanks(): void {
+		this.loading = true;
+
 		this.apiService
 			.getBanks()
 			.then((banksList) => {
@@ -116,8 +121,11 @@ export class LinksComponent implements OnInit {
 			})
 			.then((connectedBanks) => {
 				this.connectedBanks = connectedBanks;
+				this.loading = false;
 			})
 			.catch((error) => {
+				this.loading = false;
+
 				this.logError("Failed to load connected banks");
 			});
 	}
