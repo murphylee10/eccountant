@@ -234,8 +234,10 @@ class Database {
 
 		return results.map((transaction) => ({
 			...transaction,
-			account_name: transaction.account.name,
-			bank_name: transaction.account.item.bank_name,
+			account_name: transaction.account ? transaction.account.name : null,
+			bank_name: transaction.account
+				? transaction.account.item.bank_name
+				: null,
 		}));
 	}
 
