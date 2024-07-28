@@ -118,6 +118,7 @@ transactionsRouter.get("/recent", requireAuth, async (req, res, next) => {
 		const transactions = await db.getRecentTransactions(userId, 5);
 		res.json(transactions);
 	} catch (error) {
+		console.log(error);
 		console.log("Running into an error!");
 		next(error);
 	}
