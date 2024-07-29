@@ -75,6 +75,8 @@ tokensRouter.post(
 
 			// Call sync for the first time to activate the sync webhooks
 			await syncTransactions(itemId);
+			// Classify subscriptions
+			await db.classifySubscriptions(userId, itemId);
 
 			res.json({ status: "success" });
 		} catch (error) {
