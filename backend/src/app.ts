@@ -13,8 +13,8 @@ import { banksRouter } from "./routers/banks";
 import { tokensRouter } from "./routers/tokens";
 import { debugRouter } from "./routers/debug";
 import expressWs, {
-  Application as ExpressWsApplication,
-  type WithWebsocketMethod,
+	Application as ExpressWsApplication,
+	type WithWebsocketMethod,
 } from "express-ws";
 import MistralClient from "@mistralai/mistralai";
 import "./utils/redis/syncTransactionsWorker";
@@ -49,15 +49,15 @@ app.use("/api/subscriptions", subscriptionsRouter);
 // Chat endpoint.
 const mistralClient = new MistralClient(process.env.MISTRAL_API_KEY);
 app.post("/api/chat", async (req, res) => {
-  try {
-    const { model, messages } = req.body;
-    mistralClient.chat({ model, messages }).then((chatResponse) => {
-      res.json(chatResponse.choices[0].message.content);
-    });
-  } catch (error) {
-    console.error("Error in chat request:", error);
-    res.status(500).json({ error: "Failed to process chat request" });
-  }
+	try {
+		const { model, messages } = req.body;
+		mistralClient.chat({ model, messages }).then((chatResponse) => {
+			res.json(chatResponse.choices[0].message.content);
+		});
+	} catch (error) {
+		console.error("Error in chat request:", error);
+		res.status(500).json({ error: "Failed to process chat request" });
+	}
 });
 
 // Error handling
@@ -67,16 +67,16 @@ app.use(errorHandler);
 // const eventbus = EventBus.getInstance(app);
 
 app.listen(PORT, () => {
-  console.log("HTTP server on http://localhost:%s", PORT);
+	console.log("HTTP server on http://localhost:%s", PORT);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });
 
 process.on("SIGINT", async () => {
-  await db.disconnect();
-  process.exit(0);
+	await db.disconnect();
+	process.exit(0);
 });

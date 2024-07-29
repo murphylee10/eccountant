@@ -39,7 +39,6 @@ export class DistributionChartComponent {
 	isDataAvailable = computed(() => Object.keys(this.categoryData()).length > 0);
 
 	chartOptions = computed<ChartOptions>(() => {
-		console.log(this.categoryData());
 		const data = this.categoryData();
 		const categories = Object.keys(data);
 		const series = Object.values(data);

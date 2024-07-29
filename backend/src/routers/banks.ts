@@ -18,7 +18,6 @@ banksRouter.get("/list", requireAuth, async (req, res, next) => {
 	try {
 		const userId = req.auth?.payload.sub as string;
 		const result = await db.getBankNamesForUser(userId);
-		// console.log(result);
 		return res.json(result);
 	} catch (error) {
 		next(error);

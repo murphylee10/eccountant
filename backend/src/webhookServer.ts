@@ -49,7 +49,6 @@ async function handleTxnWebhook(code: string, itemId: string) {
 	switch (code) {
 		case "SYNC_UPDATES_AVAILABLE":
 			await txnQueue.add("syncTransactions", { itemId });
-			console.log("Added sync transactions job to the queue");
 			break;
 		// If we're using sync, we don't really need to concern ourselves with the
 		// other transactions-related webhooks
