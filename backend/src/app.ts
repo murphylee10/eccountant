@@ -18,7 +18,8 @@ import expressWs, {
 	type WithWebsocketMethod,
 } from "express-ws";
 import MistralClient from "@mistralai/mistralai";
-import "@utils/redis/worker";
+import "./utils/redis/syncTransactionsWorker";
+import subscriptionsRouter from "./routers/subscriptions";
 
 type ExtendedExpress = Express & WithWebsocketMethod;
 
@@ -43,6 +44,8 @@ app.use("/api/tokens", tokensRouter);
 app.use("/api/debug", debugRouter);
 
 app.use("/api/banks", banksRouter);
+
+app.use("/api/subscriptions", subscriptionsRouter);
 
 // Example endpoint that requires authentication.
 app.get("/api/example/auth", requireAuth, (req, res) => {

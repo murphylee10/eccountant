@@ -5,18 +5,20 @@ import type { Request } from "express";
 export const usersRouter = Router();
 
 interface RegisterRequest extends Request {
-  body: {
-    userId: string;
-  };
+	body: {
+		userId: string;
+		email: string;
+	};
 }
 
 usersRouter.post("/register", async (req: RegisterRequest, res, next) => {
-  const { userId } = req.body;
+	const { userId, email } = req.body;
+	console.log(email);
 
-  if (!userId) {
-    return res.status(400).json({ error: "User ID not found" });
-  }
+	if (!userId || !email) {
+		return res.status(400).json({ error: "User not found" });
+	}
 
-  const user = db.createUserIfNotExists(userId);
-  return res.json(user);
+	const user = db.createUserIfNotExists(userId, email);
+	return res.json(user);
 });

@@ -11,6 +11,7 @@ import { authCallbackGuard } from "./utils/auth-cb.guard";
 import { signedInGuard } from "./utils/signed-in.guard";
 import { DashboardComponent } from "@pages/dashboard/dashboard.component";
 import { DebugComponent } from "@pages/debug/debug.component";
+import { SubscriptionsComponent } from "@pages/subscriptions/subscriptions.component";
 
 export const routes: Routes = [
 	{
@@ -25,6 +26,10 @@ export const routes: Routes = [
 			{
 				path: "transactions",
 				component: TransactionsComponent,
+			},
+			{
+				path: "subscriptions",
+				component: SubscriptionsComponent,
 			},
 			{ path: "**", redirectTo: "dashboard" },
 		],

@@ -2,11 +2,10 @@ import { CommonModule } from "@angular/common";
 import { Component, type OnInit } from "@angular/core";
 // biome-ignore lint/style/useImportType: angular needs the whole module imported
 import { Router } from "@angular/router";
-// biome-ignore lint/style/useImportType: angular needs the whole module imported
-import { AuthService } from "@auth0/auth0-angular";
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
 import { ChartModule } from "primeng/chart";
+import { AuthService } from "@services/auth.service"; // Import the new AuthService
 
 @Component({
 	selector: "app-landing",
@@ -26,8 +25,8 @@ export class LandingComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.auth.isAuthenticated$.subscribe((isAuthenticated) => {
-			this.isAuthenticated = isAuthenticated;
+		this.auth.user$.subscribe((user) => {
+			this.isAuthenticated = !!user;
 		});
 
 		this.data = {
@@ -64,7 +63,7 @@ export class LandingComponent implements OnInit {
 		if (this.isAuthenticated) {
 			this.router.navigate(["/user/dashboard"]);
 		} else {
-			this.router.navigate(["/sign-in"]);
+			this.auth.loginWithRedirect();
 		}
 	}
 

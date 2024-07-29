@@ -1,0 +1,16 @@
+<div class="p-fluid">
+  <h3 class="text-center">Change Notification Settings</h3>
+  <div *ngIf="frequency === 'MONTHLY'" class="p-field">
+    <label for="day">Select Day</label>
+    <div class="h-2"></div>
+    <p-dropdown id="day" [options]="days" [(ngModel)]="selectedDay" placeholder="Select Day" class="w-full"></p-dropdown>
+  </div>
+  <div *ngIf="frequency === 'ANNUALLY'" class="p-field">
+    <label for="month">Select Month</label>
+    <p-dropdown id="month" [options]="months" [(ngModel)]="selectedMonth" placeholder="Select Month" class="w-full"></p-dropdown>
+  </div>
+  <div class="text-center mt-4 flex flex-col gap-y-2">
+    <button pButton type="button" label="Save" (click)="save()" class="p-button-primary"></button>
+    <button pButton type="button" label="Cancel" class="p-button-secondary" (click)="ref.close()"></button>
+  </div>
+</div>

@@ -79,5 +79,17 @@ services:
       - LETSENCRYPT_HOST=webhook.eccountant.live
     command: ["node", "dist/backend/src/webhookServer.js"]
 
+  cron:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
+    container_name: cron
+    restart: always
+    command: ["node", "dist/backend/src/cronServer.js"]
+
+  email:
+    image: ghcr.io/utsc-cscc09-programming-on-the-web/eccountant-backend
+    container_name: email
+    restart: always
+    command: ["node", "dist/backend/src/emailServer.js"]
+
 volumes:
   postgres_data:

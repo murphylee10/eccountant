@@ -8,7 +8,7 @@ import bodyParser from "body-parser";
 import { errorHandler } from "./middleware/errors";
 import "express-async-errors";
 import "dotenv/config";
-import { txnQueue } from "./utils/redis/queue";
+import { txnQueue } from "./utils/redis/syncTransactionsQueue";
 
 const webhookApp: Express = express();
 

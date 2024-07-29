@@ -15,9 +15,11 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  items        Item[]
-  transactions Transaction[]
+  id             String        @id @default(uuid())
+  email          String?
+  items          Item[]
+  transactions   Transaction[]
+  subscriptions  Subscription[]
 }
 
 model Item {
@@ -30,6 +32,7 @@ model Item {
   isSandbox          Boolean @default(true)
   user               User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   accounts           Account[]
+  subscriptions      Subscription[]
 }
 
 model Account {
@@ -54,4 +57,23 @@ model Transaction {
   isUserInput     Boolean  @default(false)
   user            User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   account         Account? @relation(fields: [account_id], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id             String  @id @default(uuid())
+  name           String
+  isUserApproved Boolean @default(false)
+  frequency      Frequency
+  dayOfMonth     Int?
+  month          Int?
+  amount         Float
+  userId         String
+  itemId         String?
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item           Item?   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+enum Frequency {
+  MONTHLY
+  ANNUALLY
 }

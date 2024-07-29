@@ -1,5 +1,4 @@
 import { Component, Inject, Input } from "@angular/core";
-// biome-ignore lint/style/useImportType: angular needs the whole module for elements passed in constructor
 import {
 	FormBuilder,
 	type FormGroup,
@@ -14,7 +13,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { PasswordModule } from "primeng/password";
 import { ButtonModule } from "primeng/button";
 // biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
-import { AuthService } from "@auth0/auth0-angular";
+import { AuthService } from "@services/auth.service";
 // biome-ignore lint/style/useImportType: Angular needs the whole module for elements passed in constructor
 import { ApiService } from "@services/api.service";
 
@@ -51,11 +50,12 @@ export class AuthFormComponent {
 		//   password: ['', Validators.required],
 		// });
 		auth.user$.subscribe((user) => {
+			console.log("hello");
 			if (user) {
 				// Extract the user ID (sub) and send it to the backend
 				const userId = user.sub;
 				api
-					.storeUserId(userId as string)
+					.storeUser(userId as string, user.email as string)
 					.then((response) => {
 						console.log("User registered or logged in:", response);
 						router.navigate(["/user/dashboard"]);
