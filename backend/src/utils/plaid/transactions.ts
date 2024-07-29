@@ -127,7 +127,6 @@ export const fetchNewSyncData = async (
 			//   throw new Error("SIMULATED PLAID SYNC ERROR");
 			// }
 		} while (keepGoing === true);
-		console.log("length of added transactions: ", allData.added.length);
 		return allData;
 	} catch (error) {
 		// If you want to see if this is a sync mutation error, you can look at

@@ -27,11 +27,7 @@ export default class EventDispatcher {
 		app.ws(`/api${EVENTBUS_ENDPOINT}/:sub`, (ws: WebSocket, req: any) => {
 			const sub = req.params.sub;
 
-			ws.on("message", (message) => {
-				console.log(`Message received: ${message}`);
-			});
 			ws.on("close", () => {
-				console.log("The connection was closed!");
 				// Get array of currently connected websockets for user.
 				const arr = this.wsMap.get(sub);
 				if (!arr) return;

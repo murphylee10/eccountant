@@ -13,7 +13,6 @@ interface RegisterRequest extends Request {
 
 usersRouter.post("/register", async (req: RegisterRequest, res, next) => {
 	const { userId, email } = req.body;
-	console.log(email);
 
 	if (!userId || !email) {
 		return res.status(400).json({ error: "User not found" });

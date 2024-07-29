@@ -38,7 +38,6 @@ export class EventBusService implements OnDestroy {
 	constructor(private auth: AuthService) {
 		this.auth.user$.subscribe((user) => {
 			if (user) {
-				console.log(user.sub);
 				this.ws = new WebSocket(
 					`${environment.api_url}${EVENTBUS_ENDPOINT}/${user.sub}`,
 				);
@@ -53,7 +52,6 @@ export class EventBusService implements OnDestroy {
 		if (!this.ws) return;
 		this.ws.onopen = () => {
 			console.log("Connected to the WebSocket server");
-			// this.ws.send('Hello from the client!');
 		};
 
 		this.ws.onmessage = (message) => {
