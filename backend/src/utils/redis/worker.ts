@@ -1,13 +1,10 @@
-import type { RedisOptions } from "ioredis";
-import { Queue, Worker } from "bullmq";
+import { type RedisOptions, Worker } from "bullmq";
 import { syncTransactions } from "@/utils/plaid/transactions";
 
 const redisConnection: RedisOptions = {
 	host: process.env.REDIS_HOST || "localhost",
 	port: Number.parseInt(process.env.REDIS_PORT || "6379"),
 };
-
-const txnQueue = new Queue("syncTransactions", { connection: redisConnection });
 
 const txnWorker = new Worker(
 	"syncTransactions",
@@ -27,5 +24,3 @@ txnWorker.on("failed", (job, err) => {
 	// @ts-ignore
 	console.log(`Job ${job.id} has failed with error ${err.message}`);
 });
-
-export { txnQueue };

@@ -18,7 +18,7 @@ import expressWs, {
 	type WithWebsocketMethod,
 } from "express-ws";
 import MistralClient from "@mistralai/mistralai";
-import "@utils/redis/connection";
+import "@utils/redis/worker";
 
 type ExtendedExpress = Express & WithWebsocketMethod;
 
