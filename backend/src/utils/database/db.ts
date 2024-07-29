@@ -490,7 +490,6 @@ class Database {
 				date: "asc",
 			},
 		});
-		console.log(transactions.length);
 
 		// Step 2: Group transactions by name and amount (to avoid false positives like Uber rides)
 		const groupedTransactions: Record<string, any[]> = {};

@@ -1,22 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MonthlySpendChartComponent } from './monthly-spend-chart.component';
+import { MonthlySpendChartComponent } from "./monthly-spend-chart.component";
 
-describe('MonthlySpendChartComponent', () => {
-  let component: MonthlySpendChartComponent;
-  let fixture: ComponentFixture<MonthlySpendChartComponent>;
+describe("MonthlySpendChartComponent", () => {
+	let component: MonthlySpendChartComponent;
+	let fixture: ComponentFixture<MonthlySpendChartComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MonthlySpendChartComponent],
-    }).compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [MonthlySpendChartComponent],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(MonthlySpendChartComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		fixture = TestBed.createComponent(MonthlySpendChartComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it("should create", () => {
+		expect(component).toBeTruthy();
+	});
 });
