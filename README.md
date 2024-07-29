@@ -2,6 +2,9 @@
 
 ## Notes For Submission
 - Production Link: https://eccountant.live/
+- Video Demo: https://www.youtube.com/watch?v=SlTgYZaLusc
+- IF YOU WISH TO USE SANDBOX DATA INSTEAD OF PERSONAL INFO: the credentials on the popup are username: user_good and password: pass_good
+- Disclaimer: You may notice you have data only as far back as April 2024. This is because Plaid now does this by default for limited production accounts. We believed it was best to leave it like this to minimize the number of API calls anyways because of Plaid's transition from development accounts to limited production accounts (which is way more frugal).
 
 ## Project Metadata
 
@@ -80,6 +83,9 @@ Eccountant will meet the requirements as follows:
    - The dashboard overview and the detailed spending analysis page will be updated in real-time as new transactions are detected through Plaid's webhooks. This means that users will see their latest spending activities and updated financial summaries without needing to manually refresh the page.
    - Real-time notifications will be implemented to alert users about important events such as detecting a new subscription (if we decide to implement this additional feature, check "Potential Additional Features" below). These notifications will help users stay informed and make timely financial decisions.
 
+3. **Long Running Task:**
+   - Our intended 2/3 fulfillments are webhooks and real-time functionality, but we hae also implemented a natural language querying feature which uses an LLM on the backend (we believe this counts as long-running).
+
 ## Potential Additional Features
 
 Variations of Eccountant have already been implemented, but we believe the following additional features would really make our application stand out:
@@ -95,13 +101,6 @@ Variations of Eccountant have already been implemented, but we believe the follo
 - **Adding Credit Cards:**
 
   - Enable users to add multiple credit card accounts, providing a holistic view of their spending across various cards and simplifying overall financial management.
-
-- **Custom Budgeting & Alerts:**
-
-  - Offer users the ability to set custom budgets for different spending categories and receive alerts when they approach or exceed their budget limits, promoting better financial discipline.
-
-- **Export & Report Generation:**
-  - Provide options for users to export their financial data and generate detailed reports in various formats (e.g., PDF, CSV), making it easier to analyze spending patterns and prepare for tax filing or financial planning.
 
 ## Alpha Version
 
