@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
 import { ChartModule } from "primeng/chart";
-import { AuthService } from "@services/auth.service"; // Import the new AuthService
+import { AuthService } from "@auth0/auth0-angular"; // Import the new AuthService
 
 @Component({
 	selector: "app-landing",

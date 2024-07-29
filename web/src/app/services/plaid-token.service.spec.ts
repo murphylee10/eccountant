@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { PlaidTokenService } from './plaid-token.service';
+import { PlaidTokenService } from "./plaid-token.service";
 
-describe('PlaidService', () => {
-  let service: PlaidTokenService;
+describe("PlaidService", () => {
+	let service: PlaidTokenService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(PlaidTokenService);
-  });
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(PlaidTokenService);
+	});
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+	it("should be created", () => {
+		expect(service).toBeTruthy();
+	});
 });

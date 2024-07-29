@@ -46,7 +46,6 @@ async function checkSubscriptions() {
 	});
 
 	const allSubscriptions = [...monthlySubscriptions, ...annualSubscriptions];
-	console.log("Found subscriptions:", allSubscriptions);
 	for (const sub of allSubscriptions) {
 		console.log("Sending email to", sub.user.email);
 		if (sub.user.email) {

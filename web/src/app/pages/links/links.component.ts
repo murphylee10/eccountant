@@ -60,15 +60,12 @@ export class LinksComponent implements OnInit {
 	confirmModeSelection(isSandbox: boolean): void {
 		this.displayDialog = false;
 		this.isSandbox = isSandbox;
-		console.log(this.isSandbox);
 
 		this.plaidTokenService.generateLinkToken(this.isSandbox).subscribe({
 			next: (data) => {
-				console.log(data);
 				const handler = Plaid.create({
 					token: data.link_token,
 					onSuccess: (publicToken, metadata) => {
-						console.log(`Finished with Link! ${JSON.stringify(metadata)}`);
 						this.plaidTokenService
 							.exchangePublicToken(publicToken, this.isSandbox)
 							.subscribe({
@@ -82,9 +79,6 @@ export class LinksComponent implements OnInit {
 							});
 					},
 					onExit: (err, metadata) => {
-						console.log(
-							`Exited early. Error: ${JSON.stringify(err)} Metadata: ${JSON.stringify(metadata)}`,
-						);
 						this.logWarn("Exited early.");
 					},
 					onEvent: (eventName, metadata) => {

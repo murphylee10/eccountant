@@ -377,7 +377,6 @@ export class TransactionsComponent implements OnInit {
 		);
 		this.filteredTransactions = this.transactions; // Initialize filtered transactions
 		this.isLoading = false;
-		console.log("Transactions:", this.transactions);
 		this.updateCategoryData();
 	}
 

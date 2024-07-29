@@ -1,244 +1,218 @@
 // biome-ignore lint/style/useImportType: <explanation>
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import environment from "@environment";
-import { take } from "rxjs";
-import type { PlaidTransaction } from "../models/transaction.model";
-import { Subscription } from "../models/subscription.model";
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import environment from '@environment';
+import { take } from 'rxjs';
+import type { PlaidTransaction } from '../models/transaction.model';
+import { Subscription } from '../models/subscription.model';
 
 @Injectable({
-	providedIn: "root",
+  providedIn: 'root',
 })
 export class ApiService {
-	private transactionsUrl = "/transactions";
-	private banksUrl = "/banks";
-	private subscriptionsUrl = "/subscriptions";
+  private transactionsUrl = '/transactions';
+  private banksUrl = '/banks';
+  private subscriptionsUrl = '/subscriptions';
 
-	constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-	// Custom implementations using httpclient.
-	// Necessary for interceptor to attach auth headers.
-	private async get<T>(endpoint: string) {
-		return new Promise<T>((res, rej) => {
-			this.http
-				.get<T>(encodeURI(`${environment.api_url}${endpoint}`))
-				.pipe(take(1))
-				.subscribe({ next: res, error: rej });
-		});
-	}
+  // Custom implementations using httpclient.
+  // Necessary for interceptor to attach auth headers.
+  private async get<T>(endpoint: string) {
+    return new Promise<T>((res, rej) => {
+      this.http
+        .get<T>(encodeURI(`${environment.api_url}${endpoint}`))
+        .pipe(take(1))
+        .subscribe({ next: res, error: rej });
+    });
+  }
 
-	private async post<T>(endpoint: string, body: any) {
-		return new Promise<T>((res, rej) => {
-			this.http
-				.post<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
-				.pipe(take(1))
-				.subscribe({ next: res, error: rej });
-		});
-	}
+  private async post<T>(endpoint: string, body: any) {
+    return new Promise<T>((res, rej) => {
+      this.http
+        .post<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
+        .pipe(take(1))
+        .subscribe({ next: res, error: rej });
+    });
+  }
 
-	private async patch<T>(endpoint: string, body: any): Promise<T> {
-		return new Promise<T>((res, rej) => {
-			this.http
-				.patch<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
-				.pipe(take(1))
-				.subscribe({ next: res, error: rej });
-		});
-	}
+  private async patch<T>(endpoint: string, body: any): Promise<T> {
+    return new Promise<T>((res, rej) => {
+      this.http
+        .patch<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
+        .pipe(take(1))
+        .subscribe({ next: res, error: rej });
+    });
+  }
 
-	private async delete<T>(endpoint: string, body: any): Promise<void> {
-		return new Promise<void>((resolve, reject) => {
-			this.http
-				.request<void>(
-					"delete",
-					encodeURI(`${environment.api_url}${endpoint}`),
-					{
-						body,
-					},
-				)
-				.pipe(take(1))
-				.subscribe({
-					next: () => resolve(),
-					error: (err: HttpErrorResponse) => reject(err),
-				});
-		});
-	}
+  private async delete<T>(endpoint: string, body: any): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http
+        .request<void>(
+          'delete',
+          encodeURI(`${environment.api_url}${endpoint}`),
+          {
+            body,
+          },
+        )
+        .pipe(take(1))
+        .subscribe({
+          next: () => resolve(),
+          error: (err: HttpErrorResponse) => reject(err),
+        });
+    });
+  }
 
-	public async exampleAuth() {
-		return this.get<{
-			success: boolean;
-			msg: string;
-		}>("/example/auth").catch((err) => {
-			return { success: false, msg: err };
-		});
-	}
+  public async storeUser(
+    userId: string,
+    email: string,
+  ): Promise<{ success: boolean; msg: string }> {
+    return this.post<{
+      success: boolean;
+      msg: string;
+    }>('/users/register', { userId, email }).catch((err) => {
+      return { success: false, msg: err.msg };
+    });
+  }
 
-	public async exampleAuthScope() {
-		return this.get<{
-			success: boolean;
-			msg: string;
-		}>("/example/authScope").catch((err) => {
-			return { success: false, msg: err };
-		});
-	}
+  async addTransaction(transaction: {
+    name: string;
+    date: string;
+    category: string;
+    amount: number;
+    isIncoming: boolean;
+  }) {
+    return this.post(`${this.transactionsUrl}/add`, transaction);
+  }
 
-	public async exampleEvent() {
-		return this.get<{
-			success: boolean;
-		}>("/example/event").catch(() => {
-			return { success: false };
-		});
-	}
+  async deleteUserTransaction(transactionId: string) {
+    return this.delete(`${this.transactionsUrl}/delete/${transactionId}`, {});
+  }
 
-	public async storeUser(
-		userId: string,
-		email: string,
-	): Promise<{ success: boolean; msg: string }> {
-		return this.post<{
-			success: boolean;
-			msg: string;
-		}>("/users/register", { userId, email }).catch((err) => {
-			return { success: false, msg: err.msg };
-		});
-	}
+  /* PLAID API */
 
-	async addTransaction(transaction: {
-		name: string;
-		date: string;
-		category: string;
-		amount: number;
-		isIncoming: boolean;
-	}) {
-		return this.post(`${this.transactionsUrl}/add`, transaction);
-	}
+  getTransactionsByDateRange(
+    startDate: string,
+    endDate: string,
+  ): Promise<PlaidTransaction[]> {
+    return this.get<PlaidTransaction[]>(
+      `${this.transactionsUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
+    );
+  }
 
-	async deleteUserTransaction(transactionId: string) {
-		return this.delete(`${this.transactionsUrl}/delete/${transactionId}`, {});
-	}
+  getFirstTransaction(): Promise<PlaidTransaction> {
+    return this.get<PlaidTransaction>(
+      `${this.transactionsUrl}/first-transaction`,
+    );
+  }
 
-	/* PLAID API */
+  getLastTransaction(): Promise<PlaidTransaction> {
+    return this.get<PlaidTransaction>(
+      `${this.transactionsUrl}/last-transaction`,
+    );
+  }
 
-	getTransactionsByDateRange(
-		startDate: string,
-		endDate: string,
-	): Promise<PlaidTransaction[]> {
-		return this.get<PlaidTransaction[]>(
-			`${this.transactionsUrl}/date-range?startDate=${startDate}&endDate=${endDate}`,
-		);
-	}
+  getRecentTransactions(): Promise<PlaidTransaction[]> {
+    return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/recent`);
+  }
 
-	getFirstTransaction(): Promise<PlaidTransaction> {
-		return this.get<PlaidTransaction>(
-			`${this.transactionsUrl}/first-transaction`,
-		);
-	}
+  public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
+    return this.get<{ id: string; bank_name: string }[]>(
+      `${this.banksUrl}/list`,
+    ).catch((err) => {
+      return [];
+    });
+  }
 
-	getLastTransaction(): Promise<PlaidTransaction> {
-		return this.get<PlaidTransaction>(
-			`${this.transactionsUrl}/last-transaction`,
-		);
-	}
+  public async getAccounts(itemId: string): Promise<any[]> {
+    return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
+      (err) => {
+        return [];
+      },
+    );
+  }
 
-	getRecentTransactions(): Promise<PlaidTransaction[]> {
-		return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/recent`);
-	}
+  public async deactivateBank(itemId: string) {
+    return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
+  }
 
-	public async getBanks(): Promise<{ id: string; bank_name: string }[]> {
-		return this.get<{ id: string; bank_name: string }[]>(
-			`${this.banksUrl}/list`,
-		).catch((err) => {
-			return [];
-		});
-	}
+  getTransactionsByYear(year: number): Promise<PlaidTransaction[]> {
+    return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/year/${year}`);
+  }
 
-	public async getAccounts(itemId: string): Promise<any[]> {
-		return this.get<any[]>(`${this.banksUrl}/accounts/${itemId}`).catch(
-			(err) => {
-				return [];
-			},
-		);
-	}
+  fireWebhook() {
+    return this.post<any>('/debug/generate_webhook', {});
+  }
 
-	public async deactivateBank(itemId: string) {
-		return this.post<any>(`${this.banksUrl}/deactivate`, { itemId });
-	}
+  /* LLM Endpoint */
+  ask(query: string): Promise<any> {
+    return this.post<any>(`${this.transactionsUrl}/ask`, { query });
+  }
 
-	getTransactionsByYear(year: number): Promise<PlaidTransaction[]> {
-		return this.get<PlaidTransaction[]>(`${this.transactionsUrl}/year/${year}`);
-	}
+  chat(model: string, message: string): Promise<string> {
+    const body = {
+      model,
+      messages: [{ role: 'user', content: message }],
+    };
 
-	fireWebhook() {
-		return this.post<any>("/debug/generate_webhook", {});
-	}
+    return new Promise<string>((resolve, reject) => {
+      this.http
+        .post<string>(encodeURI(`${environment.api_url}/chat`), body)
+        .subscribe({
+          next: (response: string) => {
+            resolve(response);
+          },
+          error: (error) => {
+            reject(error);
+          },
+        });
+    });
+  }
 
-	/* LLM Endpoint */
-	ask(query: string): Promise<any> {
-		return this.post<any>(`${this.transactionsUrl}/ask`, { query });
-	}
+  /* Subscriptons */
+  getSubscriptions(): Promise<{
+    accepted: Subscription[];
+    pending: Subscription[];
+    removed: Subscription[];
+  }> {
+    return this.get<{
+      accepted: Subscription[];
+      pending: Subscription[];
+      removed: Subscription[];
+    }>(`${this.subscriptionsUrl}`);
+  }
 
-	chat(model: string, message: string): Promise<string> {
-		const body = {
-			model,
-			messages: [{ role: "user", content: message }],
-		};
+  acceptSubscription(subscriptionId: string): Promise<void> {
+    return this.post<void>(`${this.subscriptionsUrl}/accept`, {
+      subscriptionId,
+    });
+  }
 
-		return new Promise<string>((resolve, reject) => {
-			this.http
-				.post<string>(encodeURI(`${environment.api_url}/chat`), body)
-				.subscribe({
-					next: (response: string) => {
-						resolve(response);
-					},
-					error: (error) => {
-						reject(error);
-					},
-				});
-		});
-	}
+  removeSubscription(subscriptionId: string): Promise<void> {
+    return this.delete<void>(`${this.subscriptionsUrl}/${subscriptionId}`, {});
+  }
 
-	/* Subscriptons */
-	getSubscriptions(): Promise<{
-		accepted: Subscription[];
-		pending: Subscription[];
-		removed: Subscription[];
-	}> {
-		return this.get<{
-			accepted: Subscription[];
-			pending: Subscription[];
-			removed: Subscription[];
-		}>(`${this.subscriptionsUrl}`);
-	}
+  restoreSubscription(subscriptionId: string): Promise<void> {
+    return this.post<void>(
+      `${this.subscriptionsUrl}/restore/${subscriptionId}`,
+      {},
+    );
+  }
 
-	acceptSubscription(subscriptionId: string): Promise<void> {
-		return this.post<void>(`${this.subscriptionsUrl}/accept`, {
-			subscriptionId,
-		});
-	}
+  changeSubscriptionDay(subscriptionId: string, day: number): Promise<void> {
+    return this.patch<void>(`${this.subscriptionsUrl}/change-day`, {
+      subscriptionId,
+      day,
+    });
+  }
 
-	removeSubscription(subscriptionId: string): Promise<void> {
-		return this.delete<void>(`${this.subscriptionsUrl}/${subscriptionId}`, {});
-	}
-
-	restoreSubscription(subscriptionId: string): Promise<void> {
-		return this.post<void>(
-			`${this.subscriptionsUrl}/restore/${subscriptionId}`,
-			{},
-		);
-	}
-
-	changeSubscriptionDay(subscriptionId: string, day: number): Promise<void> {
-		return this.patch<void>(`${this.subscriptionsUrl}/change-day`, {
-			subscriptionId,
-			day,
-		});
-	}
-
-	changeSubscriptionMonth(
-		subscriptionId: string,
-		month: number,
-	): Promise<void> {
-		return this.patch<void>(`${this.subscriptionsUrl}/change-month`, {
-			subscriptionId,
-			month,
-		});
-	}
+  changeSubscriptionMonth(
+    subscriptionId: string,
+    month: number,
+  ): Promise<void> {
+    return this.patch<void>(`${this.subscriptionsUrl}/change-month`, {
+      subscriptionId,
+      month,
+    });
+  }
 }
