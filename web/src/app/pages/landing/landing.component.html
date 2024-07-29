@@ -1,6 +1,6 @@
 <div class="min-h-screen flex flex-col justify-between">
   <div>
-    <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh]">
+    <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh] md:hidden">
       <ng-template pTemplate="start">
         <a href="/">
           <img
@@ -31,32 +31,32 @@
       </ng-template>
     </p-menubar>
   </div>
-  <div class="flex-grow flex flex-col md:flex-row justify-around items-center px-20 py-12">
+  <div class="flex flex-row md:flex-col justify-around items-center px-20 py-12 md:justify-start md:items-start md:px-2">
     <div class="max-w-[50rem]">
         <div>
-            <h1 class="text-6xl font-bold">Welcome To</h1>
+            <h1 class="text-6xl font-bold 2xl:text-5xl xl:text-3xl md:text-sm">Welcome To</h1>
             <img
               src="assets/images/EccountantLogoLight.svg"
               alt="Eccountant Logo"
-              class="w-[40rem] ml-2"
+              class="w-[40rem] 2xl:w-[32rem] ml-2 lg:w-[20rem]"
             />
         </div>
         
-      <p class="text-xl mb-6">
+      <p class="text-xl mb-6 2xl:text-lg xl:text-md">
         Eccountant helps you manage and visualize your financial data effortlessly.
       </p>
-      <p class="text-xl mb-6">
+      <p class="text-xl mb-6 2xl:text-lg xl:text-md">
         Start viewing your financial data today.
       </p>
       <button
         pButton
         label="Get Started"
         icon="pi pi-arrow-right"
-        class="p-button-rounded p-button-lg p-button-primary"
+        class="p-button-rounded p-button-lg p-button-primary 2xl:p-button-sm"
         (click)="handleButtonClick()"
       ></button>
     </div>
-    <div class="w-[60rem]">
+    <div class="w-[60rem] 2xl:w-[35rem] lg:w-[25rem] md:w-[10rem]">
       <p-chart type="line" [data]="data" [options]="options"></p-chart>
     </div>
   </div>
