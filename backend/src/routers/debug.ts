@@ -1,5 +1,6 @@
 import { requireAuth } from "@/middleware/auth";
 import { db } from "@/utils/database/db";
+import EventDispatcher from "@/utils/events/event-dispatcher";
 import { plaidSandboxClient } from "@/utils/plaid/client";
 import {
 	type NextFunction,
