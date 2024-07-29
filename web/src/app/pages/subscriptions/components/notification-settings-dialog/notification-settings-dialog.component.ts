@@ -14,7 +14,7 @@ import { FormsModule } from "@angular/forms";
 })
 export class NotificationSettingsDialogComponent {
 	frequency: string;
-	days: number[] = Array.from({ length: 28 }, (_, i) => i + 1);
+	days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
 	months: { label: string; value: number }[] = [
 		{ label: "January", value: 1 },
 		{ label: "February", value: 2 },

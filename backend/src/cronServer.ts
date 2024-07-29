@@ -14,15 +14,19 @@ const emailQueue = new Queue("sendEmails", { connection: redisConnection });
 
 async function checkSubscriptions() {
 	const today = new Date();
-	const dayOfMonth = today.getDate(); // Hardcoded for testing purposes
+	const dayOfMonth = today.getDate(); // Get current day of the month
 	const month = today.getMonth() + 1; // JavaScript months are 0-based
 
-	// Find monthly subscriptions that match today's date (dayOfMonth set to 23 for testing)
+	// Determine if today is the last day of the month
+	const isLastDayOfMonth =
+		new Date(today.getFullYear(), month, 0).getDate() === dayOfMonth;
+
+	// Find monthly subscriptions that match today's date or the last day of the month
 	const monthlySubscriptions = await prisma.subscription.findMany({
 		where: {
 			isUserApproved: true,
 			frequency: "MONTHLY",
-			dayOfMonth: dayOfMonth,
+			dayOfMonth: isLastDayOfMonth ? { gte: dayOfMonth } : dayOfMonth,
 		},
 		include: {
 			user: true,
@@ -34,7 +38,7 @@ async function checkSubscriptions() {
 		where: {
 			isUserApproved: true,
 			frequency: "ANNUALLY",
-			dayOfMonth: 1,
+			dayOfMonth: isLastDayOfMonth ? { gte: 1 } : 1,
 			month: month,
 		},
 		include: {
