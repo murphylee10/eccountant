@@ -38,7 +38,6 @@ async function checkSubscriptions() {
 		where: {
 			isUserApproved: true,
 			frequency: "ANNUALLY",
-			dayOfMonth: isLastDayOfMonth ? { gte: 1 } : 1,
 			month: month,
 		},
 		include: {
@@ -60,9 +59,9 @@ async function checkSubscriptions() {
 	}
 }
 
-// Schedule the cron job to run every minute for testing purposes
-cron.schedule("* * * * *", () => {
-	console.log("Running cron job every minute for testing");
+// Schedule the cron job to run every day at midnight
+cron.schedule("0 0 * * *", () => {
+	console.log("Running cron job every day at midnight");
 	checkSubscriptions().catch((err) => {
 		console.error("Error checking subscriptions:", err);
 	});
