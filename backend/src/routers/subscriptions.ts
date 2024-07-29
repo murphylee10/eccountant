@@ -52,6 +52,20 @@ subscriptionsRouter.delete(
 	},
 );
 
+subscriptionsRouter.post(
+	"/restore/:id",
+	requireAuth,
+	async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			const subscriptionId = req.params.id;
+			const restoredSubscription = await db.restoreSubscription(subscriptionId);
+			res.json(restoredSubscription);
+		} catch (error) {
+			next(error);
+		}
+	},
+);
+
 subscriptionsRouter.patch(
 	"/change-day",
 	requireAuth,

@@ -31,7 +31,8 @@ import { NotificationSettingsDialogComponent } from "./components/notification-s
 })
 export class SubscriptionsComponent implements OnInit {
 	acceptedSubscriptions: Subscription[] = [];
-	notAcceptedSubscriptions: Subscription[] = [];
+	pendingSubscriptions: Subscription[] = [];
+	removedSubscriptions: Subscription[] = [];
 	isLoading = true;
 	dialogRef: DynamicDialogRef | undefined;
 
@@ -50,7 +51,8 @@ export class SubscriptionsComponent implements OnInit {
 			this.isLoading = true;
 			const result = await this.apiService.getSubscriptions();
 			this.acceptedSubscriptions = result.accepted;
-			this.notAcceptedSubscriptions = result.notAccepted;
+			this.pendingSubscriptions = result.pending;
+			this.removedSubscriptions = result.removed;
 		} catch (error) {
 			console.error("Error fetching subscriptions:", error);
 			this.logError("Error fetching subscriptions");
@@ -84,6 +86,20 @@ export class SubscriptionsComponent implements OnInit {
 		} catch (error) {
 			console.error("Error deleting subscription:", error);
 			this.logError("Error deleting subscription");
+		}
+	}
+
+	async restoreSubscription(subscriptionId: string) {
+		try {
+			await this.apiService.restoreSubscription(subscriptionId);
+			this.logSuccess(
+				"Subscription Restored",
+				"The subscription has been restored.",
+			);
+			this.loadSubscriptions();
+		} catch (error) {
+			console.error("Error restoring subscription:", error);
+			this.logError("Error restoring subscription");
 		}
 	}
 

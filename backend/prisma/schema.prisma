@@ -69,6 +69,7 @@ model Subscription {
   amount         Float
   userId         String
   itemId         String?
+  isRemoved      Boolean @default(false)
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   item           Item?   @relation(fields: [itemId], references: [id], onDelete: Cascade)
 }

@@ -39,8 +39,8 @@
 		</ng-template>
 	</p-table>
 
-	<h2>Classified Subscriptions</h2>
-	<p-table [value]="notAcceptedSubscriptions" [scrollable]="true" scrollHeight="400px">
+	<h2>Pending Subscriptions</h2>
+	<p-table [value]="pendingSubscriptions" [scrollable]="true" scrollHeight="400px">
 		<ng-template pTemplate="header">
 			<tr>
 				<th>Merchant</th>
@@ -66,6 +66,37 @@
 				<td>
 					<button pButton icon="pi pi-check" class="p-button-success" (click)="acceptSubscription(subscription)"></button>
 					<button pButton icon="pi pi-trash" class="p-button-danger" (click)="deleteSubscription(subscription.id)"></button>
+				</td>
+			</tr>
+		</ng-template>
+	</p-table>
+
+	<h2>Removed Subscriptions</h2>
+	<p-table [value]="removedSubscriptions" [scrollable]="true" scrollHeight="400px">
+		<ng-template pTemplate="header">
+			<tr>
+				<th>Merchant</th>
+				<th>Cost</th>
+				<th>Frequency</th>
+				<th>Day/Month</th>
+				<th>Actions</th>
+			</tr>
+		</ng-template>
+		<ng-template pTemplate="body" let-subscription>
+			<tr>
+				<td>{{ subscription.name }}</td>
+				<td>{{ subscription.amount | currency }}</td>
+				<td>{{ subscription.frequency }}</td>
+				<td>
+					<ng-container *ngIf="subscription.frequency === 'MONTHLY'">
+						{{ subscription.dayOfMonth }}
+					</ng-container>
+					<ng-container *ngIf="subscription.frequency === 'ANNUALLY'">
+						{{ subscription.month }}
+					</ng-container>
+				</td>
+				<td>
+					<button pButton icon="pi pi-refresh" class="p-button-success" (click)="restoreSubscription(subscription.id)"></button>
 				</td>
 			</tr>
 		</ng-template>

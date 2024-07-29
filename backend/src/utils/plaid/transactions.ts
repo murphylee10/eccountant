@@ -33,7 +33,6 @@ export const syncTransactions = async (itemId: string) => {
 	// STEP 2: Save new transactions to the database
 	await Promise.all(
 		allData.added.map(async (txnObj) => {
-			console.log(`I want to add ${txnObj.transaction_id}`);
 			const result = await db.addNewTransaction(
 				SimpleTransaction.fromPlaidTransaction(txnObj, userId),
 			);
@@ -46,7 +45,6 @@ export const syncTransactions = async (itemId: string) => {
 	// STEP 3: Update modified transactions in our database
 	await Promise.all(
 		allData.modified.map(async (txnObj) => {
-			console.log(`I want to modify ${txnObj.transaction_id}`);
 			const result = await db.modifyExistingTransaction(
 				SimpleTransaction.fromPlaidTransaction(txnObj, userId),
 			);
@@ -59,7 +57,6 @@ export const syncTransactions = async (itemId: string) => {
 	// STEP 4: Do something in our database with the removed transactions
 	await Promise.all(
 		allData.removed.map(async (txnObj) => {
-			console.log(`I want to remove ${txnObj.transaction_id}`);
 			// const result = await db.deleteExistingTransaction(
 			//   txnObj.transaction_id
 			// );
@@ -70,7 +67,6 @@ export const syncTransactions = async (itemId: string) => {
 		}),
 	);
 
-	console.log(`The last cursor value was ${allData.nextCursor}`);
 	// Step 5: Save our cursor value to the database
 	await db.saveCursorForItem(allData.nextCursor, itemId);
 
@@ -86,7 +82,8 @@ export const syncTransactions = async (itemId: string) => {
 		console.log("Unable to provide rt update - server not connected");
 	}
 
-	console.log(summary);
+	// update subscriptions
+	await db.classifySubscriptions(userId, itemId);
 	return summary;
 };
 
@@ -121,20 +118,17 @@ export const fetchNewSyncData = async (
 				cursor: allData.nextCursor,
 			});
 			const newData = results.data;
-			console.log(newData);
 			allData.added = allData.added.concat(newData.added);
 			allData.modified = allData.modified.concat(newData.modified);
 			allData.removed = allData.removed.concat(newData.removed);
 			allData.nextCursor = newData.next_cursor;
 			keepGoing = newData.has_more;
-			console.log(
-				`Added: ${newData.added.length} Modified: ${newData.modified.length} Removed: ${newData.removed.length} `,
-			);
 
 			// if (Math.random() < 0.5) {
 			//   throw new Error("SIMULATED PLAID SYNC ERROR");
 			// }
 		} while (keepGoing === true);
+		console.log("length of added transactions: ", allData.added.length);
 		return allData;
 	} catch (error) {
 		// If you want to see if this is a sync mutation error, you can look at
