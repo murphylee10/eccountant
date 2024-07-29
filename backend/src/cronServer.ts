@@ -14,10 +14,10 @@ const emailQueue = new Queue("sendEmails", { connection: redisConnection });
 
 async function checkSubscriptions() {
 	const today = new Date();
-	const dayOfMonth = 23; // Set to 23 for testing purposes
+	const dayOfMonth = today.getDate(); // Get current day of the month
 	const month = today.getMonth() + 1; // JavaScript months are 0-based
 
-	// Find monthly subscriptions that match today's date (dayOfMonth set to 23 for testing)
+	// Find monthly subscriptions that match today's date
 	const monthlySubscriptions = await prisma.subscription.findMany({
 		where: {
 			isUserApproved: true,
@@ -50,15 +50,15 @@ async function checkSubscriptions() {
 			await emailQueue.add("sendEmail", {
 				to: sub.user.email,
 				subject: "Subscription Notification",
-				text: `Hi ${sub.user.email}!\n\n A friendly reminder that your subscription for ${sub.name} is due soon. \n\n Visit https://eccountant.live for more details. \n\n Best, \n Eccountant Team`,
+				text: `Hi ${sub.user.email}!\n\nA friendly reminder that your subscription for ${sub.name} is due soon.\n\nVisit https://eccountant.live for more details.\n\nBest,\nEccountant Team`,
 			});
 		}
 	}
 }
 
-// Schedule the cron job to run every minute for testing purposes
-cron.schedule("* * * * *", () => {
-	console.log("Running cron job every minute for testing");
+// Schedule the cron job to run every day at midnight
+cron.schedule("0 0 * * *", () => {
+	console.log("Running cron job at midnight");
 	checkSubscriptions().catch((err) => {
 		console.error("Error checking subscriptions:", err);
 	});

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, Subscription } from "@prisma/client";
 import type { SimpleTransaction } from "../types/transactions";
 import {
 	differenceInDays,
@@ -490,6 +490,7 @@ class Database {
 				date: "asc",
 			},
 		});
+		console.log(transactions.length);
 
 		// Step 2: Group transactions by name and amount (to avoid false positives like Uber rides)
 		const groupedTransactions: Record<string, any[]> = {};
@@ -505,6 +506,10 @@ class Database {
 		// Step 3: Filter groups by the most recent transaction date (within the last 2 months)
 		const currentDate = new Date();
 		const twoMonthsAgo = subDays(currentDate, 60);
+
+		const accepted: Subscription[] = [];
+		const pending: Subscription[] = [];
+		const removed: Subscription[] = [];
 
 		// Step 4: Check if the transactions in each group follow a monthly or annual interval
 		for (const key in groupedTransactions) {
@@ -553,22 +558,39 @@ class Database {
 					: null;
 
 				// Step 5: Store the subscription in the database
-				await this.prisma.subscription.create({
-					data: {
+				const existingSubscription = await this.prisma.subscription.findFirst({
+					where: {
 						userId: userId,
-						itemId: itemId,
 						name: transactions[0].name,
 						amount: transactions[0].amount,
-						frequency: isMonthly ? "MONTHLY" : "ANNUALLY",
-						dayOfMonth: notificationDay,
-						month: notificationMonth,
-						isUserApproved: false,
 					},
 				});
+
+				if (!existingSubscription) {
+					const newSubscription = await this.prisma.subscription.create({
+						data: {
+							userId: userId,
+							itemId: itemId,
+							name: transactions[0].name,
+							amount: transactions[0].amount,
+							frequency: isMonthly ? "MONTHLY" : "ANNUALLY",
+							dayOfMonth: notificationDay,
+							month: notificationMonth,
+							isUserApproved: false,
+						},
+					});
+
+					pending.push(newSubscription);
+				} else {
+					if (existingSubscription.isUserApproved) {
+						accepted.push(existingSubscription);
+					} else {
+						pending.push(existingSubscription);
+					}
+				}
 			}
 		}
 	}
-
 	// New method to fetch and partition subscriptions
 	async fetchPartitionedSubscriptions(userId: string) {
 		const subscriptions = await this.prisma.subscription.findMany({
@@ -577,16 +599,37 @@ class Database {
 		});
 
 		const acceptedSubscriptions = subscriptions.filter(
-			(sub) => sub.isUserApproved,
+			(sub) => sub.isUserApproved && !sub.isRemoved,
 		);
-		const notAcceptedSubscriptions = subscriptions.filter(
-			(sub) => !sub.isUserApproved,
+		const pendingSubscriptions = subscriptions.filter(
+			(sub) => !sub.isUserApproved && !sub.isRemoved,
 		);
+		const removedSubscriptions = subscriptions.filter((sub) => sub.isRemoved);
 
 		return {
 			accepted: acceptedSubscriptions,
-			notAccepted: notAcceptedSubscriptions,
+			pending: pendingSubscriptions,
+			removed: removedSubscriptions,
 		};
+	}
+
+	async restoreSubscription(subscriptionId: string) {
+		const subscription = await this.prisma.subscription.findUnique({
+			where: { id: subscriptionId },
+		});
+
+		if (!subscription) {
+			throw new Error("Subscription not found");
+		}
+
+		if (!subscription.isRemoved) {
+			throw new Error("Subscription is not marked as removed");
+		}
+
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { isRemoved: false },
+		});
 	}
 
 	async acceptSubscription(subscriptionId: string) {
@@ -597,8 +640,9 @@ class Database {
 	}
 
 	async removeSubscription(subscriptionId: string) {
-		return this.prisma.subscription.delete({
+		return this.prisma.subscription.update({
 			where: { id: subscriptionId },
+			data: { isRemoved: true },
 		});
 	}
 

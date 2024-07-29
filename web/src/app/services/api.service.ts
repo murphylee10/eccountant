@@ -198,11 +198,13 @@ export class ApiService {
 	/* Subscriptons */
 	getSubscriptions(): Promise<{
 		accepted: Subscription[];
-		notAccepted: Subscription[];
+		pending: Subscription[];
+		removed: Subscription[];
 	}> {
 		return this.get<{
 			accepted: Subscription[];
-			notAccepted: Subscription[];
+			pending: Subscription[];
+			removed: Subscription[];
 		}>(`${this.subscriptionsUrl}`);
 	}
 
@@ -214,6 +216,13 @@ export class ApiService {
 
 	removeSubscription(subscriptionId: string): Promise<void> {
 		return this.delete<void>(`${this.subscriptionsUrl}/${subscriptionId}`, {});
+	}
+
+	restoreSubscription(subscriptionId: string): Promise<void> {
+		return this.post<void>(
+			`${this.subscriptionsUrl}/restore/${subscriptionId}`,
+			{},
+		);
 	}
 
 	changeSubscriptionDay(subscriptionId: string, day: number): Promise<void> {
