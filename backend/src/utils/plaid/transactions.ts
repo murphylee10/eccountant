@@ -78,7 +78,6 @@ export const syncTransactions = async (itemId: string) => {
 			userId,
 		);
 	} catch (e) {
-		console.log(e);
 		console.log("Unable to provide rt update - server not connected");
 	}
 

@@ -30,7 +30,6 @@ export class HomeComponent {
 		public api: ApiService,
 		private eventbus: EventBusService,
 	) {
-		console.log(window.origin);
 		const obs = this.eventbus.observe<{ foo: string; bar: number }>(
 			EventType.EXAMPLE,
 		);

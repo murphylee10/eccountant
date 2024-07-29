@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { NotificationSettingsDialogComponent } from './notification-settings-dialog.component';
+import { NotificationSettingsDialogComponent } from "./notification-settings-dialog.component";
 
-describe('NotificationSettingsDialogComponent', () => {
-  let component: NotificationSettingsDialogComponent;
-  let fixture: ComponentFixture<NotificationSettingsDialogComponent>;
+describe("NotificationSettingsDialogComponent", () => {
+	let component: NotificationSettingsDialogComponent;
+	let fixture: ComponentFixture<NotificationSettingsDialogComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [NotificationSettingsDialogComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(NotificationSettingsDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [NotificationSettingsDialogComponent],
+		}).compileComponents();
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+		fixture = TestBed.createComponent(NotificationSettingsDialogComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
+
+	it("should create", () => {
+		expect(component).toBeTruthy();
+	});
 });

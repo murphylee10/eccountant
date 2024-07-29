@@ -80,7 +80,6 @@ tokensRouter.post(
 
 			res.json({ status: "success" });
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -107,7 +106,7 @@ const populateBankName = async (
 		const institutionName = institutionResponse.data.institution.name;
 		await db.setItemBankName(itemId, institutionName);
 	} catch (error) {
-		console.log(`Ran into an error! ${error}`);
+		console.log(error);
 	}
 };
 
@@ -128,6 +127,6 @@ const populateAccountNames = async (
 			}),
 		);
 	} catch (error) {
-		console.log(`Ran into an error! ${error}`);
+		console.log(error);
 	}
 };

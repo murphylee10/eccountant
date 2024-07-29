@@ -57,7 +57,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 	}
 
 	init = async (webhook: boolean) => {
-		if (webhook) console.log("Webhook fired");
 		this.isLoading = true;
 		await this.loadBanks();
 		await this.loadRecentTransactions();

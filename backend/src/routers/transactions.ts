@@ -15,7 +15,6 @@ transactionsRouter.get("/", requireAuth, async (req, res, next) => {
 		const transactions = await db.getTransactionsByUser(userId, maxCountNumber);
 		res.json(transactions);
 	} catch (error) {
-		console.log("Running into an error!");
 		next(error);
 	}
 });
@@ -56,7 +55,6 @@ transactionsRouter.post(
 			);
 			res.json(transaction);
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -78,7 +76,6 @@ transactionsRouter.delete(
 			);
 			res.status(204).send(); // No Content response
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -105,7 +102,6 @@ transactionsRouter.get(
 			);
 			res.json(transactions);
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -113,13 +109,10 @@ transactionsRouter.get(
 
 transactionsRouter.get("/recent", requireAuth, async (req, res, next) => {
 	try {
-		console.log("hello");
 		const userId = req.auth?.payload.sub as string;
 		const transactions = await db.getRecentTransactions(userId, 5);
 		res.json(transactions);
 	} catch (error) {
-		console.log(error);
-		console.log("Running into an error!");
 		next(error);
 	}
 });
@@ -139,7 +132,6 @@ transactionsRouter.get(
 			const transactions = await db.getTransactionsByYear(userId, year);
 			res.json(transactions);
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -155,7 +147,6 @@ transactionsRouter.get(
 			const transaction = await db.getFirstTransaction(userId);
 			res.json(transaction);
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},
@@ -170,7 +161,6 @@ transactionsRouter.post(
 			const transactions = await db.runRawQuery(query as string);
 			res.json(transactions);
 		} catch (error) {
-			console.log(`Running into an error!`);
 			next(error);
 		}
 	},
@@ -186,7 +176,6 @@ transactionsRouter.get(
 			const transaction = await db.getLastTransaction(userId);
 			res.json(transaction);
 		} catch (error) {
-			console.log("Running into an error!");
 			next(error);
 		}
 	},

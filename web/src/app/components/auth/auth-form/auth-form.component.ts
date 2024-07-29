@@ -50,14 +50,12 @@ export class AuthFormComponent {
 		//   password: ['', Validators.required],
 		// });
 		auth.user$.subscribe((user) => {
-			console.log("hello");
 			if (user) {
 				// Extract the user ID (sub) and send it to the backend
 				const userId = user.sub;
 				api
 					.storeUser(userId as string, user.email as string)
 					.then((response) => {
-						console.log("User registered or logged in:", response);
 						router.navigate(["/user/dashboard"]);
 					})
 					.catch((err) => {
@@ -68,27 +66,4 @@ export class AuthFormComponent {
 			}
 		});
 	}
-
-	// ngOnChanges() {
-	// 	if (this.isSignIn) {
-	// 		this.authForm.get("fullName")?.clearValidators();
-	// 	} else {
-	// 		this.authForm.get("fullName")?.setValidators(Validators.required);
-	// 	}
-	// 	this.authForm.get("fullName")?.updateValueAndValidity();
-	// }
-
-	// onSubmit() {
-	//   const username = this.authForm.get('username')?.value;
-	//   const password = this.authForm.get('password')?.value;
-	//   if (this.authForm.valid) {
-	//     if (this.isSignIn) {
-	//       console.log('Todo sign in');
-	//       this.auth.login
-	//     } else {
-	//       const name = this.authForm.get('fullName')?.value;
-	//       console.log('Todo sign up');
-	//     }
-	//   }
-	// }
 }

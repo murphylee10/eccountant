@@ -1,6 +1,6 @@
 {
-  "watch": ["src"],
-  "ext": "ts,json",
-  "ignore": ["dist"],
-  "exec": "tsx src/webhookServer.ts"
+	"watch": ["src"],
+	"ext": "ts,json",
+	"ignore": ["dist"],
+	"exec": "tsx src/webhookServer.ts"
 }
