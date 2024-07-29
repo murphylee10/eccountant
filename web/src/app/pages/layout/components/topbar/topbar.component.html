@@ -1,14 +1,28 @@
-<div class="">
+<div>
   <p-menubar styleClass="bg-white py-3 px-6 border-t-0 h-[8vh]">
     <ng-template pTemplate="start">
-      <a href="/">
-        <img
-          src="assets/images/EccountantLogoLight.svg"
-          alt="Eccountant Logo"
-          class="w-[16rem]"
-        />
-      </a>
-      <!-- Other Menubar items can go here -->
+      <div class="md:hidden flex">
+        <a href="/">
+          <img
+            src="assets/images/EccountantLogoLight.svg"
+            alt="Eccountant Logo"
+            class="w-[16rem]"
+          />
+        </a>
+      </div>
+      <div class="flex items-center hidden md:flex w-full justify-between">
+        <i
+          class="pi pi-bars text-2xl cursor-pointer mr-4"
+          (click)="overlay.toggle($event)"
+        ></i>
+        <a href="/" class="flex-1 flex justify-center">
+          <img
+            src="assets/images/EccountantLogoLight.svg"
+            alt="Eccountant Logo"
+            class="w-[12rem]"
+          />
+        </a>
+      </div>
     </ng-template>
     <ng-template pTemplate="end">
       <img
@@ -20,4 +34,18 @@
   </p-menubar>
 
   <p-menu #menu [popup]="true" [model]="items"></p-menu>
+
+  <!-- Mobile Navigation Overlay -->
+  <p-overlayPanel #overlay [dismissable]="true" class="w-[80vw]">
+    <div class="flex flex-col gap-4">
+      <div
+        *ngFor="let item of sidebarItems"
+        (click)="overlay.hide()"
+        class="flex items-center p-4 border-b border-gray-300"
+      >
+        <i [class]="item.icon" class="mr-2 text-xl"></i>
+        <a [routerLink]="item.path" class="text-lg font-medium">{{ item.label }}</a>
+      </div>
+    </div>
+  </p-overlayPanel>
 </div>

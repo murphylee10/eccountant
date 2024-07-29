@@ -72,6 +72,46 @@ export class AnnualSpendingsChartComponent implements OnInit {
 						},
 					},
 				},
+				{
+					breakpoint: 768,
+					options: {
+						chart: {
+							width: 350,
+						},
+					},
+				},
+				{
+					breakpoint: 1024,
+					options: {
+						chart: {
+							width: 400,
+						},
+					},
+				},
+				{
+					breakpoint: 1440,
+					options: {
+						chart: {
+							width: 500,
+						},
+					},
+				},
+				{
+					breakpoint: 1920,
+					options: {
+						chart: {
+							width: 370,
+						},
+					},
+				},
+				{
+					breakpoint: 2560,
+					options: {
+						chart: {
+							width: 450,
+						},
+					},
+				},
 			],
 		};
 	});
