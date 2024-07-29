@@ -22,22 +22,18 @@ export class SidebarComponent implements OnInit {
         items: [
           { label: 'Dashboard', icon: 'pi pi-home', path: '/user/dashboard' },
           { label: 'Accounts', icon: 'pi pi-user', path: '/user/accounts' },
-          // { label: "Balance", icon: "pi pi-dollar", path: "/demo" },
-          // { label: "Cards", icon: "pi pi-credit-card", path: "/demo" },
           {
             label: 'Transactions',
             icon: 'pi pi-list',
             path: '/user/transactions',
           },
+          {
+            label: 'Subscriptions',
+            icon: 'pi pi-calendar',
+            path: '/user/subscriptions',
+          },
         ],
       },
-      // {
-      // 	label: "Other",
-      // 	items: [
-      // 		{ label: "Integrations", icon: "pi pi-sitemap" },
-      // 		{ label: "Settings", icon: "pi pi-cog" },
-      // 	],
-      // },
     ];
   }
 }

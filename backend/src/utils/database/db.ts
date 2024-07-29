@@ -19,18 +19,26 @@ class Database {
 
 	/* User interactions */
 
-	async createUserIfNotExists(userId: string) {
+	async createUserIfNotExists(userId: string, email: string) {
 		const existingUser = await this.prisma.user.findUnique({
 			where: { id: userId },
 		});
 
 		if (existingUser) {
+			if (!existingUser.email) {
+				// If the existing user has a null email, update it with the provided email
+				const updatedUser = await this.prisma.user.update({
+					where: { id: userId },
+					data: { email: email },
+				});
+				return updatedUser;
+			}
 			return existingUser;
 		}
 
 		// If user does not exist, create a new user
 		const newUser = await this.prisma.user.create({
-			data: { id: userId },
+			data: { id: userId, email: email },
 		});
 		return newUser;
 	}
@@ -559,6 +567,77 @@ class Database {
 				});
 			}
 		}
+	}
+
+	// New method to fetch and partition subscriptions
+	async fetchPartitionedSubscriptions(userId: string) {
+		const subscriptions = await this.prisma.subscription.findMany({
+			where: { userId },
+			orderBy: { name: "asc" },
+		});
+
+		const acceptedSubscriptions = subscriptions.filter(
+			(sub) => sub.isUserApproved,
+		);
+		const notAcceptedSubscriptions = subscriptions.filter(
+			(sub) => !sub.isUserApproved,
+		);
+
+		return {
+			accepted: acceptedSubscriptions,
+			notAccepted: notAcceptedSubscriptions,
+		};
+	}
+
+	async acceptSubscription(subscriptionId: string) {
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { isUserApproved: true },
+		});
+	}
+
+	async removeSubscription(subscriptionId: string) {
+		return this.prisma.subscription.delete({
+			where: { id: subscriptionId },
+		});
+	}
+
+	async changeSubscriptionDay(subscriptionId: string, day: number) {
+		const subscription = await this.prisma.subscription.findUnique({
+			where: { id: subscriptionId },
+		});
+
+		if (!subscription) {
+			throw new Error("Subscription not found");
+		}
+
+		if (subscription.frequency !== "MONTHLY") {
+			throw new Error("Subscription is not monthly");
+		}
+
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { dayOfMonth: day },
+		});
+	}
+
+	async changeSubscriptionMonth(subscriptionId: string, month: number) {
+		const subscription = await this.prisma.subscription.findUnique({
+			where: { id: subscriptionId },
+		});
+
+		if (!subscription) {
+			throw new Error("Subscription not found");
+		}
+
+		if (subscription.frequency !== "ANNUALLY") {
+			throw new Error("Subscription is not annual");
+		}
+
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { month },
+		});
 	}
 }
 
