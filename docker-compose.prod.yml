@@ -75,6 +75,7 @@ services:
       - 8001
     environment:
       - VIRTUAL_HOST=webhook.eccountant.live
+      - VIRTUAL_PORT=8001
       - LETSENCRYPT_HOST=webhook.eccountant.live
     command: ["node", "dist/backend/src/webhookServer.js"]
 
