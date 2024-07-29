@@ -10,6 +10,7 @@ import { CommonModule } from "@angular/common";
 import { ButtonModule } from "primeng/button";
 import environment from "@environment";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { AuthService } from "@services/auth.service";
 
 @Component({
 	selector: "transactions-chat-dialog",
@@ -33,6 +34,7 @@ export class ChatDialogComponent {
 	constructor(
 		public ref: DynamicDialogRef,
 		private apiService: ApiService,
+		private authService: AuthService,
 	) {}
 
 	askCodestralAPI(message: string, model = "codestral-latest") {
@@ -59,14 +61,70 @@ export class ChatDialogComponent {
 		});
 	}
 
-	generateQuery(question: string, LLM_MODEL: string, prod: boolean) {
-		const message = `
+	generateQuery(
+		question: string,
+		LLM_MODEL: string,
+		prod: boolean,
+	): Promise<string | undefined> {
+		const monthNames: string[] = [
+			"January",
+			"February",
+			"March",
+			"April",
+			"May",
+			"June",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
+		];
+
+		const now: Date = new Date();
+		const month: string = monthNames[now.getMonth()];
+		const year: number = now.getFullYear();
+
+		return new Promise((resolve, reject) => {
+			this.authService.getUserId().subscribe((userId) => {
+				if (userId) {
+					const message = `
 	model Transaction {
 	  category: is type String and is one of 'Income', 'Transfer In', 'Transfer Out', 'Loan Payments', 'Bank Fees', 'Entertainment', 'Food and Drink', 'General Merchandise', 'Home Improvement', 'Medical', 'Personal Care', 'General Services', 'Government and Non-Profit', 'Transportation', 'Travel', 'Rent and Utilities'
 	  date: is type String in the format 'YYYY-MM-DD'.
 	  name: is type String is the name of the transaction.
 	  amount: is type Float.
 	}
+
+	Other relevant models:
+	model User {
+		id             String        @id @default(uuid())
+		email          String?
+		items          Item[]
+		transactions   Transaction[]
+		subscriptions  Subscription[]
+		}
+
+		model Item {
+		id                 String @id @default(uuid())
+		user_id            String
+		access_token       String
+		transaction_cursor String?
+		bank_name          String?
+		is_active          Boolean @default(true)
+		isSandbox          Boolean @default(true)
+		user               User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+		accounts           Account[]
+		subscriptions      Subscription[]
+		}
+
+		model Account {
+		id           String @id @default(uuid())
+		item_id      String
+		name         String?
+		item         Item    @relation(fields: [item_id], references: [id], onDelete: Cascade)
+		transactions Transaction[]
+		}
 	
 	Question: "${question}".
 	Task: write a postgreSQL query that retrieves the information requested in the Question.
@@ -74,12 +132,25 @@ export class ChatDialogComponent {
 	Requirements:
 	- Respond with only the postgreSQL query.
 	- Do not include formatting.
-	- The current year is 2024.
-	- The current month is July.
+	- The current year is ${year}.
+	- The current month is ${month}.
 	- The date column is type String. Any date operation must be done taking this into account.
-	- You must use only these relations: "Transaction".
+	- Should mainly be based on model Transaction.
+	- The userId needs to be '${userId}'.
 	`;
-		return this.askCodestralAPI(message, "codestral-latest");
+
+					this.askCodestralAPI(message, "codestral-latest")
+						.then((response) => {
+							resolve(response);
+						})
+						.catch((error) => {
+							reject(error);
+						});
+				} else {
+					reject("User ID is not available.");
+				}
+			});
+		});
 	}
 
 	cleanResponse(response: string) {

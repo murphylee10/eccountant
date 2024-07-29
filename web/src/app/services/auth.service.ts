@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { AuthService as Auth0Service, User } from "@auth0/auth0-angular";
 import { Router, NavigationEnd } from "@angular/router";
 import { ApiService } from "./api.service";
-import { Observable } from "rxjs";
-import { tap, filter } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { tap, filter, map, catchError } from "rxjs/operators";
 
 @Injectable({
 	providedIn: "root",
@@ -59,6 +59,13 @@ export class AuthService {
 				this.loginWithRedirect();
 			}
 		});
+	}
+
+	getUserId(): Observable<string | null | undefined> {
+		return this.user$.pipe(
+			map((user) => (user ? user.sub : null)),
+			catchError(() => of(null)),
+		);
 	}
 
 	logout(): void {
