@@ -1,44 +1,39 @@
 export enum EventType {
-	EXAMPLE = "event/example",
-	NEW_TRANSACTION = "event/new_transaction",
-	REMOVE_TRANSACTION = "event/remove_transaction",
+  NEW_TRANSACTION = "event/new_transaction",
+  REMOVE_TRANSACTION = "event/remove_transaction",
 }
 
 export abstract class Event<T> {
-	abstract id: EventType;
-	payload: T;
+  abstract id: EventType;
+  payload: T;
 
-	constructor(payload: T) {
-		try {
-			JSON.stringify(payload);
-		} catch {
-			throw Error("Payload cannot be serialized");
-		}
-		this.payload = payload;
-	}
+  constructor(payload: T) {
+    try {
+      JSON.stringify(payload);
+    } catch {
+      throw Error("Payload cannot be serialized");
+    }
+    this.payload = payload;
+  }
 
-	public serialize() {
-		return JSON.stringify({
-			id: this.id,
-			payload: this.payload,
-		});
-	}
-}
-
-export class ExampleEvent extends Event<{ foo: string; bar: number }> {
-	id = EventType.EXAMPLE;
+  public serialize() {
+    return JSON.stringify({
+      id: this.id,
+      payload: this.payload,
+    });
+  }
 }
 
 export class TransactionEvent extends Event<{
-	uid: string;
-	timestamp: number;
+  uid: string;
+  timestamp: number;
 }> {
-	id = EventType.NEW_TRANSACTION;
+  id = EventType.NEW_TRANSACTION;
 }
 
 export class RemoveTransaction extends Event<{
-	uid: string;
-	timestamp: number;
+  uid: string;
+  timestamp: number;
 }> {
-	id = EventType.REMOVE_TRANSACTION;
+  id = EventType.REMOVE_TRANSACTION;
 }
