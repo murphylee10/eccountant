@@ -74,16 +74,17 @@ export const syncTransactions = async (itemId: string) => {
 	// Step 5: Save our cursor value to the database
 	await db.saveCursorForItem(allData.nextCursor, itemId);
 
-  // Step 6: Notify user clients to resync.
-  try {
-    const dispatcher = EventDispatcher.getInstance();
-    dispatcher.notifyUser(
-      new TransactionEvent({ uid: userId, timestamp: Date.now() }),
-      userId,
-    );
-  } catch {
-    console.log("Unable to provide rt update - server not connected");
-  }
+	// Step 6: Notify user clients to resync.
+	try {
+		const dispatcher = EventDispatcher.getInstance();
+		dispatcher.notifyUser(
+			new TransactionEvent({ uid: userId, timestamp: Date.now() }),
+			userId,
+		);
+	} catch (e) {
+		console.log(e);
+		console.log("Unable to provide rt update - server not connected");
+	}
 
 	console.log(summary);
 	return summary;
