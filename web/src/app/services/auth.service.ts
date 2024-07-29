@@ -50,7 +50,7 @@ export class AuthService {
 					.storeUser(userId as string, user.email as string)
 					.then((response) => {
 						console.log("User registered or logged in:", response);
-						this.router.navigate(["/user/dashboard"]);
+						// this.router.navigate(["/user/dashboard"]);
 					})
 					.catch((err) => {
 						console.error("Error registering or logging in user:", err);
