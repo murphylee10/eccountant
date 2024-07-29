@@ -17,12 +17,16 @@ async function checkSubscriptions() {
 	const dayOfMonth = today.getDate(); // Get current day of the month
 	const month = today.getMonth() + 1; // JavaScript months are 0-based
 
-	// Find monthly subscriptions that match today's date
+	// Determine if today is the last day of the month
+	const isLastDayOfMonth =
+		new Date(today.getFullYear(), month, 0).getDate() === dayOfMonth;
+
+	// Find monthly subscriptions that match today's date or the last day of the month
 	const monthlySubscriptions = await prisma.subscription.findMany({
 		where: {
 			isUserApproved: true,
 			frequency: "MONTHLY",
-			dayOfMonth: dayOfMonth,
+			dayOfMonth: isLastDayOfMonth ? { gte: dayOfMonth } : dayOfMonth,
 		},
 		include: {
 			user: true,
@@ -34,7 +38,6 @@ async function checkSubscriptions() {
 		where: {
 			isUserApproved: true,
 			frequency: "ANNUALLY",
-			dayOfMonth: 1,
 			month: month,
 		},
 		include: {
@@ -57,7 +60,7 @@ async function checkSubscriptions() {
 
 // Schedule the cron job to run every day at midnight
 cron.schedule("0 0 * * *", () => {
-	console.log("Running cron job at midnight");
+	console.log("Running cron job every day at midnight");
 	checkSubscriptions().catch((err) => {
 		console.error("Error checking subscriptions:", err);
 	});
