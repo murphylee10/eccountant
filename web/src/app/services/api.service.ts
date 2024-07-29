@@ -4,6 +4,7 @@ import { Injectable } from "@angular/core";
 import environment from "@environment";
 import { take } from "rxjs";
 import type { PlaidTransaction } from "../models/transaction.model";
+import { Subscription } from "../models/subscription.model";
 
 @Injectable({
 	providedIn: "root",
@@ -11,6 +12,7 @@ import type { PlaidTransaction } from "../models/transaction.model";
 export class ApiService {
 	private transactionsUrl = "/transactions";
 	private banksUrl = "/banks";
+	private subscriptionsUrl = "/subscriptions";
 
 	constructor(private http: HttpClient) {}
 
@@ -29,6 +31,15 @@ export class ApiService {
 		return new Promise<T>((res, rej) => {
 			this.http
 				.post<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
+				.pipe(take(1))
+				.subscribe({ next: res, error: rej });
+		});
+	}
+
+	private async patch<T>(endpoint: string, body: any): Promise<T> {
+		return new Promise<T>((res, rej) => {
+			this.http
+				.patch<T>(encodeURI(`${environment.api_url}${endpoint}`), body)
 				.pipe(take(1))
 				.subscribe({ next: res, error: rej });
 		});
@@ -78,13 +89,14 @@ export class ApiService {
 		});
 	}
 
-	public async storeUserId(
+	public async storeUser(
 		userId: string,
+		email: string,
 	): Promise<{ success: boolean; msg: string }> {
 		return this.post<{
 			success: boolean;
 			msg: string;
-		}>("/users/register", { userId }).catch((err) => {
+		}>("/users/register", { userId, email }).catch((err) => {
 			return { success: false, msg: err.msg };
 		});
 	}
@@ -180,6 +192,44 @@ export class ApiService {
 						reject(error);
 					},
 				});
+		});
+	}
+
+	/* Subscriptons */
+	getSubscriptions(): Promise<{
+		accepted: Subscription[];
+		notAccepted: Subscription[];
+	}> {
+		return this.get<{
+			accepted: Subscription[];
+			notAccepted: Subscription[];
+		}>(`${this.subscriptionsUrl}`);
+	}
+
+	acceptSubscription(subscriptionId: string): Promise<void> {
+		return this.post<void>(`${this.subscriptionsUrl}/accept`, {
+			subscriptionId,
+		});
+	}
+
+	removeSubscription(subscriptionId: string): Promise<void> {
+		return this.delete<void>(`${this.subscriptionsUrl}/${subscriptionId}`, {});
+	}
+
+	changeSubscriptionDay(subscriptionId: string, day: number): Promise<void> {
+		return this.patch<void>(`${this.subscriptionsUrl}/change-day`, {
+			subscriptionId,
+			day,
+		});
+	}
+
+	changeSubscriptionMonth(
+		subscriptionId: string,
+		month: number,
+	): Promise<void> {
+		return this.patch<void>(`${this.subscriptionsUrl}/change-month`, {
+			subscriptionId,
+			month,
 		});
 	}
 }

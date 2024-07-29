@@ -1,5 +1,14 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import type { SimpleTransaction } from "../types/transactions";
+import {
+	differenceInDays,
+	parseISO,
+	isValid,
+	subDays,
+	isBefore,
+	getDate,
+	getMonth,
+} from "date-fns";
 
 class Database {
 	private prisma: PrismaClient;
@@ -10,18 +19,26 @@ class Database {
 
 	/* User interactions */
 
-	async createUserIfNotExists(userId: string) {
+	async createUserIfNotExists(userId: string, email: string) {
 		const existingUser = await this.prisma.user.findUnique({
 			where: { id: userId },
 		});
 
 		if (existingUser) {
+			if (!existingUser.email) {
+				// If the existing user has a null email, update it with the provided email
+				const updatedUser = await this.prisma.user.update({
+					where: { id: userId },
+					data: { email: email },
+				});
+				return updatedUser;
+			}
 			return existingUser;
 		}
 
 		// If user does not exist, create a new user
 		const newUser = await this.prisma.user.create({
-			data: { id: userId },
+			data: { id: userId, email: email },
 		});
 		return newUser;
 	}
@@ -456,6 +473,171 @@ class Database {
 
 	async disconnect() {
 		await this.prisma.$disconnect();
+	}
+
+	/* Subscription Interaction */
+	async classifySubscriptions(userId: string, itemId: string) {
+		// Step 1: Retrieve all transactions for the given userId and itemId
+		const transactions = await this.prisma.transaction.findMany({
+			where: {
+				user_id: userId,
+				account: {
+					item_id: itemId,
+				},
+				is_removed: false,
+			},
+			orderBy: {
+				date: "asc",
+			},
+		});
+
+		// Step 2: Group transactions by name and amount (to avoid false positives like Uber rides)
+		const groupedTransactions: Record<string, any[]> = {};
+		// biome-ignore lint/complexity/noForEach: <explanation>
+		transactions.forEach((transaction) => {
+			const key = `${transaction.name}-${transaction.amount}`;
+			if (!groupedTransactions[key]) {
+				groupedTransactions[key] = [];
+			}
+			groupedTransactions[key].push(transaction);
+		});
+
+		// Step 3: Filter groups by the most recent transaction date (within the last 2 months)
+		const currentDate = new Date();
+		const twoMonthsAgo = subDays(currentDate, 60);
+
+		// Step 4: Check if the transactions in each group follow a monthly or annual interval
+		for (const key in groupedTransactions) {
+			const transactions = groupedTransactions[key];
+			if (transactions.length < 2) continue; // Need at least 2 transactions to determine a pattern
+
+			const mostRecentTransactionDate = parseISO(
+				transactions[transactions.length - 1].date,
+			);
+			if (isBefore(mostRecentTransactionDate, twoMonthsAgo)) continue; // Skip if the most recent transaction is older than 2 months
+
+			let isMonthly = true;
+			let isAnnual = true;
+
+			for (let i = 1; i < transactions.length; i++) {
+				const previousDate = parseISO(transactions[i - 1].date);
+				const currentDate = parseISO(transactions[i].date);
+
+				if (!isValid(previousDate) || !isValid(currentDate)) {
+					continue;
+				}
+
+				const daysDifference = differenceInDays(currentDate, previousDate);
+
+				// Check if the difference in days is roughly a month (give or take a few days)
+				if (daysDifference < 28 || daysDifference > 31) {
+					isMonthly = false;
+				}
+
+				// Check if the difference in days is roughly a year (give or take a few days)
+				if (daysDifference < 365 - 3 || daysDifference > 365 + 3) {
+					isAnnual = false;
+				}
+
+				if (!isMonthly && !isAnnual) break;
+			}
+
+			if (isMonthly || isAnnual) {
+				// Calculate the notification day (day before the first transaction date)
+				const firstTransactionDate = parseISO(transactions[0].date);
+				const notificationDay = getDate(firstTransactionDate) - 1;
+
+				// If annual, store the month of the first transaction
+				const notificationMonth = isAnnual
+					? getMonth(firstTransactionDate) + 1
+					: null;
+
+				// Step 5: Store the subscription in the database
+				await this.prisma.subscription.create({
+					data: {
+						userId: userId,
+						itemId: itemId,
+						name: transactions[0].name,
+						amount: transactions[0].amount,
+						frequency: isMonthly ? "MONTHLY" : "ANNUALLY",
+						dayOfMonth: notificationDay,
+						month: notificationMonth,
+						isUserApproved: false,
+					},
+				});
+			}
+		}
+	}
+
+	// New method to fetch and partition subscriptions
+	async fetchPartitionedSubscriptions(userId: string) {
+		const subscriptions = await this.prisma.subscription.findMany({
+			where: { userId },
+			orderBy: { name: "asc" },
+		});
+
+		const acceptedSubscriptions = subscriptions.filter(
+			(sub) => sub.isUserApproved,
+		);
+		const notAcceptedSubscriptions = subscriptions.filter(
+			(sub) => !sub.isUserApproved,
+		);
+
+		return {
+			accepted: acceptedSubscriptions,
+			notAccepted: notAcceptedSubscriptions,
+		};
+	}
+
+	async acceptSubscription(subscriptionId: string) {
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { isUserApproved: true },
+		});
+	}
+
+	async removeSubscription(subscriptionId: string) {
+		return this.prisma.subscription.delete({
+			where: { id: subscriptionId },
+		});
+	}
+
+	async changeSubscriptionDay(subscriptionId: string, day: number) {
+		const subscription = await this.prisma.subscription.findUnique({
+			where: { id: subscriptionId },
+		});
+
+		if (!subscription) {
+			throw new Error("Subscription not found");
+		}
+
+		if (subscription.frequency !== "MONTHLY") {
+			throw new Error("Subscription is not monthly");
+		}
+
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { dayOfMonth: day },
+		});
+	}
+
+	async changeSubscriptionMonth(subscriptionId: string, month: number) {
+		const subscription = await this.prisma.subscription.findUnique({
+			where: { id: subscriptionId },
+		});
+
+		if (!subscription) {
+			throw new Error("Subscription not found");
+		}
+
+		if (subscription.frequency !== "ANNUALLY") {
+			throw new Error("Subscription is not annual");
+		}
+
+		return this.prisma.subscription.update({
+			where: { id: subscriptionId },
+			data: { month },
+		});
 	}
 }
 
